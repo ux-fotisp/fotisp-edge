@@ -9,6 +9,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "test": "npx tsx tests/qa-interactive-components.ts",
+    "test:all": "npx tsx tests/qa-interactive-components.ts && npx tsx tests/qa-full-routing-suite.ts && npx tsx tests/qa-edge-suite.ts",
     "astro": "astro"
   },
   "dependencies": {
