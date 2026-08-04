@@ -1,0 +1,156 @@
+---
+interface Props {
+  themeVariation?: 'convert' | 'logico';
+}
+const { themeVariation = 'convert' } = Astro.props;
+
+const navItems = [
+  { label: 'Home',      href: '/' },
+  { label: 'Features',  href: '/services' },
+  { label: 'Solutions', href: '/portfolio' },
+  { label: 'About',     href: '/about' },
+  { label: 'Contact',   href: '/contact' },
+];
+---
+
+<!-- Glassmorphic Header -->
+<header class="head-mast" id="site-header">
+  <div class="container">
+    <div class="head-mast-inner">
+
+      <!-- Logo -->
+      <a href="/" class="site-logo" aria-label="Go to homepage">
+        <span class="logo-glyph" aria-hidden="true">
+          <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="9,1 17,5 17,13 9,17 1,13 1,5" fill="none" stroke="white" stroke-width="1.5"/>
+            <polygon points="9,5 13,7 13,11 9,13 5,11 5,7" fill="white"/>
+          </svg>
+        </span>
+        EDGE
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav aria-label="Main navigation">
+        <ul class="navigation-main" id="main-menu">
+          {navItems.map(item => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <!-- Right Actions -->
+      <div class="header-actions">
+        <a href="/contact" class="header-cta" id="header-access-edge-btn">ACCESS EDGE</a>
+        <span class="header-user-icon" aria-label="User account" role="button" tabindex="0">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </span>
+
+        <!-- Mobile trigger -->
+        <button
+          class="mobile-nav-trigger"
+          id="mobile-nav-trigger"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="mobile-nav"
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Nav Overlay -->
+<div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+
+<!-- Mobile Nav Drawer -->
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close menu">✕</button>
+  {navItems.map(item => (
+    <a href={item.href}>{item.label}</a>
+  ))}
+  <a href="/contact" class="mobile-nav-cta">ACCESS EDGE</a>
+</nav>
+
+<script>
+  // Sticky "shy" header
+  const header = document.getElementById('site-header');
+  let lastY = 0;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y > 80) {
+      header?.classList.add('is-sticky');
+      if (y > lastY) header?.classList.add('is-shy');
+      else header?.classList.remove('is-shy');
+    } else {
+      header?.classList.remove('is-sticky', 'is-shy');
+    }
+    lastY = y;
+  }, { passive: true });
+
+  // AstroAnimate Header Dock Proximity Magnification
+  const mainMenu = document.getElementById('main-menu');
+  if (mainMenu) {
+    const items = mainMenu.querySelectorAll(':scope > li') as NodeListOf<HTMLElement>;
+    const maxDistance = 140;
+    const maxScale = 0.24; // scales up to 1.24x
+
+    mainMenu.addEventListener('mousemove', (e) => {
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+
+      items.forEach((item) => {
+        const rect = item.getBoundingClientRect();
+        const itemCenterX = rect.left + rect.width / 2;
+        const itemCenterY = rect.top + rect.height / 2;
+        const distance = Math.hypot(mouseX - itemCenterX, mouseY - itemCenterY);
+
+        if (distance < maxDistance) {
+          const factor = Math.cos((distance / maxDistance) * (Math.PI / 2));
+          const scale = 1 + maxScale * factor;
+          const translateY = -4 * factor;
+          item.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+        } else {
+          item.style.transform = 'scale(1) translateY(0px)';
+        }
+      });
+    });
+
+    mainMenu.addEventListener('mouseleave', () => {
+      items.forEach((item) => {
+        item.style.transform = 'scale(1) translateY(0px)';
+      });
+    });
+  }
+
+  // Mobile nav
+  const trigger = document.getElementById('mobile-nav-trigger');
+  const nav = document.getElementById('mobile-nav');
+  const overlay = document.getElementById('mobile-nav-overlay');
+  const close = document.getElementById('mobile-nav-close');
+
+  function openNav() {
+    nav?.classList.add('open');
+    overlay?.classList.add('visible');
+    trigger?.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeNav() {
+    nav?.classList.remove('open');
+    overlay?.classList.remove('visible');
+    trigger?.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+  trigger?.addEventListener('click', openNav);
+  close?.addEventListener('click', closeNav);
+  overlay?.addEventListener('click', closeNav);
+</script>

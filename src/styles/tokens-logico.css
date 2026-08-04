@@ -1,0 +1,91 @@
+/* ============================================================
+   fotisp-edge — Design Tokens (Logico Variation Override)
+   Apply via: <html data-theme="logico">
+   ============================================================ */
+
+[data-theme="logico"] {
+  /* Color Palette */
+  --color-primary:        #040404;
+  --color-secondary:      #5135c2;
+  --color-text:           #585858;
+  --color-text-light:     #585858;
+  --color-heading:        #040404;
+  --color-border:         #d9dfe9;
+  --color-body-bg:        #f9f9f9;
+
+  /* Buttons */
+  --btn-bg:     #5135c2;
+  --btn-border: #5135c2;
+
+  /* Forms */
+  --input-text: #040404;
+
+  /* Top Bar */
+  --topbar-bg:     #5135c2;
+  --topbar-border: #e6d1ff;
+
+  /* Header */
+  --header-bg:             #edefff;
+  --header-text:           #040404;
+  --header-border:         rgba(237,239,255,0);
+  --header-submenu-bg:     #edefff;
+  --header-submenu-bg-h:   #5135c2;
+  --header-submenu-text:   #040404;
+  --header-submenu-text-h: #ffffff;
+
+  /* Mobile nav */
+  --mobile-nav-bg:     #5135c2;
+  --mobile-nav-border: rgba(217,223,233,0.1);
+
+  /* Page title */
+  --page-title-bg:      #edefff;
+  --page-title-overlay: '';
+  --page-title-text:    #040404;
+
+  /* Footer */
+  --footer-bg:             #ffffff;
+  --footer-border:         rgba(255,255,255,0);
+  --footer-title:          #040404;
+  --footer-text:           #585858;
+  --footer-credits-bg:     #ffffff;
+  --footer-credits-text:   #585858;
+  --footer-credits-link:   #5135c2;
+  --footer-credits-border: #d9dfe9;
+
+  /* Typography */
+  --font-primary:   'Inter', sans-serif;
+  --font-secondary: 'Inter', sans-serif;
+}
+
+/* ── Logico-specific component overrides ── */
+[data-theme="logico"] .entry-item:not(.entry-item-media) .entry-thumb,
+[data-theme="logico"] .entry-item:not(.entry-item-media) .entry-item-thumb {
+  margin-bottom: 0;
+}
+
+[data-theme="logico"] .entry-item:not(.entry-item-media) .entry-thumb img,
+[data-theme="logico"] .entry-item:not(.entry-item-media) .entry-item-thumb img {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+[data-theme="logico"] .entry-item:not(.entry-item-media) .entry-item-content {
+  padding: 30px;
+  background-color: #ffffff;
+  border-bottom-left-radius: var(--radius-base);
+  border-bottom-right-radius: var(--radius-base);
+}
+
+[data-theme="logico"] .page-hero-subtitle { font-size: 18px; }
+
+/* MaxSlider nav (Logico hero) */
+[data-theme="logico"] .hero-slider-arrow {
+  border: 1px solid #ffffff;
+  border-radius: var(--radius-base);
+}
+
+/* Social links */
+[data-theme="logico"] .social-link {
+  background-color: var(--color-secondary);
+  border-radius: var(--radius-base);
+}

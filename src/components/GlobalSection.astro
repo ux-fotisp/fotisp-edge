@@ -1,0 +1,21 @@
+---
+// GlobalSection.astro — fotisp-gsection CPT (reusable header/sidebar/footer blocks)
+interface Props {
+  location: 'header' | 'sidebar' | 'footer';
+  title?: string;
+  content?: string;
+}
+const { location, title, content } = Astro.props;
+// In a real build, this reads from Keystatic/D1 by location slug
+---
+{content && (
+  <div class={`global-section global-section--${location}`}>
+    {title && <h3 class="global-section-title">{title}</h3>}
+    <div class="global-section-content" set:html={content} />
+  </div>
+)}
+
+<style>
+  .global-section { margin: 0; }
+  .global-section--sidebar .global-section-title { font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; border-top: 3px solid var(--color-secondary); padding-top: 20px; margin-bottom: 16px; }
+</style>

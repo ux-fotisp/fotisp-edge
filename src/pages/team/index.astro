@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageTitle from '../../components/PageTitle.astro';
+import TeamCard from '../../components/TeamCard.astro';
+import { getCollection } from 'astro:content';
+
+const members = (await getCollection('team'))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Our Team — fotisp" description="Meet the people behind fotisp.">
+  <PageTitle title="Our Team" breadcrumbs={[{ label: 'About Us', href: '/about' }, { label: 'Our Team' }]} />
+  <main class="main" id="site-content">
+    <div class="container">
+      <div class="row row-columns-3">
+        {members.map(m => (
+          <TeamCard
+            name={m.data.name}
+            slug={m.slug}
+            role={m.data.role}
+            photo={m.data.photo}
+          />
+        ))}
+      </div>
+    </div>
+  </main>
+</BaseLayout>

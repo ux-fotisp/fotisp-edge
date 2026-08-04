@@ -1,0 +1,43 @@
+---
+// Pagination.astro
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  baseUrl: string;
+}
+const { currentPage, totalPages, baseUrl } = Astro.props;
+
+function pageUrl(n: number) {
+  return n === 1 ? baseUrl : `${baseUrl}/${n}`;
+}
+
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+const showEllipsis = totalPages > 7;
+const visiblePages = showEllipsis
+  ? pages.filter(p => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 2)
+  : pages;
+---
+
+{totalPages > 1 && (
+  <nav class="pagination" aria-label="Page navigation">
+    {currentPage > 1 && (
+      <a href={pageUrl(currentPage - 1)} class="page-number" aria-label="Previous page">← Prev</a>
+    )}
+    {visiblePages.map((p, i) => {
+      const prev = visiblePages[i - 1];
+      const gap = prev && p - prev > 1;
+      return (
+        <>
+          {gap && <span class="page-number" aria-hidden="true">…</span>}
+          {p === currentPage
+            ? <span class="page-number active" aria-current="page">{p}</span>
+            : <a href={pageUrl(p)} class="page-number">{p}</a>
+          }
+        </>
+      );
+    })}
+    {currentPage < totalPages && (
+      <a href={pageUrl(currentPage + 1)} class="page-number" aria-label="Next page">Next →</a>
+    )}
+  </nav>
+)}

@@ -1,0 +1,44 @@
+---
+// ArticleMediaCard.astro — 1col-horz layout (image left, content right)
+interface Props {
+  title: string;
+  slug: string;
+  excerpt?: string;
+  featuredImage?: string;
+  author?: string;
+  date?: string;
+  categories?: string[];
+}
+const { title, slug, excerpt, featuredImage, author, date, categories = [] } = Astro.props;
+const formattedDate = date ? new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+---
+
+<article class="entry-item entry-item-media">
+  {featuredImage && (
+    <div class="entry-item-thumb">
+      <a href={`/blog/${slug}`} tabindex="-1" aria-hidden="true">
+        <img src={featuredImage} alt={title} width="510" height="510" loading="lazy" />
+      </a>
+    </div>
+  )}
+  <div class="entry-item-content">
+    <header class="entry-header">
+      <h2 class="entry-item-title">
+        <a href={`/blog/${slug}`}>{title}</a>
+      </h2>
+    </header>
+    {(date || author || categories.length > 0) && (
+      <div class="entry-meta">
+        {date && <time datetime={date}>{formattedDate}</time>}
+        {author && <span>by {author}</span>}
+        {categories.length > 0 && (
+          <span>{categories.map((c, i) => (
+            <>{i > 0 && ', '}<a href={`/blog/category/${c.toLowerCase().replace(/\s+/g,'-')}`}>{c}</a></>
+          ))}</span>
+        )}
+      </div>
+    )}
+    {excerpt && <p class="entry-item-excerpt">{excerpt}</p>}
+    <a href={`/blog/${slug}`} class="btn btn-outline" style="margin-top:16px;">Read More</a>
+  </div>
+</article>

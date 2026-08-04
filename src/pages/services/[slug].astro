@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageTitle from '../../components/PageTitle.astro';
+import CTABand from '../../components/CTABand.astro';
+
+export const prerender = false;
+
+const slug = Astro.params.slug ?? 'sample';
+const service = {
+  title: 'KPI Reporting',
+  slug,
+  icon: '📊',
+  excerpt: 'A Key Performance Indicator (KPI) is a measurable value that demonstrates how effectively a company is achieving key business objectives.',
+  content: `<p>KPI Reporting is an essential practice for any performance-driven organization. Our consultants work closely with your team to identify the most impactful metrics and develop custom dashboards that provide real-time insights.</p>
+<h2>Our Approach</h2>
+<p>We begin with a thorough audit of your existing measurement frameworks, then design a reporting system tailored to your industry and strategic goals.</p>
+<h2>Key Benefits</h2>
+<ul><li>Real-time performance visibility</li><li>Data-driven decision making</li><li>Custom dashboards for each stakeholder level</li><li>Monthly executive reporting packages</li></ul>`,
+  featuredImage: '',
+};
+---
+
+<BaseLayout title={`${service.title} — Services — EDGE`} description={service.excerpt}>
+  <PageTitle
+    title={service.title}
+    breadcrumbs={[{ label: 'Services', href: '/services' }, { label: service.title }]}
+  />
+  <main class="main" id="site-content">
+    <div class="container">
+      <div class="content-sidebar">
+        <article>
+          {service.excerpt && (
+            <p class="lead">{service.excerpt}</p>
+          )}
+          <div class="entry-content" set:html={service.content} />
+        </article>
+
+        <aside class="sidebar">
+          <div class="widget">
+            <h3 class="widget-title">Our Services</h3>
+            <ul>
+              <li><a href="/services/kpi-reporting">KPI Reporting</a></li>
+              <li><a href="/services/reverse-logistics">Reverse Logistics</a></li>
+              <li><a href="/services/it-business-consulting">IT Consulting</a></li>
+              <li><a href="/services/strategic-planning">Strategic Planning</a></li>
+            </ul>
+          </div>
+          <div class="widget">
+            <h3 class="widget-title">Get Started</h3>
+            <p style="font-size:14px;color:#D1D5DB;line-height:1.6;margin-bottom:16px;">
+              Ready to transform your business performance?
+            </p>
+            <a href="/contact" class="btn" style="width:100%;justify-content:center;" id="service-cta-btn">
+              Contact Us
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+  <CTABand
+    title="Ready to get started?"
+    subtitle="Let's identify your next performance breakthrough."
+    buttonLabel="Deploy Now"
+    buttonUrl="/contact"
+    variant="dark"
+  />
+</BaseLayout>

@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageTitle from '../../components/PageTitle.astro';
+import EventCard from '../../components/EventCard.astro';
+
+const events = [
+  { title: 'Q1 Strategy Review', slug: 'q1-strategy-review', eventDate: '2024-03-15', eventTime: '09:00', location: 'London, UK', excerpt: 'Annual Q1 review of business strategy and KPI performance.' },
+  { title: 'Monthly Team Meetup', slug: 'monthly-team-meetup', isRecurring: true, recurrence: 'Every <span>Last Friday</span> of the month', eventTime: '18:00', location: 'Berlin, DE', excerpt: 'Regular team sync and knowledge sharing session.' },
+  { title: 'Consulting Summit 2024', slug: 'consulting-summit-2024', eventDate: '2024-06-20', eventTime: '10:00', location: 'New York, US', excerpt: 'The premier event for consulting professionals and thought leaders.' },
+];
+---
+
+<BaseLayout title="Events — fotisp" description="Upcoming and recurring events.">
+  <PageTitle title="Events" breadcrumbs={[{ label: 'Events' }]} />
+  <main class="main" id="site-content">
+    <div class="container">
+      <div class="content-sidebar">
+        <div>
+          {events.map(event => <EventCard {...event} />)}
+        </div>
+        <aside class="sidebar" aria-label="Events sidebar">
+          <div class="widget">
+            <h3 class="widget-title">Filter Events</h3>
+            <ul style="font-size:14px;display:flex;flex-direction:column;gap:8px;">
+              <li><a href="/events">All Events</a></li>
+              <li><a href="/events?type=upcoming">Upcoming</a></li>
+              <li><a href="/events?type=recurring">Recurring</a></li>
+              <li><a href="/events?type=past">Past</a></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+</BaseLayout>

@@ -1,0 +1,90 @@
+/* ============================================================
+   fotisp-edge — Design Tokens (EDGE Variation)
+   ============================================================ */
+
+:root {
+  /* Border radius */
+  --radius-base: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+
+  /* Letter spacing */
+  --tracking-tight: -0.03em;
+  --tracking-wide: 0.08em;
+  --tracking-ultra: 0.15em;
+
+  /* ── EDGE Color Palette ── */
+  --color-primary:        #DC2626;  /* Scarlet Red — buttons, active icons, CTA */
+  --color-secondary:      #701A1A;  /* Wine/Crimson — glow gradients, accents */
+  --color-obsidian:       #080303;  /* Deep Obsidian — hero, control sections, footer upper */
+  --color-surface:        #0F0909;  /* Dark surface — cards, secondary bg */
+  --color-surface-2:      #160A0A;  /* Elevated surface — card hover */
+  --color-light-bg:       #FFFFFF;  /* Stark White — Trusted By, Forged For, Team sections */
+  --color-text:           #D1D5DB;  /* Cool Silver Gray — body copy */
+  --color-text-light:     #9CA3AF;  /* Muted text */
+  --color-heading:        #FFFFFF;  /* Pure white — all headings */
+  --color-border:         rgba(220, 38, 38, 0.15); /* Subtle red border */
+  --color-border-light:   #E5E7EB; /* Light border for white sections */
+  --color-body-bg:        #080303;  /* Obsidian — default body background */
+  --color-white:          #FFFFFF;
+  --color-black:          #000000;
+
+  /* Red glow effects */
+  --glow-red:             0 0 20px rgba(220, 38, 38, 0.4);
+  --glow-red-strong:      0 0 40px rgba(220, 38, 38, 0.6);
+  --glow-red-subtle:      0 0 8px rgba(220, 38, 38, 0.25);
+
+  /* Buttons */
+  --btn-bg:       #DC2626;
+  --btn-text:     #FFFFFF;
+  --btn-border:   #DC2626;
+
+  /* Forms */
+  --input-bg:     #0F0909;
+  --input-border: rgba(220, 38, 38, 0.3);
+  --input-text:   #D1D5DB;
+
+  /* Header — Glassmorphic */
+  --header-bg:              rgba(8, 3, 3, 0.8);
+  --header-text:            #FFFFFF;
+  --header-border:          rgba(220, 38, 38, 0.2);
+  --header-submenu-bg:      #0F0909;
+  --header-submenu-bg-h:    #DC2626;
+  --header-submenu-text:    #D1D5DB;
+  --header-submenu-text-h:  #FFFFFF;
+
+  /* Mobile nav */
+  --mobile-nav-bg:     #0F0909;
+  --mobile-nav-link:   #FFFFFF;
+  --mobile-nav-border: rgba(220, 38, 38, 0.2);
+
+  /* Page title */
+  --page-title-bg:      #0F0909;
+  --page-title-overlay: rgba(8, 3, 3, 0.7);
+  --page-title-text:    #FFFFFF;
+
+  /* Footer */
+  --footer-bg:             #080303;
+  --footer-border:         rgba(220, 38, 38, 0.15);
+  --footer-title:          #FFFFFF;
+  --footer-text:           #D1D5DB;
+  --footer-credits-bg:     #FFFFFF;
+  --footer-credits-text:   #374151;
+  --footer-credits-border: #E5E7EB;
+
+  /* ── Typography ── */
+  --font-primary:   'Inter', sans-serif;
+  --font-secondary: 'Inter', sans-serif;
+  --font-size-base: 16px;
+  --line-height-base: 1.65;
+
+  /* ── Layout ── */
+  --container-width: 1200px;
+  --content-cols: 9;
+  --sidebar-cols: 3;
+
+  /* ── Shadows ── */
+  --shadow-nav:    0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-header: 0 1px 0 rgba(220, 38, 38, 0.2), 0 4px 24px rgba(0, 0, 0, 0.3);
+  --shadow-card:   0 4px 24px rgba(0, 0, 0, 0.3);
+}

@@ -1,0 +1,106 @@
+---
+// BackToTop.astro — Circular Scroll Progress Indicator
+---
+<button id="back-to-top" aria-label="Back to top" class="back-to-top-btn">
+  <svg class="progress-ring" width="48" height="48" viewBox="0 0 48 48">
+    <circle
+      class="progress-ring-bg"
+      stroke="rgba(255, 255, 255, 0.1)"
+      stroke-width="3"
+      fill="transparent"
+      r="20"
+      cx="24"
+      cy="24"
+    />
+    <circle
+      id="progress-circle"
+      class="progress-ring-circle"
+      stroke="#DC2626"
+      stroke-width="3"
+      stroke-linecap="round"
+      fill="transparent"
+      r="20"
+      cx="24"
+      cy="24"
+    />
+  </svg>
+  <span class="back-to-top-icon" aria-hidden="true">↑</span>
+</button>
+
+<style>
+  .back-to-top-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 48px;
+    height: 48px;
+    background: #0F0909;
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    border-radius: 50%;
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8) translateY(10px);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(220, 38, 38, 0.2);
+  }
+
+  .back-to-top-btn.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1) translateY(0);
+  }
+
+  .back-to-top-btn:hover {
+    border-color: #DC2626;
+    box-shadow: 0 4px 25px rgba(220, 38, 38, 0.4), 0 0 20px rgba(220, 38, 38, 0.3);
+    transform: scale(1.08) translateY(-2px);
+  }
+
+  .progress-ring {
+    position: absolute;
+    inset: 0;
+    transform: rotate(-90deg);
+  }
+
+  .progress-ring-circle {
+    stroke-dasharray: 125.66; /* 2 * PI * 20 */
+    stroke-dashoffset: 125.66;
+    transition: stroke-dashoffset 0.1s linear;
+  }
+
+  .back-to-top-icon {
+    position: relative;
+    z-index: 2;
+    font-size: 18px;
+    font-weight: 900;
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('back-to-top');
+  const circle = document.getElementById('progress-circle') as SVGPolylineElement | null;
+  const circumference = 2 * Math.PI * 20; // ~125.66
+
+  function updateProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = docHeight > 0 ? scrollTop / docHeight : 0;
+
+    btn?.classList.toggle('visible', scrollTop > 300);
+
+    if (circle) {
+      const offset = circumference - scrollPercent * circumference;
+      circle.style.strokeDashoffset = `${offset}`;
+    }
+  }
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  btn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  updateProgress();
+</script>

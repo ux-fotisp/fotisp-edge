@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageTitle from '../../components/PageTitle.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import { getCollection } from 'astro:content';
+
+const services = (await getCollection('services', ({ data }) => !data.draft))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Services — fotisp" description="Our consulting services tailored to your business needs.">
+  <PageTitle title="Our Services" breadcrumbs={[{ label: 'Services' }]} />
+  <main class="main" id="site-content">
+    <div class="container">
+      <div class="row row-columns-3">
+        {services.map(s => (
+          <ServiceCard
+            title={s.data.title}
+            slug={s.slug}
+            excerpt={s.data.excerpt}
+            icon={s.data.icon}
+          />
+        ))}
+      </div>
+    </div>
+  </main>
+</BaseLayout>

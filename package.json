@@ -1,0 +1,26 @@
+{
+  "name": "fotisp-edge",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "14.1.7",
+    "@astrojs/mdx": "^7.0.5",
+    "@astrojs/react": "6.0.2",
+    "@cloudflare/workers-types": "5.20260801.1",
+    "@keystatic/astro": "5.2.0",
+    "@keystatic/core": "0.6.4",
+    "astro": "^7.1.6",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "wrangler": "4.118.0"
+  }
+}

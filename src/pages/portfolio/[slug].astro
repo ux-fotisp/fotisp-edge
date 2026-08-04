@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageTitle from '../../components/PageTitle.astro';
+import CTABand from '../../components/CTABand.astro';
+import { getCollection } from 'astro:content';
+
+const { slug } = Astro.params;
+const cases = await getCollection('portfolio');
+const entry = cases.find(c => c.slug === slug);
+
+if (!entry) {
+  return Astro.redirect('/404');
+}
+
+const { title, excerpt, client, category } = entry.data;
+const { Content } = await entry.render();
+---
+
+<BaseLayout
+  title={`${title} — Case Study — EDGE`}
+  description={excerpt ?? `Case study: ${title}`}
+>
+  <PageTitle
+    title={title}
+    breadcrumbs={[{ label: 'Case Studies', href: '/portfolio' }, { label: title }]}
+  />
+  <main class="main" id="site-content">
+    <div class="container">
+      <article class="single-portfolio">
+        {category && <span class="badge">{category}</span>}
+        {client && (
+          <p class="client-name">
+            <strong style="color:#D1D5DB;">Client:</strong> {client}
+          </p>
+        )}
+        {excerpt && <p class="lead">{excerpt}</p>}
+        <div class="entry-content">
+          <Content />
+        </div>
+      </article>
+    </div>
+  </main>
+  <CTABand
+    title="Ready to build something similar?"
+    subtitle="Let's discuss your infrastructure requirements."
+    buttonLabel="Start a Project"
+    buttonUrl="/contact"
+    variant="dark"
+  />
+</BaseLayout>

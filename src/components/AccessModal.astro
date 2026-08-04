@@ -1,0 +1,276 @@
+---
+// AccessModal.astro — Interactive Terminal Slide-Over Drawer
+---
+
+<div id="access-modal-overlay" class="modal-overlay" aria-hidden="true"></div>
+
+<aside id="access-modal" class="access-modal-drawer" aria-label="System Access Request Terminal" aria-hidden="true" role="dialog">
+  <div class="modal-header">
+    <div class="modal-title-group">
+      <span class="modal-status-dot"></span>
+      <h2 class="modal-title">ACCESS EDGE</h2>
+    </div>
+    <button id="access-modal-close" class="modal-close-btn" aria-label="Close modal">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <p class="modal-intro">
+      Request high-priority infrastructure access. Command system operations with surgical precision.
+    </p>
+
+    <form id="access-form" class="modal-form" novalidate>
+      <div class="form-group">
+        <label for="access-name">OPERATOR NAME *</label>
+        <input type="text" id="access-name" name="name" placeholder="e.g. Alex Vance" required />
+      </div>
+
+      <div class="form-group">
+        <label for="access-email">COMMUNICATIONS EMAIL *</label>
+        <input type="email" id="access-email" name="email" placeholder="operator@domain.com" required />
+      </div>
+
+      <div class="form-group">
+        <label for="access-org">ORGANIZATION / MATRIX</label>
+        <input type="text" id="access-org" name="org" placeholder="Company or Node ID" />
+      </div>
+
+      <div class="form-group">
+        <label for="access-specs">DEPLOYMENT PARAMETERS</label>
+        <textarea id="access-specs" name="specs" rows="4" placeholder="Specify bandwidth, region, or zero-trust matrix requirements..."></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-fill-hover modal-submit-btn" id="access-submit-btn">
+        INITIATE ACCESS REQUEST
+      </button>
+
+      <p id="access-status" class="modal-status-text" aria-live="polite"></p>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <span>SECURITY MATRIX: ACTIVE</span>
+    <span>STATUS: 200 OK</span>
+  </div>
+</aside>
+
+<style>
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 3, 3, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+  }
+  .modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .access-modal-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 480px;
+    background: #0F0909;
+    border-left: 1px solid rgba(220, 38, 38, 0.3);
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8), -5px 0 20px rgba(220, 38, 38, 0.2);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .access-modal-drawer.open {
+    transform: translateX(0);
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 28px;
+    border-bottom: 1px solid rgba(220, 38, 38, 0.2);
+    background: rgba(220, 38, 38, 0.05);
+  }
+  .modal-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .modal-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #DC2626;
+    box-shadow: 0 0 10px #DC2626;
+  }
+  .modal-title {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #FFF;
+    letter-spacing: 0.1em;
+    margin: 0;
+  }
+  .modal-close-btn {
+    background: transparent;
+    border: none;
+    color: #9CA3AF;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+  .modal-close-btn:hover {
+    color: #FFF;
+    background: rgba(220, 38, 38, 0.2);
+  }
+
+  .modal-body {
+    flex: 1;
+    padding: 28px;
+    overflow-y: auto;
+  }
+  .modal-intro {
+    font-size: 14px;
+    color: #D1D5DB;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .form-group label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #DC2626;
+  }
+  .form-group input,
+  .form-group textarea {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(220, 38, 38, 0.25);
+    border-radius: 6px;
+    padding: 12px 14px;
+    color: #FFF;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus {
+    border-color: #DC2626;
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.3);
+  }
+
+  .modal-submit-btn {
+    width: 100%;
+    margin-top: 10px;
+  }
+  .modal-status-text {
+    font-size: 13px;
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  .modal-footer {
+    padding: 16px 28px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #6B7280;
+  }
+
+  @media (max-width: 540px) {
+    .access-modal-drawer { max-width: 100%; }
+  }
+</style>
+
+<script>
+  // Access Modal Open / Close Handler
+  const modal = document.getElementById('access-modal');
+  const overlay = document.getElementById('access-modal-overlay');
+  const closeBtn = document.getElementById('access-modal-close');
+  const form = document.getElementById('access-form') as HTMLFormElement;
+  const submitBtn = document.getElementById('access-submit-btn') as HTMLButtonElement;
+  const status = document.getElementById('access-status');
+
+  function openAccessModal() {
+    modal?.classList.add('open');
+    overlay?.classList.add('open');
+    modal?.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeAccessModal() {
+    modal?.classList.remove('open');
+    overlay?.classList.remove('open');
+    modal?.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  // Bind trigger buttons across the site
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const trigger = target.closest('#header-access-btn, .mobile-nav-cta, #hero-deploy-btn');
+    if (trigger) {
+      e.preventDefault();
+      openAccessModal();
+    }
+  });
+
+  closeBtn?.addEventListener('click', closeAccessModal);
+  overlay?.addEventListener('click', closeAccessModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAccessModal();
+  });
+
+  // Form submission handler
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'TRANSMITTING...';
+    }
+    setTimeout(() => {
+      if (status) {
+        status.style.color = '#10B981';
+        status.textContent = '✓ ACCESS REQUEST TRANSMITTED. STANDBY FOR HANDSHAKE.';
+      }
+      form.reset();
+      setTimeout(() => {
+        closeAccessModal();
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'INITIATE ACCESS REQUEST';
+        }
+        if (status) status.textContent = '';
+      }, 2500);
+    }, 1200);
+  });
+</script>

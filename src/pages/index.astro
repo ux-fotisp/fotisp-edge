@@ -1,0 +1,236 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CyberGridBg from '../components/CyberGridBg.astro';
+import '../styles/homepage.css';
+
+// Team data
+const team = [
+  { name: 'Martin Dylon',        slug: 'martin-dylon',        role: 'Chief Financial Officer' },
+  { name: 'James Flanagan',      slug: 'james-flanagan',      role: 'Chief Network Officer' },
+  { name: 'Mark Price',          slug: 'mark-price',          role: 'Chief Diversity Officer' },
+  { name: 'Christopher Walker',  slug: 'christopher-walker',  role: 'Chief Commercial Officer' },
+];
+---
+
+<BaseLayout
+  title="EDGE — The Edge of Innovation"
+  description="Precision engineering for the high-stakes digital frontier. Uncompromising performance, surgical accuracy, seamless speed designed for those who command the cutting-edge."
+  themeVariation="convert"
+  bodyClass="home"
+>
+  <!-- ═══════════════════════════════════════════════════════
+       HERO SECTION
+  ════════════════════════════════════════════════════════ -->
+  <section class="hero-edge" aria-label="Hero">
+    <!-- Cyber Grid Canvas with Horizontal & Vertical Red Light Trails -->
+    <CyberGridBg gridSize={60} speed={1.2} />
+
+    <!-- Decorative animated orbs -->
+    <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+    <!-- Laser trails -->
+    <div class="hero-laser hero-laser-1" aria-hidden="true"></div>
+    <div class="hero-laser hero-laser-2" aria-hidden="true"></div>
+    <div class="hero-laser hero-laser-3" aria-hidden="true"></div>
+
+    <div class="container">
+      <div class="hero-edge-content">
+        <!-- System Online badge -->
+        <div class="system-badge" aria-label="System status: online">
+          <span class="system-badge-dot" aria-hidden="true"></span>
+          SYSTEM ONLINE
+        </div>
+
+        <!-- Main headline -->
+        <h1 class="hero-headline">
+          THE <span class="accent">EDGE</span> OF INNOVATION
+        </h1>
+
+        <!-- Subheading -->
+        <p class="hero-subheading">
+          Precision engineering for the high-stakes digital frontier. Uncompromising performance, surgical accuracy, seamless speed designed for those who command the cutting-edge.
+        </p>
+
+        <!-- CTAs -->
+        <div class="hero-actions">
+          <a href="/contact" class="btn" id="hero-deploy-btn">DEPLOY INFRASTRUCTURE</a>
+          <a href="/services" class="btn btn-outline" id="hero-specs-btn">VIEW SPECS</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       TRUSTED BY SECTION
+  ════════════════════════════════════════════════════════ -->
+  <section class="trusted-by" aria-label="Trusted by">
+    <div class="container">
+      <p class="trusted-by-label">TRUSTED BY CORE OPERATIONS GLOBALLY</p>
+      <div class="trusted-logos" role="list">
+        <span class="trusted-logo-item" role="listitem">QUANTUM</span>
+        <span class="trusted-logo-item" role="listitem">NEXUS</span>
+        <span class="trusted-logo-item" role="listitem">AEGIS</span>
+        <span class="trusted-logo-item" role="listitem">VANGUARD</span>
+        <span class="trusted-logo-item" role="listitem">SYNDICATE</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       COMMAND COMPLETE CONTROL
+  ════════════════════════════════════════════════════════ -->
+  <section class="command-control" aria-label="Features">
+    <div class="container">
+      <div class="section-header">
+        <h2>Command Complete Control</h2>
+        <p>
+          Architected from the ground up for environments where micro-seconds matter. Our core
+          systems are designed to eliminate latency and neutralize threats autonomously.
+        </p>
+      </div>
+
+      <div class="feature-cards">
+
+        <!-- Card 1: Zero-Trust Matrix -->
+        <article class="feature-card">
+          <div class="feature-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7L12 2z"/>
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Zero-Trust Matrix</h3>
+          <p class="feature-card-desc">
+            Cryptographic assertion architecture ensuring absolute integrity across all distributed environments. Every node verified, every packet authenticated.
+          </p>
+        </article>
+
+        <!-- Card 2: Hyper-Threaded Routing -->
+        <article class="feature-card">
+          <div class="feature-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Hyper-Threaded Routing</h3>
+          <p class="feature-card-desc">
+            Dynamic path optimization reducing latency to sub-millisecond range. Eliminates congestion and reroutes around failure in real-time margins.
+          </p>
+        </article>
+
+        <!-- Card 3: Neural Telemetry -->
+        <article class="feature-card">
+          <div class="feature-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/>
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Neural Telemetry</h3>
+          <p class="feature-card-desc">
+            Predictive analytics engine processing terabytes of log data to pre-empt system strain. Self-healing infrastructure before failure occurs.
+          </p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FORGED FOR THE EXTREMES
+  ════════════════════════════════════════════════════════ -->
+  <section class="forged-section" aria-label="About EDGE">
+    <div class="container">
+      <div class="forged-inner">
+
+        <!-- Left: Content -->
+        <div class="forged-content">
+          <h2>Forged for the Extremes.</h2>
+          <p>
+            Our proprietary core operates in a vacuum of efficiency. By stripping away legacy layers and controlling hardware directly, we've achieved unprecedented throughput on every workload we touch.
+          </p>
+
+          <ul class="forged-list" role="list">
+            <li class="forged-list-item">
+              <span class="forged-list-icon" aria-hidden="true">
+                <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="9,1 17,5 17,13 9,17 1,13 1,5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                  <polygon points="9,5 13,7 13,11 9,13 5,11 5,7" fill="#DC2626"/>
+                </svg>
+              </span>
+              BARE-METAL ALLOCATION
+            </li>
+            <li class="forged-list-item">
+              <span class="forged-list-icon" aria-hidden="true">
+                <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="9,1 17,5 17,13 9,17 1,13 1,5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                  <polygon points="9,5 13,7 13,11 9,13 5,11 5,7" fill="#DC2626"/>
+                </svg>
+              </span>
+              ASYNCHRONOUS I/O
+            </li>
+            <li class="forged-list-item">
+              <span class="forged-list-icon" aria-hidden="true">
+                <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="9,1 17,5 17,13 9,17 1,13 1,5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                  <polygon points="9,5 13,7 13,11 9,13 5,11 5,7" fill="#DC2626"/>
+                </svg>
+              </span>
+              QUANTUM-RESISTANT ENCRYPTION
+            </li>
+          </ul>
+        </div>
+
+        <!-- Right: Illustration -->
+        <div class="forged-illustration">
+          <img
+            src="/images/circuit-board.png"
+            alt="EDGE proprietary circuit board with glowing red data pathways"
+            width="600"
+            height="450"
+            loading="lazy"
+          />
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       THE TEAM BEHIND EDGE
+  ════════════════════════════════════════════════════════ -->
+  <section class="team-section" aria-label="Our team">
+    <div class="container">
+      <div class="section-header section-header-dark">
+        <h2>The Team behind Edge</h2>
+        <p>Every service that blooms, has the right people that make it happen.</p>
+      </div>
+
+      <div class="team-grid">
+        {team.map(member => (
+          <div class="team-member-card">
+            <div class="team-member-avatar" aria-hidden="true">
+              {member.name.split(' ').map(n => n[0]).join('')}
+            </div>
+            <p class="team-member-name">{member.name}</p>
+            <p class="team-member-role">{member.role}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script>
+  // Feature Card Interactive Spotlight Tracker
+  const cards = document.querySelectorAll('.feature-card') as NodeListOf<HTMLElement>;
+  cards.forEach((card) => {
+    card.addEventListener('mousemove', (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    });
+  });
+</script>

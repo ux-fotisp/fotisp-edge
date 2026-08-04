@@ -1,0 +1,37 @@
+---
+// StatsBar.astro — "28,000+ companies using our services" (Logico homepage)
+interface Stat { value: string; label: string; }
+interface Props { stats: Stat[]; bgColor?: string; textColor?: string; }
+const { stats, bgColor = 'var(--color-primary)', textColor = '#fff' } = Astro.props;
+---
+<section class="stats-bar" style={`background:${bgColor};color:${textColor};`} aria-label="Statistics">
+  <div class="container">
+    <div class="stats-grid">
+      {stats.map(stat => (
+        <div class="stat-item">
+          <span class="stat-value">{stat.value}</span>
+          <span class="stat-label">{stat.label}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+.stats-bar { padding: 40px 0; }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 24px;
+  text-align: center;
+}
+.stat-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.stat-value {
+  font-family: var(--font-secondary);
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+}
+.stat-label { font-size: 13px; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.05em; }
+</style>

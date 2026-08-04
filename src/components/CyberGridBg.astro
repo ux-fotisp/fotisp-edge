@@ -1,0 +1,183 @@
+---
+// CyberGridBg.astro — Animated Grid with Horizontal & Vertical Red Neon Light Trails
+interface Props {
+  gridSize?: number;
+  speed?: number;
+}
+const { gridSize = 60, speed = 1 } = Astro.props;
+---
+
+<div class="cyber-grid-container" aria-hidden="true">
+  <canvas id="cyber-grid-canvas"></canvas>
+  <div class="cyber-grid-overlay"></div>
+</div>
+
+<script define:vars={{ gridSize, speed }}>
+  const canvas = document.getElementById('cyber-grid-canvas');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    let width = (canvas.width = canvas.parentElement.offsetWidth);
+    let height = (canvas.height = canvas.parentElement.offsetHeight);
+
+    window.addEventListener('resize', () => {
+      if (!canvas.parentElement) return;
+      width = canvas.width = canvas.parentElement.offsetWidth;
+      height = canvas.height = canvas.parentElement.offsetHeight;
+      initTrails();
+    });
+
+    // Trail structures
+    const numHorizontalTrails = Math.max(6, Math.floor(height / (gridSize * 1.5)));
+    const numVerticalTrails = Math.max(6, Math.floor(width / (gridSize * 1.5)));
+
+    let horizontalTrails = [];
+    let verticalTrails = [];
+
+    function initTrails() {
+      horizontalTrails = [];
+      verticalTrails = [];
+
+      // Create Horizontal Light Trails
+      for (let i = 0; i < numHorizontalTrails; i++) {
+        const gridY = Math.floor((Math.random() * height) / gridSize) * gridSize;
+        horizontalTrails.push({
+          y: gridY,
+          x: Math.random() * width,
+          length: Math.random() * 180 + 120,
+          speed: (Math.random() * 2.5 + 1.2) * speed * (Math.random() > 0.5 ? 1 : -1),
+          alpha: Math.random() * 0.7 + 0.3,
+          width: Math.random() > 0.5 ? 2 : 1.5,
+        });
+      }
+
+      // Create Vertical Light Trails
+      for (let i = 0; i < numVerticalTrails; i++) {
+        const gridX = Math.floor((Math.random() * width) / gridSize) * gridSize;
+        verticalTrails.push({
+          x: gridX,
+          y: Math.random() * height,
+          length: Math.random() * 180 + 120,
+          speed: (Math.random() * 2.5 + 1.2) * speed * (Math.random() > 0.5 ? 1 : -1),
+          alpha: Math.random() * 0.7 + 0.3,
+          width: Math.random() > 0.5 ? 2 : 1.5,
+        });
+      }
+    }
+
+    initTrails();
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+
+      // 1. Draw static subtle red grid lines
+      ctx.strokeStyle = 'rgba(220, 38, 38, 0.08)';
+      ctx.lineWidth = 1;
+
+      // Vertical grid lines
+      for (let x = 0; x <= width; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+
+      // Horizontal grid lines
+      for (let y = 0; y <= height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+
+      // 2. Draw Moving Horizontal Light Trails
+      horizontalTrails.forEach((t) => {
+        t.x += t.speed;
+        if (t.speed > 0 && t.x - t.length > width) t.x = -t.length;
+        if (t.speed < 0 && t.x + t.length < 0) t.x = width + t.length;
+
+        const grad = ctx.createLinearGradient(t.x - t.length, t.y, t.x, t.y);
+        grad.addColorStop(0, 'rgba(220, 38, 38, 0)');
+        grad.addColorStop(0.7, `rgba(239, 68, 68, ${t.alpha * 0.6})`);
+        grad.addColorStop(1, `rgba(255, 255, 255, ${t.alpha})`);
+
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = t.width;
+        ctx.shadowColor = '#DC2626';
+        ctx.shadowBlur = 12;
+
+        ctx.beginPath();
+        ctx.moveTo(t.x - t.length, t.y);
+        ctx.lineTo(t.x, t.y);
+        ctx.stroke();
+        ctx.shadowBlur = 0; // reset
+      });
+
+      // 3. Draw Moving Vertical Light Trails
+      verticalTrails.forEach((t) => {
+        t.y += t.speed;
+        if (t.speed > 0 && t.y - t.length > height) t.y = -t.length;
+        if (t.speed < 0 && t.y + t.length < 0) t.y = height + t.length;
+
+        const grad = ctx.createLinearGradient(t.x, t.y - t.length, t.x, t.y);
+        grad.addColorStop(0, 'rgba(220, 38, 38, 0)');
+        grad.addColorStop(0.7, `rgba(239, 68, 68, ${t.alpha * 0.6})`);
+        grad.addColorStop(1, `rgba(255, 255, 255, ${t.alpha})`);
+
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = t.width;
+        ctx.shadowColor = '#DC2626';
+        ctx.shadowBlur = 12;
+
+        ctx.beginPath();
+        ctx.moveTo(t.x, t.y - t.length);
+        ctx.lineTo(t.x, t.y);
+        ctx.stroke();
+        ctx.shadowBlur = 0; // reset
+      });
+
+      // 4. Draw glowing intersection nodes
+      horizontalTrails.forEach((ht) => {
+        verticalTrails.forEach((vt) => {
+          // Check proximity to intersection (ht.y, vt.x)
+          const dx = Math.abs(ht.x - vt.x);
+          const dy = Math.abs(vt.y - ht.y);
+          if (dx < 40 && dy < 40) {
+            ctx.fillStyle = '#EF4444';
+            ctx.shadowColor = '#DC2626';
+            ctx.shadowBlur = 16;
+            ctx.beginPath();
+            ctx.arc(vt.x, ht.y, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          }
+        });
+      });
+
+      animationFrameId = requestAnimationFrame(draw);
+    }
+
+    draw();
+  }
+</script>
+
+<style>
+  .cyber-grid-container {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+  }
+  #cyber-grid-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .cyber-grid-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 0%, rgba(8, 3, 3, 0.75) 100%);
+    pointer-events: none;
+  }
+</style>

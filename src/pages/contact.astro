@@ -1,0 +1,205 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageTitle from '../components/PageTitle.astro';
+import CTABand from '../components/CTABand.astro';
+---
+
+<BaseLayout
+  title="Contact Us — EDGE"
+  description="Get in touch with the EDGE team. Deploy infrastructure, request access, or start a mission-critical project."
+>
+  <PageTitle
+    title="Contact Us"
+    subtitle="Initiate a connection with the EDGE operations team."
+    breadcrumbs={[{ label: 'Contact' }]}
+  />
+
+  <main class="main" id="site-content">
+    <div class="container">
+      <div class="content-sidebar">
+
+        <!-- Contact Form -->
+        <div>
+          <form id="contact-form" class="contact-form" novalidate>
+            <div class="contact-form-row">
+              <div class="contact-form-group">
+                <label for="name">OPERATOR NAME *</label>
+                <input type="text" id="name" name="name" placeholder="e.g. Alex Vance" required />
+              </div>
+              <div class="contact-form-group">
+                <label for="email">EMAIL ADDRESS *</label>
+                <input type="email" id="email" name="email" placeholder="operator@domain.com" required />
+              </div>
+            </div>
+            <div class="contact-form-group">
+              <label for="subject">SUBJECT</label>
+              <input type="text" id="subject" name="subject" placeholder="Project inquiry, partnership, support…" />
+            </div>
+            <div class="contact-form-group">
+              <label for="message">MESSAGE *</label>
+              <textarea id="message" name="message" rows="6" placeholder="Describe your deployment parameters, mission objectives, or infrastructure requirements…" required></textarea>
+            </div>
+            <button type="submit" class="btn" id="submit-btn">TRANSMIT MESSAGE</button>
+            <p id="form-status" class="contact-status" aria-live="polite"></p>
+          </form>
+        </div>
+
+        <!-- Info Sidebar -->
+        <aside class="sidebar">
+          <div class="widget">
+            <h3 class="widget-title">Contact Info</h3>
+            <address style="font-style:normal;">
+              <ul style="gap:16px;">
+                <li style="font-size:14px;color:#D1D5DB;display:flex;gap:10px;align-items:flex-start;">
+                  <span style="color:#DC2626;flex-shrink:0;">📍</span>
+                  82 Roman Rd, CO6 7NX London, UK
+                </li>
+                <li style="font-size:14px;color:#D1D5DB;display:flex;gap:10px;align-items:flex-start;">
+                  <span style="color:#DC2626;flex-shrink:0;">📞</span>
+                  <a href="tel:+441234567890" style="color:#D1D5DB;">+44 012 3456 789</a>
+                </li>
+                <li style="font-size:14px;color:#D1D5DB;display:flex;gap:10px;align-items:flex-start;">
+                  <span style="color:#DC2626;flex-shrink:0;">✉️</span>
+                  <a href="mailto:info@example.com" style="color:#D1D5DB;">info@example.com</a>
+                </li>
+              </ul>
+            </address>
+          </div>
+          <div class="widget">
+            <h3 class="widget-title">Office Hours</h3>
+            <ul>
+              <li style="font-size:14px;color:#D1D5DB;padding:4px 0;border-bottom:1px solid rgba(220,38,38,0.1);">
+                <span style="color:#DC2626;font-weight:700;">Mon–Fri</span>
+                <span style="float:right;">09:00 – 18:00</span>
+              </li>
+              <li style="font-size:14px;color:#D1D5DB;padding:4px 0;border-bottom:1px solid rgba(220,38,38,0.1);">
+                <span style="color:#DC2626;font-weight:700;">Saturday</span>
+                <span style="float:right;">10:00 – 14:00</span>
+              </li>
+              <li style="font-size:14px;color:#6B7280;padding:4px 0;">
+                <span>Sunday</span>
+                <span style="float:right;">Closed</span>
+              </li>
+            </ul>
+          </div>
+          <div class="widget">
+            <div class="widget-status-indicator" aria-label="System status: online">
+              <span class="widget-status-dot" aria-hidden="true"></span>
+              SYSTEM ONLINE — RESPONSE TIME &lt;4H
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <CTABand
+    title="Prefer a direct line?"
+    subtitle="Use the ACCESS EDGE terminal for priority infrastructure requests."
+    buttonLabel="ACCESS EDGE"
+    buttonUrl="/contact"
+    variant="dark"
+  />
+</BaseLayout>
+
+<style>
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .contact-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .contact-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .contact-form-group label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #DC2626;
+  }
+  .contact-form-group input,
+  .contact-form-group textarea {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(220, 38, 38, 0.25);
+    color: #FFFFFF;
+  }
+  .contact-form-group input::placeholder,
+  .contact-form-group textarea::placeholder {
+    color: #4B5563;
+  }
+  .contact-status {
+    font-size: 14px;
+    margin-top: 4px;
+    min-height: 20px;
+  }
+  .widget-status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #10B981;
+  }
+  .widget-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 8px #10B981;
+    flex-shrink: 0;
+    animation: statusPulse 2s ease-in-out infinite;
+  }
+  @keyframes statusPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.3); }
+  }
+  @media (max-width: 640px) {
+    .contact-form-row { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const status = document.getElementById('form-status')!;
+  const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    btn.disabled = true;
+    btn.textContent = 'TRANSMITTING…';
+    status.textContent = '';
+
+    const data = Object.fromEntries(new FormData(form));
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (json.success) {
+        status.style.color = '#10B981';
+        status.textContent = '✓ TRANSMISSION SUCCESSFUL. Our team will respond within 4 hours.';
+        form.reset();
+      } else {
+        throw new Error(json.error || 'Failed');
+      }
+    } catch {
+      status.style.color = '#EF4444';
+      status.textContent = '✗ TRANSMISSION FAILED. Please retry or use the ACCESS EDGE terminal.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'TRANSMIT MESSAGE';
+    }
+  });
+</script>

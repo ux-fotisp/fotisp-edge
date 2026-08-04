@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageTitle from '../../components/PageTitle.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import CTABand from '../../components/CTABand.astro';
+
+export const prerender = false;
+
+const slug = Astro.params.slug ?? 'sample-post';
+const post = {
+  title: '6 Steps to Getting Your First Consulting Contract',
+  slug,
+  date: '2020-10-14',
+  author: 'Admin',
+  categories: ['Business', 'Consulting'],
+  featuredImage: '',
+  content: `<p>Breaking into consulting is one of the most rewarding career moves you can make, but landing that first contract can feel overwhelming. Here are six proven steps to help you close your first deal.</p>
+<h2>1. Define Your Niche</h2>
+<p>The most successful consultants specialize. Identify the specific problems you solve and the industries you understand best.</p>
+<h2>2. Build a Portfolio</h2>
+<p>Even without paid clients, you can demonstrate expertise through case studies, writing, or pro-bono work.</p>
+<h2>3. Leverage Your Network</h2>
+<p>Your first clients will almost always come from people who already know, like, and trust you.</p>
+<h2>4. Price Correctly</h2>
+<p>Avoid underpricing — it signals low value. Research market rates and price confidently.</p>
+<h2>5. Create a Simple Proposal Template</h2>
+<p>A clear, professional proposal shows prospects you are organized and serious.</p>
+<h2>6. Follow Up Consistently</h2>
+<p>Most deals require multiple touchpoints. Persistence, not pushiness, wins contracts.</p>`,
+};
+
+const related = [
+  { title: 'Can You Enforce a Non-Compete?', slug: 'enforce-non-compete', date: '2020-10-14', author: 'Admin' },
+  { title: 'The Rules of Venture Capital 2020', slug: 'venture-capital-rules', date: '2020-10-14', author: 'Admin' },
+  { title: 'Growth Hacking With Customer Feedback', slug: 'growth-hacking-customer-feedback', date: '2020-10-14', author: 'Admin' },
+];
+
+const formattedDate = new Date(post.date).toLocaleDateString('en-GB', {
+  day: 'numeric', month: 'long', year: 'numeric'
+});
+---
+
+<BaseLayout title={`${post.title} — EDGE`} description="Consulting career tips and insights.">
+  <PageTitle
+    title={post.title}
+    breadcrumbs={[{ label: 'News', href: '/blog' }, { label: post.title }]}
+  />
+  <main class="main" id="site-content">
+    <div class="container">
+      <div class="content-sidebar">
+        <article class="single-post">
+          <header class="entry-header-single">
+            <div class="entry-meta" style="margin-bottom:24px;display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:#6B7280;">
+              <time datetime={post.date}>{formattedDate}</time>
+              <span>by <strong style="color:#D1D5DB;">{post.author}</strong></span>
+              {post.categories.map(c => (
+                <a
+                  href={`/blog/category/${c.toLowerCase()}`}
+                  class="badge"
+                  style="margin:0;"
+                >
+                  {c}
+                </a>
+              ))}
+            </div>
+          </header>
+
+          {post.featuredImage && (
+            <div class="entry-thumb" style="margin-bottom:36px;">
+              <img src={post.featuredImage} alt={post.title} />
+            </div>
+          )}
+
+          <div class="entry-content" set:html={post.content} />
+
+          <!-- Share bar -->
+          <div class="share-bar">
+            <span class="share-bar-label">Share:</span>
+            <a href={`https://twitter.com/intent/tweet?url=${Astro.url}&text=${encodeURIComponent(post.title)}`} target="_blank" rel="noopener" class="share-link">Twitter</a>
+            <a href={`https://www.facebook.com/sharer/sharer.php?u=${Astro.url}`} target="_blank" rel="noopener" class="share-link">Facebook</a>
+            <a href={`https://www.linkedin.com/shareArticle?url=${Astro.url}&title=${encodeURIComponent(post.title)}`} target="_blank" rel="noopener" class="share-link">LinkedIn</a>
+          </div>
+        </article>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <div class="widget">
+            <h3 class="widget-title">Search</h3>
+            <form action="/search" method="GET" style="display:flex;flex-direction:column;gap:8px;">
+              <input type="search" name="q" placeholder="Search posts…" />
+              <button type="submit" class="btn" style="width:100%;justify-content:center;">Search</button>
+            </form>
+          </div>
+          <div class="widget">
+            <h3 class="widget-title">Categories</h3>
+            <ul>
+              {post.categories.map(c => (
+                <li><a href={`/blog/category/${c.toLowerCase()}`}>{c}</a></li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Related posts -->
+      {related.length > 0 && (
+        <section class="related-section">
+          <h3>Related Articles</h3>
+          <div class="row row-columns-3">
+            {related.map(r => <ArticleCard {...r} />)}
+          </div>
+        </section>
+      )}
+    </div>
+  </main>
+  <CTABand
+    title="Want expert consulting insights?"
+    subtitle="Get in touch with our team and explore what's possible."
+    buttonLabel="Contact Us"
+    buttonUrl="/contact"
+    variant="dark"
+  />
+</BaseLayout>

@@ -1,0 +1,148 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  bgImage?: string;
+  textAlign?: 'left' | 'center' | 'right';
+  breadcrumbs?: { label: string; href?: string }[];
+}
+
+const {
+  title,
+  subtitle,
+  bgImage,
+  textAlign = 'left',
+  breadcrumbs = [],
+} = Astro.props;
+---
+
+<section
+  class="page-title-hero"
+  style={bgImage ? `--hero-bg:url(${bgImage})` : ''}
+  aria-label="Page title"
+>
+  <!-- Animated grid overlay -->
+  <div class="page-title-grid" aria-hidden="true"></div>
+  <!-- Laser accent line -->
+  <div class="page-title-laser" aria-hidden="true"></div>
+
+  <div class="container">
+    <div class="page-title-inner" style={`text-align:${textAlign}`}>
+      {breadcrumbs.length > 0 && (
+        <nav aria-label="Breadcrumb" class="page-title-breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            {breadcrumbs.map((crumb, i) => (
+              <li aria-current={i === breadcrumbs.length - 1 ? 'page' : undefined}>
+                {crumb.href ? <a href={crumb.href}>{crumb.label}</a> : crumb.label}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+      <h1 class="page-title-heading">{title}</h1>
+      {subtitle && <p class="page-title-subtitle">{subtitle}</p>}
+    </div>
+  </div>
+</section>
+
+<style>
+  .page-title-hero {
+    position: relative;
+    background: #080303;
+    padding: 80px 0 64px;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(220, 38, 38, 0.2);
+  }
+
+  /* Optional bg image */
+  .page-title-hero[style*="--hero-bg"]::before {
+    background-image: var(--hero-bg);
+    background-size: cover;
+    background-position: center;
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.15;
+  }
+
+  /* Subtle grid pattern */
+  .page-title-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(220, 38, 38, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(220, 38, 38, 0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  /* Radial gradient vignette */
+  .page-title-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 90% 100% at 50% 100%, transparent 30%, rgba(8, 3, 3, 0.7) 100%);
+    pointer-events: none;
+  }
+
+  /* Red laser accent line */
+  .page-title-laser {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, #DC2626 30%, #EF4444 50%, #DC2626 70%, transparent 100%);
+    box-shadow: 0 0 12px rgba(220, 38, 38, 0.5);
+  }
+
+  .page-title-inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Breadcrumb */
+  .page-title-breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    list-style: none;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    color: #6B7280;
+  }
+  .page-title-breadcrumb li + li::before {
+    content: '/';
+    margin-right: 4px;
+    opacity: 0.4;
+  }
+  .page-title-breadcrumb a {
+    color: #DC2626;
+    transition: color 0.2s ease;
+  }
+  .page-title-breadcrumb a:hover {
+    color: #EF4444;
+  }
+
+  .page-title-heading {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 900;
+    color: #FFFFFF;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 0 0 12px;
+    text-transform: uppercase;
+  }
+
+  .page-title-subtitle {
+    font-size: 1rem;
+    color: #D1D5DB;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0;
+  }
+</style>

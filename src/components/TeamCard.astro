@@ -1,0 +1,16 @@
+---
+// TeamCard.astro — fotisp-team CPT card
+interface Props {
+  name: string;
+  slug: string;
+  role?: string;
+  photo?: string;
+}
+const { name, slug, role, photo } = Astro.props;
+---
+<article class="team-card">
+  {photo && <img src={photo} alt={name} width="615" height="820" loading="lazy" />}
+  <h3 class="team-card-name"><a href={`/team/${slug}`}>{name}</a></h3>
+  {role && <p class="team-card-role">{role}</p>}
+  <a href={`/team/${slug}`} class="btn btn-outline" style="margin-top:12px;">Learn More</a>
+</article>

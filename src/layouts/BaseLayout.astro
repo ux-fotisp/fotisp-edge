@@ -1,0 +1,61 @@
+---
+import '../styles/base.css';
+import '../styles/header.css';
+import '../styles/navigation.css';
+import '../styles/cards.css';
+import '../styles/footer.css';
+import '../styles/tokens-logico.css';
+import AccessModal from '../components/AccessModal.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BackToTop from '../components/BackToTop.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  themeVariation?: 'convert' | 'logico';
+  bodyClass?: string;
+}
+
+const {
+  title,
+  description = 'Precision engineering for the high-stakes digital frontier — EDGE.',
+  image = '/images/og-default.jpg',
+  themeVariation = 'convert',
+  bodyClass = '',
+} = Astro.props;
+
+const siteUrl = import.meta.env.SITE || 'https://example.com';
+---
+<!doctype html>
+<html lang="en" data-theme={themeVariation}>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <!-- Open Graph -->
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={`${siteUrl}${image}`} />
+  <meta property="og:type" content="website" />
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+</head>
+<body class={bodyClass}>
+  <div class="page-wrap">
+    <Header themeVariation={themeVariation} />
+    <div class="site-content-wrap">
+      <slot />
+    </div>
+    <Footer themeVariation={themeVariation} />
+  </div>
+  <AccessModal />
+  <BackToTop />
+</body>
+</html>

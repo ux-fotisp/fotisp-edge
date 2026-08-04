@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageTitle from '../../components/PageTitle.astro';
+
+export const prerender = false;
+
+const slug = Astro.params.slug ?? 'sample';
+const member = {
+  name: 'Martin Dylon',
+  slug,
+  role: 'Chief Financial Officer',
+  photo: '',
+  bio: '<p>Martin has over 20 years of financial leadership experience across multiple continents. He specializes in strategic financial planning, mergers & acquisitions, and capital markets.</p><p>Before joining fotisp, Martin held CFO positions at leading firms in the UK and US financial sectors.</p>',
+  social: { facebook: '#', twitter: '#', linkedin: '#' },
+};
+---
+
+<BaseLayout title={`${member.name} — Our Team — fotisp`} description={`${member.name}, ${member.role}`}>
+  <PageTitle title={member.name} breadcrumbs={[{ label: 'Team', href: '/team' }, { label: member.name }]} />
+  <main class="main" id="site-content">
+    <div class="container">
+      <div class="team-single">
+        <div class="team-single-photo">
+          {member.photo
+            ? <img src={member.photo} alt={member.name} />
+            : <div style="aspect-ratio:3/4;background:var(--color-grey);border-radius:var(--radius-base);display:flex;align-items:center;justify-content:center;font-size:4rem;">👤</div>
+          }
+          <p style="font-size:14px;font-weight:600;margin-top:12px;">{member.role}</p>
+          <div class="team-single-social">
+            {member.social.linkedin && <a href={member.social.linkedin} class="btn btn-outline" style="font-size:12px;padding:6px 14px;">LinkedIn</a>}
+            {member.social.twitter && <a href={member.social.twitter} class="btn btn-outline" style="font-size:12px;padding:6px 14px;">Twitter</a>}
+          </div>
+        </div>
+        <div>
+          <h2 style="margin-bottom:20px;">{member.name}</h2>
+          <div class="entry-content" set:html={member.bio} />
+          <div style="margin-top:30px;">
+            <a href="/team" class="btn btn-outline">← Back to Team</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>

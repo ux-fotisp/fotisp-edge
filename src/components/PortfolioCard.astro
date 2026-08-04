@@ -1,0 +1,23 @@
+---
+// PortfolioCard.astro — fotisp-portfolio CPT card
+interface Props {
+  title: string;
+  slug: string;
+  excerpt?: string;
+  featuredImage?: string;
+  category?: string;
+}
+const { title, slug, excerpt, featuredImage, category } = Astro.props;
+---
+<article class="portfolio-card">
+  {featuredImage && (
+    <a href={`/portfolio/${slug}`}>
+      <img src={featuredImage} alt={title} width="615" height="410" loading="lazy" />
+    </a>
+  )}
+  <div class="portfolio-card-meta">
+    {category && <span style="font-size:12px;text-transform:uppercase;letter-spacing:1px;opacity:0.8;">{category}</span>}
+    <h3 style="font-size:1rem;margin:4px 0;"><a href={`/portfolio/${slug}`} style="color:#fff;">{title}</a></h3>
+    <a href={`/portfolio/${slug}`} class="btn" style="margin-top:10px;font-size:13px;padding:6px 18px;">Learn More</a>
+  </div>
+</article>

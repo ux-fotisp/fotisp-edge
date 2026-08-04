@@ -1,0 +1,26 @@
+---
+// ServiceCard.astro — fotisp-service CPT card
+interface Props {
+  title: string;
+  slug: string;
+  excerpt?: string;
+  icon?: string;
+  featuredImage?: string;
+}
+const { title, slug, excerpt, icon, featuredImage } = Astro.props;
+---
+
+<article class="service-card">
+  {featuredImage ? (
+    <div class="entry-item-thumb" style="margin-bottom:20px;">
+      <img src={featuredImage} alt={title} width="615" height="410" loading="lazy" />
+    </div>
+  ) : icon && (
+    <div class="service-card-icon" aria-hidden="true">{icon}</div>
+  )}
+  <h3 class="service-card-title">
+    <a href={`/services/${slug}`}>{title}</a>
+  </h3>
+  {excerpt && <p style="font-size:14px;color:var(--color-text-light);line-height:1.6;margin-bottom:16px;">{excerpt}</p>}
+  <a href={`/services/${slug}`} class="btn btn-outline">Learn More</a>
+</article>

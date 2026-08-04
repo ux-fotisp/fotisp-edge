@@ -1,0 +1,137 @@
+---
+// CTABand.astro — Full-width call-to-action band (EDGE Design System)
+interface Props {
+  title: string;
+  subtitle?: string;
+  buttonLabel?: string;
+  buttonUrl?: string;
+  variant?: 'scarlet' | 'dark' | 'light';
+}
+
+const {
+  title,
+  subtitle,
+  buttonLabel,
+  buttonUrl = '/contact',
+  variant = 'scarlet',
+} = Astro.props;
+---
+
+<section class={`cta-band cta-band--${variant}`} aria-label="Call to action">
+  <div class="cta-band-grid" aria-hidden="true"></div>
+  <div class="container">
+    <div class="cta-band-inner">
+      <div class="cta-band-text">
+        <h2 class="cta-band-title">{title}</h2>
+        {subtitle && <p class="cta-band-subtitle">{subtitle}</p>}
+      </div>
+      {buttonLabel && (
+        <a
+          href={buttonUrl}
+          class={`btn${variant === 'scarlet' ? ' cta-band-btn-light' : ''}`}
+          id="cta-band-action-btn"
+        >
+          {buttonLabel}
+        </a>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-band {
+    position: relative;
+    padding: 72px 0;
+    overflow: hidden;
+  }
+
+  /* Shared grid overlay */
+  .cta-band-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  /* Scarlet (default) */
+  .cta-band--scarlet {
+    background: linear-gradient(135deg, #DC2626 0%, #991B1B 50%, #701A1A 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .cta-band--scarlet::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 100% at 50% 0%, rgba(239, 68, 68, 0.3), transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Dark obsidian */
+  .cta-band--dark {
+    background: #080303;
+    border-top: 1px solid rgba(220, 38, 38, 0.2);
+    border-bottom: 1px solid rgba(220, 38, 38, 0.2);
+  }
+  .cta-band--dark .cta-band-grid {
+    background-image:
+      linear-gradient(rgba(220, 38, 38, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(220, 38, 38, 0.05) 1px, transparent 1px);
+  }
+  .cta-band--dark .cta-band-title { color: #FFFFFF; }
+  .cta-band--dark .cta-band-subtitle { color: #D1D5DB; }
+
+  /* Light */
+  .cta-band--light {
+    background: #FFFFFF;
+    border-top: 1px solid #E5E7EB;
+  }
+  .cta-band--light .cta-band-title { color: #111827; }
+  .cta-band--light .cta-band-subtitle { color: #6B7280; }
+  .cta-band--light .cta-band-grid { display: none; }
+
+  .cta-band-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .cta-band-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 900;
+    color: #FFFFFF;
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+  }
+
+  .cta-band-subtitle {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Inverted button for the scarlet variant */
+  .cta-band-btn-light {
+    background-color: #FFFFFF !important;
+    color: #DC2626 !important;
+    border-color: #FFFFFF !important;
+  }
+  .cta-band-btn-light::before {
+    background: #F3F4F6 !important;
+  }
+  .cta-band-btn-light:hover {
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.3) !important;
+  }
+
+  @media (max-width: 767px) {
+    .cta-band-inner { flex-direction: column; text-align: center; }
+    .cta-band-inner .btn { width: 100%; justify-content: center; }
+  }
+</style>

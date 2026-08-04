@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageTitle from '../../components/PageTitle.astro';
+import EntryListMeta from '../../components/EntryListMeta.astro';
+import CTABand from '../../components/CTABand.astro';
+
+export const prerender = false;
+
+const slug = Astro.params.slug ?? 'sample';
+const event = {
+  title: 'Q1 Strategy Review',
+  slug,
+  eventDate: '2024-03-15',
+  eventTime: '09:00',
+  location: 'London, UK',
+  isRecurring: false,
+  content: '<p>Join us for our annual Q1 strategy review session where we will discuss KPI performance, market changes, and the roadmap ahead for the rest of the year.</p><p>This is a members-only event. Registration is required.</p>',
+  featuredImage: '',
+};
+---
+
+<BaseLayout title={`${event.title} — Events — EDGE`} description={`Join us for ${event.title} in ${event.location}.`}>
+  <PageTitle
+    title={event.title}
+    breadcrumbs={[{ label: 'Events', href: '/events' }, { label: event.title }]}
+  />
+  <main class="main" id="site-content">
+    <div class="container">
+      <div class="content-sidebar">
+        <article class="single-post">
+          <EntryListMeta
+            eventDate={event.eventDate}
+            eventTime={event.eventTime}
+            location={event.location}
+            isRecurring={event.isRecurring}
+          />
+          {event.featuredImage && (
+            <div class="entry-thumb" style="margin-bottom:32px;">
+              <img src={event.featuredImage} alt={event.title} />
+            </div>
+          )}
+          <div class="entry-content" set:html={event.content} />
+        </article>
+
+        <aside class="sidebar">
+          <div class="widget">
+            <h3 class="widget-title">Event Details</h3>
+            <ul style="gap:12px;">
+              {event.eventDate && (
+                <li style="font-size:14px;color:#D1D5DB;display:flex;align-items:center;gap:10px;">
+                  <span style="color:#DC2626;font-size:16px;">📅</span>
+                  {new Date(event.eventDate).toLocaleDateString('en-GB', {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                  })}
+                </li>
+              )}
+              {event.eventTime && (
+                <li style="font-size:14px;color:#D1D5DB;display:flex;align-items:center;gap:10px;">
+                  <span style="color:#DC2626;font-size:16px;">🕐</span>
+                  {event.eventTime}
+                </li>
+              )}
+              {event.location && (
+                <li style="font-size:14px;color:#D1D5DB;display:flex;align-items:center;gap:10px;">
+                  <span style="color:#DC2626;font-size:16px;">📍</span>
+                  {event.location}
+                </li>
+              )}
+            </ul>
+            <a href="/contact" class="btn" style="margin-top:20px;width:100%;justify-content:center;" id="event-register-btn">
+              Register Now
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+  <CTABand
+    title="Interested in attending?"
+    subtitle="Get in touch to secure your spot before seats fill up."
+    buttonLabel="Contact Us"
+    buttonUrl="/contact"
+    variant="scarlet"
+  />
+</BaseLayout>

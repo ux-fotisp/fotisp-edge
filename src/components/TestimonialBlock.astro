@@ -1,0 +1,80 @@
+---
+// TestimonialBlock.astro — testimonials carousel/grid
+interface Testimonial {
+  quote: string;
+  author: string;
+  role?: string;
+  rating?: number;
+  avatar?: string;
+}
+interface Props {
+  testimonials: Testimonial[];
+  title?: string;
+  subtitle?: string;
+}
+const { testimonials, title, subtitle } = Astro.props;
+---
+
+<section class="testimonials-section">
+  <div class="container">
+    {(title || subtitle) && (
+      <div class="section-header">
+        {subtitle && <p class="section-eyebrow">{subtitle}</p>}
+        {title && <h2>{title}</h2>}
+      </div>
+    )}
+    <div class="testimonials-grid">
+      {testimonials.map(t => (
+        <blockquote class="testimonial-card">
+          {t.rating && (
+            <div class="testimonial-rating" aria-label={`Rating: ${t.rating} out of 10`}>
+              {'★'.repeat(Math.round(t.rating / 2))}{'☆'.repeat(5 - Math.round(t.rating / 2))}
+              <span style="margin-left:6px;font-size:13px;color:var(--color-text-light);">{t.rating}.0</span>
+            </div>
+          )}
+          <p class="testimonial-quote">"{t.quote}"</p>
+          <footer class="testimonial-author">
+            {t.avatar && <img src={t.avatar} alt={t.author} width="48" height="48" />}
+            <div>
+              <cite class="testimonial-name">{t.author}</cite>
+              {t.role && <span class="testimonial-role">{t.role}</span>}
+            </div>
+          </footer>
+        </blockquote>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+.testimonials-section { padding: 80px 0; background: var(--color-grey); }
+.section-header { text-align: center; margin-bottom: 48px; }
+.section-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-secondary);
+  margin-bottom: 8px;
+}
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+}
+.testimonial-card {
+  background: #fff;
+  padding: 36px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.testimonial-rating { color: #f5a623; font-size: 16px; }
+.testimonial-quote { font-size: 15px; line-height: 1.75; color: var(--color-text); flex: 1; font-style: normal; }
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+.testimonial-author img { border-radius: 50%; width: 48px; height: 48px; object-fit: cover; }
+.testimonial-name { display: block; font-weight: 700; font-style: normal; font-size: 14px; }
+.testimonial-role { display: block; font-size: 13px; color: var(--color-text-light); }
+</style>

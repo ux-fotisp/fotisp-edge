@@ -1,0 +1,199 @@
+---
+// HeroSlider.astro — MaxSlider equivalent (CSS-only autoplay carousel)
+interface Slide {
+  title: string;
+  subtitle?: string;
+  bgImage?: string;
+  bgColor?: string;
+  ctaLabel?: string;
+  ctaUrl?: string;
+  ctaSecondaryLabel?: string;
+  ctaSecondaryUrl?: string;
+}
+interface Props {
+  slides: Slide[];
+  minHeight?: string;
+  autoplayMs?: number;
+}
+const { slides, minHeight = '560px', autoplayMs = 5000 } = Astro.props;
+const id = 'hero-slider-' + Math.random().toString(36).slice(2, 7);
+---
+
+<section class="hero-slider" id={id} aria-label="Hero slider" style={`min-height:${minHeight};`}>
+  <div class="hero-slider-track">
+    {slides.map((slide, i) => (
+      <div
+        class={`hero-slide${i === 0 ? ' active' : ''}`}
+        style={`
+          background: ${slide.bgImage
+            ? `url(${slide.bgImage}) center/cover no-repeat`
+            : (slide.bgColor || 'var(--color-primary)')};
+          min-height: ${minHeight};
+        `}
+        aria-hidden={i !== 0 ? 'true' : undefined}
+      >
+        <div class="hero-slide-overlay"></div>
+        <div class="container">
+          <div class="hero-slide-content">
+            <h1 class="hero-slide-title">{slide.title}</h1>
+            {slide.subtitle && <p class="hero-slide-subtitle">{slide.subtitle}</p>}
+            {(slide.ctaLabel || slide.ctaSecondaryLabel) && (
+              <div class="hero-slide-actions">
+                {slide.ctaLabel && (
+                  <a href={slide.ctaUrl || '#'} class="btn" style="background:#fff;color:var(--color-primary);border-color:#fff;">
+                    {slide.ctaLabel}
+                  </a>
+                )}
+                {slide.ctaSecondaryLabel && (
+                  <a href={slide.ctaSecondaryUrl || '#'} class="btn btn-outline" style="border-color:rgba(255,255,255,0.6);color:#fff;">
+                    {slide.ctaSecondaryLabel}
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {slides.length > 1 && (
+    <>
+      <button class="hero-slider-arrow hero-slider-prev" aria-label="Previous slide">&#8592;</button>
+      <button class="hero-slider-arrow hero-slider-next" aria-label="Next slide">&#8594;</button>
+      <div class="hero-slider-dots" role="tablist" aria-label="Slide indicators">
+        {slides.map((_, i) => (
+          <button
+            class={`slider-dot${i === 0 ? ' active' : ''}`}
+            role="tab"
+            aria-selected={i === 0 ? 'true' : 'false'}
+            aria-label={`Go to slide ${i + 1}`}
+            data-index={i}
+          ></button>
+        ))}
+      </div>
+    </>
+  )}
+</section>
+
+<script define:vars={{ sliderId: id, autoplayMs }}>
+  const slider = document.getElementById(sliderId);
+  if (!slider) throw new Error('Slider not found');
+
+  const slides = slider.querySelectorAll('.hero-slide');
+  const dots = slider.querySelectorAll('.slider-dot');
+  let current = 0;
+  let timer;
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    slides[current].setAttribute('aria-hidden', 'true');
+    dots[current]?.classList.remove('active');
+    dots[current]?.setAttribute('aria-selected', 'false');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].removeAttribute('aria-hidden');
+    dots[current]?.classList.add('active');
+    dots[current]?.setAttribute('aria-selected', 'true');
+  }
+
+  function startAutoplay() {
+    timer = setInterval(() => goTo(current + 1), autoplayMs);
+  }
+  function stopAutoplay() { clearInterval(timer); }
+
+  slider.querySelector('.hero-slider-prev')?.addEventListener('click', () => { stopAutoplay(); goTo(current - 1); startAutoplay(); });
+  slider.querySelector('.hero-slider-next')?.addEventListener('click', () => { stopAutoplay(); goTo(current + 1); startAutoplay(); });
+  dots.forEach(dot => dot.addEventListener('click', () => { stopAutoplay(); goTo(Number(dot.dataset.index)); startAutoplay(); }));
+
+  if (slides.length > 1) startAutoplay();
+  // Pause on hover
+  slider.addEventListener('mouseenter', stopAutoplay);
+  slider.addEventListener('mouseleave', startAutoplay);
+</script>
+
+<style>
+.hero-slider { position: relative; overflow: hidden; }
+.hero-slider-track { position: relative; }
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  pointer-events: none;
+}
+.hero-slide.active { position: relative; opacity: 1; pointer-events: auto; }
+.hero-slide-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.38);
+  pointer-events: none;
+}
+.hero-slide-content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  max-width: 640px;
+  padding: 60px 0;
+}
+.hero-slide-title {
+  color: #fff;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 1.1;
+  margin-bottom: 16px;
+  letter-spacing: var(--tracking-tight);
+}
+.hero-slide-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+.hero-slide-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Arrows */
+.hero-slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.4);
+  color: #fff;
+  width: 44px; height: 44px;
+  border-radius: var(--radius-base);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+.hero-slider-arrow:hover { background: rgba(255,255,255,0.3); }
+.hero-slider-prev { left: 20px; }
+.hero-slider-next { right: 20px; }
+
+/* Dots */
+.hero-slider-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+.slider-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  padding: 0;
+}
+.slider-dot.active { background: #fff; transform: scale(1.3); }
+</style>

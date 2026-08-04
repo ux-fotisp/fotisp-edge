@@ -1,0 +1,35 @@
+---
+// EntryListMeta.astro — event single meta band (fotisp_event_* fields)
+interface Props {
+  eventDate?: string;
+  eventTime?: string;
+  location?: string;
+  isRecurring?: boolean;
+  recurrence?: string;
+}
+const { eventDate, eventTime, location, isRecurring, recurrence } = Astro.props;
+
+let formattedDate = '';
+if (eventDate) {
+  formattedDate = new Date(eventDate).toLocaleDateString('en-GB', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+  });
+}
+const items = [
+  isRecurring && recurrence ? { label: 'Recurrence', value: recurrence } : null,
+  !isRecurring && formattedDate ? { label: 'Date', value: formattedDate } : null,
+  eventTime ? { label: 'Time', value: eventTime } : null,
+  location ? { label: 'Location', value: location } : null,
+].filter(Boolean) as { label: string; value: string }[];
+---
+
+{items.length > 0 && (
+  <ul class="entry-list-meta" aria-label="Event details">
+    {items.map(item => (
+      <li class="entry-list-meta-item">
+        <span class="entry-list-meta-label">{item.label}</span>
+        <span class="entry-list-meta-value" set:html={item.value} />
+      </li>
+    ))}
+  </ul>
+)}

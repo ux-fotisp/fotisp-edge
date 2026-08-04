@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageTitle from '../../components/PageTitle.astro';
+import PortfolioCard from '../../components/PortfolioCard.astro';
+import { getCollection } from 'astro:content';
+
+const cases = (await getCollection('portfolio', ({ data }) => !data.draft))
+  .sort((a, b) => new Date(b.data.publishedAt || '2020-01-01').getTime() - new Date(a.data.publishedAt || '2020-01-01').getTime());
+
+const categories = [...new Set(cases.map(c => c.data.category).filter(Boolean))];
+---
+
+<BaseLayout title="Case Studies — fotisp" description="Our latest case studies and portfolio projects.">
+  <PageTitle title="Case Studies" breadcrumbs={[{ label: 'Case Studies' }]} />
+  <main class="main" id="site-content">
+    <div class="container">
+      <div class="archive-filter" id="portfolio-filter">
+        <button class="filter-btn active" data-filter="all">All</button>
+        {categories.map(cat => (
+          <button class="filter-btn" data-filter={cat!.toLowerCase().replace(/\s+/g, '-')}>{cat}</button>
+        ))}
+      </div>
+      <div class="row row-columns-3" id="portfolio-grid">
+        {cases.map(c => (
+          <div data-category={c.data.category?.toLowerCase().replace(/\s+/g, '-')}>
+            <PortfolioCard
+              title={c.data.title}
+              slug={c.slug}
+              excerpt={c.data.excerpt}
+              category={c.data.category}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  const filterBtns = document.querySelectorAll('#portfolio-filter .filter-btn');
+  const items = document.querySelectorAll('#portfolio-grid [data-category]');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = (btn as HTMLElement).dataset.filter;
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      items.forEach(item => {
+        const cat = (item as HTMLElement).dataset.category;
+        (item as HTMLElement).style.display = (filter === 'all' || cat === filter) ? '' : 'none';
+      });
+    });
+  });
+</script>

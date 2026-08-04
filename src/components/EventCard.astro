@@ -1,0 +1,42 @@
+---
+// EventCard.astro — fotisp-event CPT card
+interface Props {
+  title: string;
+  slug: string;
+  excerpt?: string;
+  eventDate?: string;
+  eventTime?: string;
+  location?: string;
+  featuredImage?: string;
+  isRecurring?: boolean;
+  recurrence?: string;
+}
+const { title, slug, excerpt, eventDate, eventTime, location, featuredImage, isRecurring, recurrence } = Astro.props;
+
+let dayStr = '', monthStr = '';
+if (eventDate) {
+  const d = new Date(eventDate);
+  dayStr = d.getDate().toString();
+  monthStr = d.toLocaleString('en-GB', { month: 'short' });
+}
+---
+
+<article class="event-card">
+  {!isRecurring && eventDate && (
+    <div class="event-card-date-badge" aria-label={`${dayStr} ${monthStr}`}>
+      <span class="event-card-date-day">{dayStr}</span>
+      <span class="event-card-date-month">{monthStr}</span>
+    </div>
+  )}
+  <div class="event-card-content">
+    <h3 style="font-size:1.1rem;margin-bottom:8px;letter-spacing:var(--tracking-tight);">
+      <a href={`/events/${slug}`}>{title}</a>
+    </h3>
+    <div style="font-size:13px;color:var(--color-text-light);display:flex;flex-wrap:wrap;gap:12px;margin-bottom:8px;">
+      {isRecurring && recurrence && <span>🔁 {recurrence}</span>}
+      {eventTime && <span>🕐 {eventTime}</span>}
+      {location && <span>📍 {location}</span>}
+    </div>
+    {excerpt && <p style="font-size:14px;color:var(--color-text-light);">{excerpt}</p>}
+  </div>
+</article>
