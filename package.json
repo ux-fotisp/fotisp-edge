@@ -9,8 +9,12 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "clean:cache": "powershell -Command \"Remove-Item -Recurse -Force .astro, .wrangler, node_modules\\.vite -ErrorAction SilentlyContinue\"",
     "test": "npx tsx tests/qa-interactive-components.ts",
     "test:all": "npx tsx tests/qa-interactive-components.ts && npx tsx tests/qa-full-routing-suite.ts && npx tsx tests/qa-edge-suite.ts",
+    "test:ssr": "npx tsx scripts/verify-ssr-routes.ts",
+    "version:tag": "git tag -a v1.0.0-stable -m 'EDGE v1.0.0 Baseline'",
+    "emergency:rollback": "git checkout main && git reset --hard v1.0.0-stable && git clean -fd",
     "astro": "astro"
   },
   "dependencies": {
