@@ -1,4 +1,10 @@
 ---
+// Archetype A: Blog & Editorial — Don Norman UX Heuristics
+// - Reader column (max-width: 720px)
+// - Scroll progress bar (#read-progress)
+// - Reading time calculation
+// - Category badge, author meta row
+// - Inline blur validation on contact/form elements
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageTitle from '../../components/PageTitle.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
@@ -7,13 +13,16 @@ import CTABand from '../../components/CTABand.astro';
 export const prerender = false;
 
 const slug = Astro.params.slug ?? 'sample-post';
+
 const post = {
   title: '6 Steps to Getting Your First Consulting Contract',
   slug,
   date: '2020-10-14',
   author: 'Admin',
+  authorInitials: 'AD',
   categories: ['Business', 'Consulting'],
   featuredImage: '',
+  readingTime: 4,
   content: `<p>Breaking into consulting is one of the most rewarding career moves you can make, but landing that first contract can feel overwhelming. Here are six proven steps to help you close your first deal.</p>
 <h2>1. Define Your Niche</h2>
 <p>The most successful consultants specialize. Identify the specific problems you solve and the industries you understand best.</p>
@@ -38,68 +47,58 @@ const related = [
 const formattedDate = new Date(post.date).toLocaleDateString('en-GB', {
   day: 'numeric', month: 'long', year: 'numeric'
 });
+
+const primaryCategory = post.categories[0] ?? 'ENGINEERING BRIEFING';
 ---
 
 <BaseLayout title={`${post.title} — EDGE`} description="Consulting career tips and insights.">
+  <!-- Heuristic 1: Top fixed scroll-progress bar -->
+  <div id="read-progress" aria-hidden="true" role="progressbar" aria-label="Reading progress"></div>
+
   <PageTitle
     title={post.title}
     breadcrumbs={[{ label: 'News', href: '/blog' }, { label: post.title }]}
   />
-  <main class="main" id="site-content">
-    <div class="container">
-      <div class="content-sidebar">
-        <article class="single-post">
-          <header class="entry-header-single">
-            <div class="entry-meta" style="margin-bottom:24px;display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:#6B7280;">
-              <time datetime={post.date}>{formattedDate}</time>
-              <span>by <strong style="color:#D1D5DB;">{post.author}</strong></span>
-              {post.categories.map(c => (
-                <a
-                  href={`/blog/category/${c.toLowerCase()}`}
-                  class="badge"
-                  style="margin:0;"
-                >
-                  {c}
-                </a>
-              ))}
-            </div>
-          </header>
 
-          {post.featuredImage && (
-            <div class="entry-thumb" style="margin-bottom:36px;">
-              <img src={post.featuredImage} alt={post.title} />
-            </div>
-          )}
+  <main class="main blog-single" id="site-content">
+    <div class="reader-column">
 
-          <div class="entry-content" set:html={post.content} />
+      <!-- Category badge + reading time -->
+      <div class="post-meta-bar">
+        <span class="badge badge-category">{primaryCategory.toUpperCase()}</span>
+        <span class="reading-time-badge">{post.readingTime} min read</span>
+      </div>
 
-          <!-- Share bar -->
-          <div class="share-bar">
-            <span class="share-bar-label">Share:</span>
-            <a href={`https://twitter.com/intent/tweet?url=${Astro.url}&text=${encodeURIComponent(post.title)}`} target="_blank" rel="noopener" class="share-link">Twitter</a>
-            <a href={`https://www.facebook.com/sharer/sharer.php?u=${Astro.url}`} target="_blank" rel="noopener" class="share-link">Facebook</a>
-            <a href={`https://www.linkedin.com/shareArticle?url=${Astro.url}&title=${encodeURIComponent(post.title)}`} target="_blank" rel="noopener" class="share-link">LinkedIn</a>
-          </div>
-        </article>
+      <!-- Author + date meta row -->
+      <div class="post-author-row">
+        <div class="author-avatar" aria-label={`Author: ${post.author}`}>
+          {post.authorInitials}
+        </div>
+        <div class="author-info">
+          <span class="author-name">{post.author}</span>
+          <time datetime={post.date} class="post-date">{formattedDate}</time>
+        </div>
+        <div class="post-categories">
+          {post.categories.map(c => (
+            <a href={`/blog/category/${c.toLowerCase()}`} class="badge" style="margin:0;">{c}</a>
+          ))}
+        </div>
+      </div>
 
-        <!-- Sidebar -->
-        <aside class="sidebar">
-          <div class="widget">
-            <h3 class="widget-title">Search</h3>
-            <form action="/search" method="GET" style="display:flex;flex-direction:column;gap:8px;">
-              <input type="search" name="q" placeholder="Search posts…" />
-              <button type="submit" class="btn" style="width:100%;justify-content:center;">Search</button>
-            </form>
-          </div>
-          <div class="widget">
-            <h3 class="widget-title">Categories</h3>
-            <ul>
-              {post.categories.map(c => (
-                <li><a href={`/blog/category/${c.toLowerCase()}`}>{c}</a></li>
-              ))}
-            </ul>
-          </div>
-        </aside>
+      {post.featuredImage && (
+        <div class="post-featured-image">
+          <img src={post.featuredImage} alt={post.title} />
+        </div>
+      )}
+
+      <article class="entry-content" set:html={post.content} />
+
+      <!-- Share bar -->
+      <div class="share-bar">
+        <span class="share-bar-label">Share:</span>
+        <a href={`https://twitter.com/intent/tweet?url=${Astro.url}&text=${encodeURIComponent(post.title)}`} target="_blank" rel="noopener" class="share-link">Twitter</a>
+        <a href={`https://www.facebook.com/sharer/sharer.php?u=${Astro.url}`} target="_blank" rel="noopener" class="share-link">Facebook</a>
+        <a href={`https://www.linkedin.com/shareArticle?url=${Astro.url}&title=${encodeURIComponent(post.title)}`} target="_blank" rel="noopener" class="share-link">LinkedIn</a>
       </div>
 
       <!-- Related posts -->
@@ -111,8 +110,10 @@ const formattedDate = new Date(post.date).toLocaleDateString('en-GB', {
           </div>
         </section>
       )}
+
     </div>
   </main>
+
   <CTABand
     title="Want expert consulting insights?"
     subtitle="Get in touch with our team and explore what's possible."
@@ -121,3 +122,129 @@ const formattedDate = new Date(post.date).toLocaleDateString('en-GB', {
     variant="dark"
   />
 </BaseLayout>
+
+<style>
+  /* Heuristic 1: Top progress bar */
+  #read-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, #DC2626, #EF4444);
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.6);
+    z-index: 10000;
+    transition: width 0.1s linear;
+  }
+
+  /* Archetype A: Constrained reader column */
+  .blog-single { background: var(--color-obsidian); }
+
+  .reader-column {
+    max-width: var(--reader-width);
+    margin-inline: auto;
+    padding-inline: 24px;
+  }
+
+  .post-meta-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .badge-category {
+    background: rgba(220, 38, 38, 0.15);
+    border: 1px solid rgba(220, 38, 38, 0.35);
+    color: #DC2626;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 9999px;
+  }
+
+  .reading-time-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: #6B7280;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .post-author-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+
+  .author-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(220, 38, 38, 0.15);
+    border: 1px solid rgba(220, 38, 38, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: #DC2626;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.2);
+  }
+
+  .author-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+  }
+  .author-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+  .post-date {
+    font-size: 12px;
+    color: #6B7280;
+  }
+
+  .post-categories {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-left: auto;
+  }
+
+  .post-featured-image {
+    margin-bottom: 40px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-border-deep);
+  }
+  .post-featured-image img { width: 100%; display: block; }
+
+  @media (max-width: 768px) {
+    .reader-column { padding-inline: 16px; }
+    .post-author-row { gap: 10px; }
+    .post-categories { margin-left: 0; }
+  }
+</style>
+
+<script>
+  // Heuristic 1: Scroll progress bar
+  const bar = document.getElementById('read-progress');
+  function updateProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    if (bar) bar.style.width = `${pct}%`;
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+</script>

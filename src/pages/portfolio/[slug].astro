@@ -1,4 +1,11 @@
 ---
+// Archetype B: Portfolio & Case Studies — Don Norman UX Heuristics
+// - Full-width (max-width: 1200px)
+// - CASE STUDY // [ID] badge header
+// - Metric grid: 3-4 col stat counters (large scarlet numbers)
+// - Tech stack pill badges (#1A080B bg, #380F15 border)
+// - 2-column alternating visual/detail blocks
+// - Hover: 1px #380F15 border → #DC2626 glow transition (Heuristic 2)
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageTitle from '../../components/PageTitle.astro';
 import CTABand from '../../components/CTABand.astro';
@@ -6,7 +13,7 @@ import { getCollection } from 'astro:content';
 
 const { slug } = Astro.params;
 const cases = await getCollection('portfolio');
-const entry = cases.find(c => c.slug === slug);
+const entry = cases.find(c => c.id === slug || c.slug === slug);
 
 if (!entry) {
   return Astro.redirect('/404');
@@ -14,6 +21,18 @@ if (!entry) {
 
 const { title, excerpt, client, category } = entry.data;
 const { Content } = await entry.render();
+
+// Static metric + tech stack placeholders (replace with MDX frontmatter fields if extended)
+const metrics = [
+  { value: '+350%', label: 'Throughput Increase' },
+  { value: '< 1ms', label: 'Edge Latency' },
+  { value: '99.9%', label: 'Uptime SLA' },
+  { value: '3×', label: 'Team Velocity' },
+];
+
+const techStack = ['Astro', 'Cloudflare Edge', 'TypeScript', 'D1 SQL', 'KV Store', 'MDX'];
+
+const caseId = (slug ?? 'CS-001').toUpperCase().replace(/-/g, '').slice(0, 6);
 ---
 
 <BaseLayout
@@ -24,22 +43,62 @@ const { Content } = await entry.render();
     title={title}
     breadcrumbs={[{ label: 'Case Studies', href: '/portfolio' }, { label: title }]}
   />
-  <main class="main" id="site-content">
-    <div class="container">
-      <article class="single-portfolio">
-        {category && <span class="badge">{category}</span>}
+
+  <main class="main case-study-main" id="site-content">
+    <div class="case-container">
+
+      <!-- Header identity row -->
+      <div class="case-header-row">
+        <span class="badge case-badge">CASE STUDY // {caseId}</span>
+        {category && <span class="badge case-cat-badge">{category}</span>}
         {client && (
-          <p class="client-name">
-            <strong style="color:#D1D5DB;">Client:</strong> {client}
-          </p>
+          <span class="case-client">
+            <span class="case-client-label">CLIENT:</span> {client}
+          </span>
         )}
-        {excerpt && <p class="lead">{excerpt}</p>}
-        <div class="entry-content">
-          <Content />
+      </div>
+
+      {excerpt && <p class="lead case-lead">{excerpt}</p>}
+
+      <!-- Heuristic 2: Metric Grid — large scarlet stat counters -->
+      <section class="metric-grid" aria-label="Key performance metrics">
+        {metrics.map(m => (
+          <div class="metric-card">
+            <span class="metric-value">{m.value}</span>
+            <span class="metric-label">{m.label}</span>
+          </div>
+        ))}
+      </section>
+
+      <!-- Tech stack badges -->
+      <div class="tech-stack-row" aria-label="Technologies used">
+        <span class="tech-stack-label">TECH STACK:</span>
+        <div class="tech-badges">
+          {techStack.map(t => (
+            <span class="tech-badge">{t}</span>
+          ))}
         </div>
-      </article>
+      </div>
+
+      <!-- 2-Column alternating content blocks -->
+      <div class="case-content-grid">
+        <!-- Left: Visual placeholder panel -->
+        <div class="case-visual" aria-hidden="true">
+          <div class="case-visual-inner">
+            <div class="case-visual-grid"></div>
+            <div class="case-visual-label">ARCHITECTURE DIAGRAM</div>
+          </div>
+        </div>
+
+        <!-- Right: Rich text MDX content -->
+        <article class="entry-content case-entry">
+          <Content />
+        </article>
+      </div>
+
     </div>
   </main>
+
   <CTABand
     title="Ready to build something similar?"
     subtitle="Let's discuss your infrastructure requirements."
@@ -48,3 +107,202 @@ const { Content } = await entry.render();
     variant="dark"
   />
 </BaseLayout>
+
+<style>
+  .case-study-main { background: var(--color-obsidian); }
+
+  .case-container {
+    max-width: var(--case-study-width);
+    margin-inline: auto;
+    padding-inline: 24px;
+  }
+
+  /* Header row */
+  .case-header-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .case-badge {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.1em;
+  }
+
+  .case-cat-badge {
+    background: rgba(112, 26, 26, 0.2);
+    border-color: rgba(112, 26, 26, 0.5);
+    color: #EF4444;
+  }
+
+  .case-client {
+    font-size: 12px;
+    color: #6B7280;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-left: auto;
+  }
+  .case-client-label { color: #DC2626; }
+
+  .case-lead {
+    max-width: 680px;
+    margin-bottom: 48px;
+  }
+
+  /* Metric Grid — Heuristic 2: Signifiers through scarlet numbers */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .metric-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-deep);
+    border-radius: var(--radius-md);
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
+  }
+
+  /* Heuristic 2: affordance — deep border transitions to red glow on hover */
+  .metric-card:hover {
+    border-color: #DC2626;
+    box-shadow: 0 0 24px rgba(220, 38, 38, 0.3), var(--shadow-card);
+    transform: translateY(-3px);
+  }
+
+  .metric-value {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 900;
+    color: #DC2626;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+    font-family: var(--font-secondary);
+  }
+
+  .metric-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #9CA3AF;
+  }
+
+  /* Tech stack row */
+  .tech-stack-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 56px;
+    flex-wrap: wrap;
+  }
+
+  .tech-stack-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #6B7280;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .tech-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* Heuristic 2: tech badge signifier — deep crimson border, dark surface bg */
+  .tech-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: #D1D5DB;
+    background: var(--color-surface-3);
+    border: 1px solid var(--color-border-deep);
+    border-radius: 9999px;
+    padding: 5px 14px;
+    letter-spacing: 0.04em;
+    transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .tech-badge:hover {
+    border-color: #DC2626;
+    color: #FFFFFF;
+    box-shadow: 0 0 8px rgba(220, 38, 38, 0.4);
+  }
+
+  /* 2-Column alternating case study layout */
+  .case-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .case-visual {
+    position: sticky;
+    top: 120px;
+  }
+
+  .case-visual-inner {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-deep);
+    border-radius: var(--radius-md);
+    aspect-ratio: 4/3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .case-visual-inner:hover {
+    border-color: #DC2626;
+    box-shadow: 0 0 30px rgba(220, 38, 38, 0.2);
+  }
+
+  /* Subtle animated grid inside visual panel */
+  .case-visual-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(220, 38, 38, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(220, 38, 38, 0.07) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .case-visual-label {
+    position: relative;
+    z-index: 1;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: #DC2626;
+    text-transform: uppercase;
+    border: 1px solid rgba(220, 38, 38, 0.25);
+    padding: 6px 16px;
+    border-radius: 9999px;
+    background: rgba(220, 38, 38, 0.06);
+  }
+
+  .case-entry {}
+
+  @media (max-width: 900px) {
+    .metric-grid { grid-template-columns: repeat(2, 1fr); }
+    .case-content-grid { grid-template-columns: 1fr; }
+    .case-visual { position: static; }
+  }
+  @media (max-width: 480px) {
+    .metric-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>

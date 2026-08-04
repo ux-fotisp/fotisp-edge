@@ -1,4 +1,10 @@
 ---
+// Archetype C: Services / Informational — Don Norman UX Heuristics
+// - 70/30 split layout: sticky left sidebar (30%) + main content (70%)
+// - Sticky sub-navigation linking to section anchors (#overview, #specs, #pricing)
+// - Structured documentation blocks separated by 1px #380F15 card borders
+// - Primary: solid #DC2626 CTA buttons; Secondary: outlined red (Heuristic 2)
+// - Inline form validation feedback (Heuristic 3/4)
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageTitle from '../../components/PageTitle.astro';
 import CTABand from '../../components/CTABand.astro';
@@ -6,6 +12,7 @@ import CTABand from '../../components/CTABand.astro';
 export const prerender = false;
 
 const slug = Astro.params.slug ?? 'sample';
+
 const service = {
   title: 'KPI Reporting',
   slug,
@@ -18,51 +25,389 @@ const service = {
 <ul><li>Real-time performance visibility</li><li>Data-driven decision making</li><li>Custom dashboards for each stakeholder level</li><li>Monthly executive reporting packages</li></ul>`,
   featuredImage: '',
 };
+
+const sectionAnchors = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'specs', label: 'Specifications' },
+  { id: 'benefits', label: 'Key Benefits' },
+  { id: 'pricing', label: 'Pricing & Access' },
+];
+
+const allServices = [
+  { href: '/services/kpi-reporting', label: 'KPI Reporting' },
+  { href: '/services/reverse-logistics', label: 'Reverse Logistics' },
+  { href: '/services/it-business-consulting', label: 'IT Consulting' },
+  { href: '/services/strategic-planning', label: 'Strategic Planning' },
+  { href: '/services/market-research', label: 'Market Research' },
+  { href: '/services/operations-management', label: 'Operations Mgmt' },
+];
 ---
 
-<BaseLayout title={`${service.title} — Services — EDGE`} description={service.excerpt}>
+<BaseLayout
+  title={`${service.title} — Services — EDGE`}
+  description={service.excerpt}
+>
   <PageTitle
     title={service.title}
     breadcrumbs={[{ label: 'Services', href: '/services' }, { label: service.title }]}
   />
-  <main class="main" id="site-content">
-    <div class="container">
-      <div class="content-sidebar">
-        <article>
-          {service.excerpt && (
-            <p class="lead">{service.excerpt}</p>
-          )}
-          <div class="entry-content" set:html={service.content} />
-        </article>
 
-        <aside class="sidebar">
-          <div class="widget">
+  <main class="main service-main" id="site-content">
+    <div class="container">
+
+      <!-- Archetype C: 70/30 split layout -->
+      <div class="service-layout">
+
+        <!-- LEFT SIDEBAR (30%) — sticky section navigation + service list -->
+        <aside class="service-sidebar">
+          <!-- Section anchor nav -->
+          <div class="service-sidenav widget">
+            <h3 class="widget-title">On This Page</h3>
+            <nav aria-label="Page sections">
+              <ul id="section-nav-list">
+                {sectionAnchors.map(s => (
+                  <li>
+                    <a href={`#${s.id}`} class="section-nav-link" data-section={s.id}>
+                      {s.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+
+          <!-- All services list -->
+          <div class="widget" style="margin-top: 16px;">
             <h3 class="widget-title">Our Services</h3>
             <ul>
-              <li><a href="/services/kpi-reporting">KPI Reporting</a></li>
-              <li><a href="/services/reverse-logistics">Reverse Logistics</a></li>
-              <li><a href="/services/it-business-consulting">IT Consulting</a></li>
-              <li><a href="/services/strategic-planning">Strategic Planning</a></li>
+              {allServices.map(s => (
+                <li>
+                  <a
+                    href={s.href}
+                    class={`service-nav-link${s.href.includes(slug) ? ' is-current' : ''}`}
+                    aria-current={s.href.includes(slug) ? 'page' : undefined}
+                  >
+                    {s.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
-          <div class="widget">
-            <h3 class="widget-title">Get Started</h3>
-            <p style="font-size:14px;color:#D1D5DB;line-height:1.6;margin-bottom:16px;">
-              Ready to transform your business performance?
-            </p>
-            <a href="/contact" class="btn" style="width:100%;justify-content:center;" id="service-cta-btn">
-              Contact Us
+
+          <!-- Heuristic 2: Primary CTA (solid) vs Secondary (outlined) -->
+          <div class="service-sidebar-cta">
+            <!-- Primary: solid #DC2626 — main action -->
+            <a href="/contact" class="btn" style="width:100%;justify-content:center;" id="service-primary-cta">
+              DEPLOY NOW
+            </a>
+            <!-- Secondary: outlined — lower priority -->
+            <a href="/portfolio" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:10px;" id="service-secondary-cta">
+              VIEW CASE STUDIES
             </a>
           </div>
         </aside>
+
+        <!-- MAIN CONTENT (70%) — structured documentation blocks -->
+        <div class="service-content-area">
+
+          <!-- Section: Overview -->
+          <section id="overview" class="service-doc-block" aria-labelledby="overview-heading">
+            <h2 id="overview-heading">Overview</h2>
+            {service.excerpt && <p class="lead">{service.excerpt}</p>}
+          </section>
+
+          <!-- Section: Specs -->
+          <section id="specs" class="service-doc-block" aria-labelledby="specs-heading">
+            <h2 id="specs-heading">Specifications</h2>
+            <div class="service-spec-grid">
+              <div class="service-spec-item">
+                <span class="service-spec-label">Delivery Mode</span>
+                <span class="service-spec-value">Retainer / Project-Based</span>
+              </div>
+              <div class="service-spec-item">
+                <span class="service-spec-label">Reporting Cadence</span>
+                <span class="service-spec-value">Weekly / Monthly</span>
+              </div>
+              <div class="service-spec-item">
+                <span class="service-spec-label">Team Size</span>
+                <span class="service-spec-value">2–4 Consultants</span>
+              </div>
+              <div class="service-spec-item">
+                <span class="service-spec-label">Onboarding</span>
+                <span class="service-spec-value">&lt; 72 Hours</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Section: Benefits (MDX entry-content) -->
+          <section id="benefits" class="service-doc-block" aria-labelledby="benefits-heading">
+            <h2 id="benefits-heading">Key Benefits</h2>
+            <div class="entry-content" set:html={service.content} />
+          </section>
+
+          <!-- Section: Pricing -->
+          <section id="pricing" class="service-doc-block" aria-labelledby="pricing-heading">
+            <h2 id="pricing-heading">Pricing & Access</h2>
+            <p class="entry-content" style="color:#D1D5DB;line-height:1.8;">
+              EDGE pricing is scoped per engagement. Contact us for a tailored proposal with full infrastructure specifications and projected ROI.
+            </p>
+            <!-- Heuristic 3 & 4: Inline form with immediate feedback + disabled-until-valid -->
+            <form id="quick-quote-form" class="quick-quote-form" novalidate>
+              <div class="quick-quote-row">
+                <div class="quick-quote-group">
+                  <label for="qq-email">OPERATOR EMAIL *</label>
+                  <input
+                    type="email"
+                    id="qq-email"
+                    name="email"
+                    placeholder="operator@domain.com"
+                    required
+                    autocomplete="email"
+                  />
+                  <span class="field-feedback" id="qq-email-feedback" aria-live="polite"></span>
+                </div>
+                <div class="quick-quote-group">
+                  <label for="qq-org">ORGANIZATION</label>
+                  <input
+                    type="text"
+                    id="qq-org"
+                    name="org"
+                    placeholder="Company / Node ID"
+                    autocomplete="organization"
+                  />
+                </div>
+              </div>
+              <!-- Heuristic 4: disabled until valid -->
+              <button type="submit" class="btn" id="qq-submit-btn" disabled style="opacity:0.45;cursor:not-allowed;">
+                REQUEST QUOTE
+              </button>
+              <p id="qq-status" class="contact-status" aria-live="polite"></p>
+            </form>
+          </section>
+
+        </div>
       </div>
     </div>
   </main>
+
   <CTABand
     title="Ready to get started?"
     subtitle="Let's identify your next performance breakthrough."
-    buttonLabel="Deploy Now"
+    buttonLabel="Access EDGE"
     buttonUrl="/contact"
     variant="dark"
   />
 </BaseLayout>
+
+<style>
+  .service-main { background: var(--color-obsidian); }
+
+  /* Archetype C: 70/30 split */
+  .service-layout {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    gap: 40px;
+    align-items: start;
+  }
+
+  /* Sticky sidebar */
+  .service-sidebar {
+    position: sticky;
+    top: 110px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Section anchor nav */
+  .service-sidenav ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+
+  .section-nav-link {
+    display: block;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #9CA3AF;
+    border-radius: var(--radius-base);
+    border-left: 2px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, padding-left 0.2s ease;
+  }
+  .section-nav-link:hover,
+  .section-nav-link.is-active {
+    color: #FFFFFF;
+    border-left-color: #DC2626;
+    background: rgba(220, 38, 38, 0.08);
+    padding-left: 16px;
+  }
+
+  /* Heuristic 2: active service link */
+  .service-nav-link.is-current {
+    color: #DC2626 !important;
+    font-weight: 700;
+  }
+
+  .service-sidebar-cta {
+    margin-top: 20px;
+  }
+
+  /* Structured doc blocks — separated by 1px #380F15 border (Heuristic 2) */
+  .service-content-area {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .service-doc-block {
+    padding: 40px 0;
+    border-top: 1px solid var(--color-border-deep);
+  }
+  .service-doc-block:first-child { border-top: none; padding-top: 0; }
+
+  .service-doc-block h2 {
+    font-size: 1.4rem;
+    color: #FFFFFF;
+    font-weight: 800;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border-deep);
+  }
+
+  /* Spec grid */
+  .service-spec-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .service-spec-item {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-deep);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .service-spec-item:hover {
+    border-color: #DC2626;
+    box-shadow: 0 0 16px rgba(220, 38, 38, 0.2);
+  }
+  .service-spec-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #DC2626;
+  }
+  .service-spec-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #D1D5DB;
+  }
+
+  /* Quick quote form */
+  .quick-quote-form {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .quick-quote-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .quick-quote-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .quick-quote-group label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #DC2626;
+  }
+
+  /* Heuristic 3: immediate feedback on blur */
+  .field-feedback {
+    font-size: 11px;
+    min-height: 16px;
+    transition: color 0.2s ease;
+  }
+  .field-feedback.valid   { color: #10B981; }
+  .field-feedback.invalid { color: #EF4444; }
+
+  input.input-valid   { border-color: #10B981 !important; box-shadow: 0 0 8px rgba(16, 185, 129, 0.3) !important; }
+  input.input-invalid { border-color: #EF4444 !important; box-shadow: 0 0 8px rgba(239, 68, 68, 0.3) !important; }
+
+  @media (max-width: 900px) {
+    .service-layout { grid-template-columns: 1fr; }
+    .service-sidebar { position: static; }
+    .service-spec-grid { grid-template-columns: 1fr; }
+    .quick-quote-row { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  // Heuristic 1: Section anchor highlighting in sidebar
+  const sectionLinks = document.querySelectorAll('.section-nav-link') as NodeListOf<HTMLElement>;
+  const sections = document.querySelectorAll('.service-doc-block[id]') as NodeListOf<HTMLElement>;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        sectionLinks.forEach(link => {
+          link.classList.toggle('is-active', link.dataset.section === entry.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+
+  // Heuristic 3 & 4: Inline blur validation + disable submit until valid
+  const emailInput  = document.getElementById('qq-email') as HTMLInputElement;
+  const submitBtn   = document.getElementById('qq-submit-btn') as HTMLButtonElement;
+  const emailFeedback = document.getElementById('qq-email-feedback')!;
+  const statusEl    = document.getElementById('qq-status')!;
+
+  function validateEmail(val: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+  }
+
+  function updateSubmitState() {
+    const valid = validateEmail(emailInput.value);
+    submitBtn.disabled = !valid;
+    submitBtn.style.opacity = valid ? '1' : '0.45';
+    submitBtn.style.cursor = valid ? 'pointer' : 'not-allowed';
+  }
+
+  emailInput?.addEventListener('blur', () => {
+    const valid = validateEmail(emailInput.value);
+    emailInput.classList.toggle('input-valid', valid);
+    emailInput.classList.toggle('input-invalid', !valid && emailInput.value.length > 0);
+    emailFeedback.className = 'field-feedback ' + (valid ? 'valid' : emailInput.value ? 'invalid' : '');
+    emailFeedback.textContent = valid ? '✓ Valid email' : emailInput.value ? '✗ Enter a valid email address' : '';
+    updateSubmitState();
+  });
+  emailInput?.addEventListener('input', updateSubmitState);
+
+  // Quick quote form submission
+  const form = document.getElementById('quick-quote-form') as HTMLFormElement;
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'TRANSMITTING…';
+
+    // Simulate submission
+    setTimeout(() => {
+      statusEl.style.color = '#10B981';
+      statusEl.textContent = '✓ Quote request transmitted. Expect a response within 4 hours.';
+      form.reset();
+      updateSubmitState();
+      submitBtn.textContent = 'REQUEST QUOTE';
+    }, 1200);
+  });
+</script>

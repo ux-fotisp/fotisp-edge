@@ -62,12 +62,16 @@
 }
 
 .navigation-main > li:hover > a::after,
-.navigation-main > li.current > a::after {
+.navigation-main > li.current > a::after,
+.navigation-main > li > a[aria-current="page"]::after,
+.navigation-main > li > a.nav-active::after {
   transform: translateX(-50%) scaleX(1);
 }
 
 .navigation-main > li:hover > a,
-.navigation-main > li.current > a {
+.navigation-main > li.current > a,
+.navigation-main > li > a[aria-current="page"],
+.navigation-main > li > a.nav-active {
   color: #FFFFFF;
   background: rgba(220, 38, 38, 0.18);
   text-shadow: 0 0 10px rgba(220, 38, 38, 0.8);

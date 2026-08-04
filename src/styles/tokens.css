@@ -14,20 +14,26 @@
   --tracking-ultra: 0.15em;
 
   /* ── EDGE Color Palette ── */
-  --color-primary:        #DC2626;  /* Scarlet Red — buttons, active icons, CTA */
-  --color-secondary:      #701A1A;  /* Wine/Crimson — glow gradients, accents */
-  --color-obsidian:       #080303;  /* Deep Obsidian — hero, control sections, footer upper */
-  --color-surface:        #0F0909;  /* Dark surface — cards, secondary bg */
-  --color-surface-2:      #160A0A;  /* Elevated surface — card hover */
-  --color-light-bg:       #FFFFFF;  /* Stark White — Trusted By, Forged For, Team sections */
-  --color-text:           #D1D5DB;  /* Cool Silver Gray — body copy */
-  --color-text-light:     #9CA3AF;  /* Muted text */
-  --color-heading:        #FFFFFF;  /* Pure white — all headings */
-  --color-border:         rgba(220, 38, 38, 0.15); /* Subtle red border */
-  --color-border-light:   #E5E7EB; /* Light border for white sections */
-  --color-body-bg:        #080303;  /* Obsidian — default body background */
+  --color-primary:        #DC2626;
+  --color-secondary:      #701A1A;
+  --color-obsidian:       #080303;
+  --color-surface:        #0F0909;
+  --color-surface-2:      #160A0A;
+  --color-surface-3:      #1A080B;  /* Tech badge background */
+  --color-light-bg:       #FFFFFF;
+  --color-text:           #D1D5DB;
+  --color-text-light:     #9CA3AF;
+  --color-heading:        #FFFFFF;
+  --color-border:         rgba(220, 38, 38, 0.15);
+  --color-border-deep:    #380F15;  /* Deep crimson border for card hover */
+  --color-border-light:   #E5E7EB;
+  --color-body-bg:        #080303;
   --color-white:          #FFFFFF;
   --color-black:          #000000;
+
+  /* Layout archetypes */
+  --reader-width:         720px;    /* Archetype A: editorial reader column */
+  --case-study-width:     1200px;   /* Archetype B: portfolio full-width */
 
   /* Red glow effects */
   --glow-red:             0 0 20px rgba(220, 38, 38, 0.4);

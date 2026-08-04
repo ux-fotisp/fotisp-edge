@@ -3,6 +3,7 @@ interface Props {
   themeVariation?: 'convert' | 'logico';
 }
 const { themeVariation = 'convert' } = Astro.props;
+const currentPath = Astro.url.pathname;
 
 const navItems = [
   { label: 'Home',      href: '/' },
@@ -11,6 +12,11 @@ const navItems = [
   { label: 'About',     href: '/about' },
   { label: 'Contact',   href: '/contact' },
 ];
+
+function isActive(href: string): boolean {
+  if (href === '/') return currentPath === '/';
+  return currentPath.startsWith(href);
+}
 ---
 
 <!-- Glassmorphic Header -->
@@ -34,7 +40,11 @@ const navItems = [
         <ul class="navigation-main" id="main-menu">
           {navItems.map(item => (
             <li>
-              <a href={item.href}>{item.label}</a>
+              <a
+                href={item.href}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                class={isActive(item.href) ? 'nav-active' : ''}
+              >{item.label}</a>
             </li>
           ))}
         </ul>
@@ -76,7 +86,10 @@ const navItems = [
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close menu">✕</button>
   {navItems.map(item => (
-    <a href={item.href}>{item.label}</a>
+    <a
+      href={item.href}
+      aria-current={isActive(item.href) ? 'page' : undefined}
+    >{item.label}</a>
   ))}
   <a href="/contact" class="mobile-nav-cta">ACCESS EDGE</a>
 </nav>
