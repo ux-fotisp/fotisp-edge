@@ -1,35 +1,131 @@
 ---
-// EntryListMeta.astro — event single meta band (fotisp_event_* fields)
+// EntryListMeta.astro — enriched event single-page meta bar
 interface Props {
-  eventDate?: string;
-  eventTime?: string;
-  location?: string;
-  isRecurring?: boolean;
-  recurrence?: string;
+  eventDate: string;
+  timeSlot: string;
+  status: 'UPCOMING' | 'LIVE' | 'COMPLETED' | 'RECURRING';
+  eventType: 'VIRTUAL' | 'HYBRID' | 'IN_PERSON';
+  location: { name: string; address?: string; virtualLink?: string };
+  capacity?: { totalSeats?: number; registeredCount?: number };
 }
-const { eventDate, eventTime, location, isRecurring, recurrence } = Astro.props;
 
-let formattedDate = '';
-if (eventDate) {
-  formattedDate = new Date(eventDate).toLocaleDateString('en-GB', {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-  });
-}
-const items = [
-  isRecurring && recurrence ? { label: 'Recurrence', value: recurrence } : null,
-  !isRecurring && formattedDate ? { label: 'Date', value: formattedDate } : null,
-  eventTime ? { label: 'Time', value: eventTime } : null,
-  location ? { label: 'Location', value: location } : null,
-].filter(Boolean) as { label: string; value: string }[];
+const { eventDate, timeSlot, status, eventType, location, capacity } = Astro.props;
+
+const formattedDate = new Date(eventDate).toLocaleDateString('en-GB', {
+  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+});
+
+const typeConfig: Record<string, { label: string; icon: string }> = {
+  VIRTUAL:   { label: 'Virtual Event',   icon: '🌐' },
+  HYBRID:    { label: 'Hybrid Event',    icon: '🔀' },
+  IN_PERSON: { label: 'In-Person Event', icon: '📍' },
+};
+const tc = typeConfig[eventType] ?? typeConfig.IN_PERSON;
+
+const fillPct = capacity?.totalSeats && capacity?.registeredCount
+  ? Math.min(100, Math.round((capacity.registeredCount / capacity.totalSeats) * 100))
+  : null;
 ---
 
-{items.length > 0 && (
-  <ul class="entry-list-meta" aria-label="Event details">
-    {items.map(item => (
-      <li class="entry-list-meta-item">
-        <span class="entry-list-meta-label">{item.label}</span>
-        <span class="entry-list-meta-value" set:html={item.value} />
-      </li>
-    ))}
-  </ul>
-)}
+<div class="entry-list-meta-bar" role="region" aria-label="Event details">
+  <div class="entry-list-meta-pill">
+    <span class="entry-list-meta-icon" aria-hidden="true">📅</span>
+    <div>
+      <span class="entry-list-meta-label">Date</span>
+      <span class="entry-list-meta-value">{formattedDate}</span>
+    </div>
+  </div>
+
+  <div class="entry-list-meta-pill">
+    <span class="entry-list-meta-icon" aria-hidden="true">🕐</span>
+    <div>
+      <span class="entry-list-meta-label">Time</span>
+      <span class="entry-list-meta-value">{timeSlot}</span>
+    </div>
+  </div>
+
+  <div class="entry-list-meta-pill">
+    <span class="entry-list-meta-icon" aria-hidden="true">{tc.icon}</span>
+    <div>
+      <span class="entry-list-meta-label">{tc.label}</span>
+      <span class="entry-list-meta-value">{location.name}</span>
+      {location.address && <span class="entry-list-meta-sub">{location.address}</span>}
+    </div>
+  </div>
+
+  {capacity?.totalSeats && (
+    <div class="entry-list-meta-pill">
+      <span class="entry-list-meta-icon" aria-hidden="true">👥</span>
+      <div>
+        <span class="entry-list-meta-label">Capacity</span>
+        <span class="entry-list-meta-value">
+          {capacity.registeredCount ?? 0} / {capacity.totalSeats} registered
+        </span>
+        {fillPct !== null && (
+          <div style="margin-top:5px;height:3px;background:rgba(255,255,255,0.1);border-radius:9999px;width:100%;overflow:hidden;">
+            <div style={`height:100%;width:${fillPct}%;background:${fillPct >= 90 ? '#EF4444' : '#22C55E'};border-radius:9999px;`}></div>
+          </div>
+        )}
+      </div>
+    </div>
+  )}
+
+  {location.virtualLink && (
+    <div class="entry-list-meta-pill">
+      <span class="entry-list-meta-icon" aria-hidden="true">🔗</span>
+      <div>
+        <span class="entry-list-meta-label">Virtual Access</span>
+        <a href={location.virtualLink} target="_blank" rel="noopener noreferrer" class="entry-list-meta-value" style="color:var(--color-primary);text-decoration:none;">
+          Join Online →
+        </a>
+      </div>
+    </div>
+  )}
+</div>
+
+<style>
+  .entry-list-meta-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 20px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border-deep);
+    border-radius: var(--radius-md);
+    margin-bottom: 32px;
+  }
+  .entry-list-meta-pill {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    flex: 1;
+    min-width: 180px;
+  }
+  .entry-list-meta-icon {
+    font-size: 18px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .entry-list-meta-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted);
+    margin-bottom: 3px;
+  }
+  .entry-list-meta-value {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-silver);
+    font-family: 'Courier New', monospace;
+  }
+  .entry-list-meta-sub {
+    display: block;
+    font-size: 11px;
+    color: var(--color-muted);
+    margin-top: 2px;
+  }
+</style>

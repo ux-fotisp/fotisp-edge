@@ -2,32 +2,186 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageTitle from '../../components/PageTitle.astro';
 import EventCard from '../../components/EventCard.astro';
+import { getCollection } from 'astro:content';
 
-const events = [
-  { title: 'Q1 Strategy Review', slug: 'q1-strategy-review', eventDate: '2024-03-15', eventTime: '09:00', location: 'London, UK', excerpt: 'Annual Q1 review of business strategy and KPI performance.' },
-  { title: 'Monthly Team Meetup', slug: 'monthly-team-meetup', isRecurring: true, recurrence: 'Every <span>Last Friday</span> of the month', eventTime: '18:00', location: 'Berlin, DE', excerpt: 'Regular team sync and knowledge sharing session.' },
-  { title: 'Consulting Summit 2024', slug: 'consulting-summit-2024', eventDate: '2024-06-20', eventTime: '10:00', location: 'New York, US', excerpt: 'The premier event for consulting professionals and thought leaders.' },
-];
+const allEvents = (await getCollection('events'))
+  .filter(e => !e.data.draft)
+  .sort((a, b) => new Date(b.data.eventDate).getTime() - new Date(a.data.eventDate).getTime());
+
+const upcoming  = allEvents.filter(e => e.data.status === 'UPCOMING' || e.data.status === 'LIVE');
+const recurring = allEvents.filter(e => e.data.status === 'RECURRING');
+const past      = allEvents.filter(e => e.data.status === 'COMPLETED');
+
+const categoryCounts = {
+  All:       allEvents.length,
+  Upcoming:  upcoming.length + recurring.length,
+  Recurring: recurring.length,
+  Past:      past.length,
+};
 ---
 
-<BaseLayout title="Events — fotisp" description="Upcoming and recurring events.">
-  <PageTitle title="Events" breadcrumbs={[{ label: 'Events' }]} />
+<BaseLayout
+  title="Events — EDGE Platform"
+  description="Summits, strategy sessions, and workshops hosted by EDGE. Filter by upcoming, recurring, or past events."
+>
+  <PageTitle
+    title="Events"
+    subtitle="Summits, strategy sessions, and exclusive workshops"
+    breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Events' }]}
+  />
+
   <main class="main" id="site-content">
     <div class="container">
       <div class="content-sidebar">
+
+        {/* ── Primary Events Column ── */}
         <div>
-          {events.map(event => <EventCard {...event} />)}
+
+          {/* Upcoming & Live */}
+          {upcoming.length > 0 && (
+            <section aria-labelledby="upcoming-heading" style="margin-bottom:48px;">
+              <h2 id="upcoming-heading" style="font-size:0.7rem;font-weight:900;text-transform:uppercase;letter-spacing:0.15em;color:var(--color-primary);margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+                <span style="display:inline-block;width:24px;height:1px;background:var(--color-primary);"></span>
+                Upcoming Events
+              </h2>
+              <div style="display:flex;flex-direction:column;gap:16px;">
+                {upcoming.map(event => (
+                  <EventCard
+                    title={event.data.title}
+                    slug={event.id}
+                    tagline={event.data.tagline}
+                    excerpt={event.data.excerpt}
+                    eventDate={event.data.eventDate}
+                    timeSlot={event.data.timeSlot}
+                    status={event.data.status}
+                    eventType={event.data.eventType}
+                    location={event.data.location}
+                    capacity={event.data.capacity}
+                    speakers={event.data.speakers}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Recurring */}
+          {recurring.length > 0 && (
+            <section aria-labelledby="recurring-heading" style="margin-bottom:48px;">
+              <h2 id="recurring-heading" style="font-size:0.7rem;font-weight:900;text-transform:uppercase;letter-spacing:0.15em;color:#A78BFA;margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+                <span style="display:inline-block;width:24px;height:1px;background:#A78BFA;"></span>
+                Recurring Sessions
+              </h2>
+              <div style="display:flex;flex-direction:column;gap:16px;">
+                {recurring.map(event => (
+                  <EventCard
+                    title={event.data.title}
+                    slug={event.id}
+                    tagline={event.data.tagline}
+                    excerpt={event.data.excerpt}
+                    eventDate={event.data.eventDate}
+                    timeSlot={event.data.timeSlot}
+                    status={event.data.status}
+                    eventType={event.data.eventType}
+                    location={event.data.location}
+                    capacity={event.data.capacity}
+                    speakers={event.data.speakers}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Past */}
+          {past.length > 0 && (
+            <section aria-labelledby="past-heading">
+              <h2 id="past-heading" style="font-size:0.7rem;font-weight:900;text-transform:uppercase;letter-spacing:0.15em;color:var(--color-muted);margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+                <span style="display:inline-block;width:24px;height:1px;background:var(--color-muted);"></span>
+                Past Events
+              </h2>
+              <div style="display:flex;flex-direction:column;gap:16px;">
+                {past.map(event => (
+                  <EventCard
+                    title={event.data.title}
+                    slug={event.id}
+                    tagline={event.data.tagline}
+                    excerpt={event.data.excerpt}
+                    eventDate={event.data.eventDate}
+                    timeSlot={event.data.timeSlot}
+                    status={event.data.status}
+                    eventType={event.data.eventType}
+                    location={event.data.location}
+                    capacity={event.data.capacity}
+                    speakers={event.data.speakers}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {allEvents.length === 0 && (
+            <div style="padding:60px 0;text-align:center;color:var(--color-muted);">
+              <p style="font-size:1.1rem;">No events scheduled at this time.</p>
+              <a href="/contact" class="btn" style="margin-top:20px;">Get Notified</a>
+            </div>
+          )}
+
         </div>
-        <aside class="sidebar" aria-label="Events sidebar">
+
+        {/* ── Sidebar ── */}
+        <aside class="sidebar" aria-label="Events navigation">
+
+          {/* Filter Widget */}
           <div class="widget">
-            <h3 class="widget-title">Filter Events</h3>
-            <ul style="font-size:14px;display:flex;flex-direction:column;gap:8px;">
-              <li><a href="/events">All Events</a></li>
-              <li><a href="/events?type=upcoming">Upcoming</a></li>
-              <li><a href="/events?type=recurring">Recurring</a></li>
-              <li><a href="/events?type=past">Past</a></li>
-            </ul>
+            <h3 class="widget-title">Browse Events</h3>
+            <nav style="display:flex;flex-direction:column;gap:4px;">
+              {Object.entries(categoryCounts).map(([label, count]) => (
+                <a
+                  href={label === 'All' ? '/events' : `/events?category=${label.toLowerCase()}`}
+                  style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:var(--radius-base);font-size:13px;color:var(--color-silver);text-decoration:none;transition:background 0.2s ease,color 0.2s ease;"
+                  onmouseover="this.style.background='rgba(220,38,38,0.1)';this.style.color='#FFFFFF'"
+                  onmouseout="this.style.background='transparent';this.style.color='var(--color-silver)'"
+                >
+                  <span>{label}</span>
+                  <span style="font-size:11px;font-weight:700;padding:2px 8px;background:rgba(255,255,255,0.07);border-radius:9999px;">{count}</span>
+                </a>
+              ))}
+            </nav>
           </div>
+
+          {/* Stats Widget */}
+          <div class="widget">
+            <h3 class="widget-title">Event Stats</h3>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--color-border-deep);">
+                <span style="font-size:13px;color:var(--color-muted);">Total Events</span>
+                <span style="font-size:20px;font-weight:900;color:#FFFFFF;">{allEvents.length}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--color-border-deep);">
+                <span style="font-size:13px;color:var(--color-muted);">Total Capacity</span>
+                <span style="font-size:20px;font-weight:900;color:#FFFFFF;">
+                  {allEvents.reduce((acc, e) => acc + (e.data.capacity?.totalSeats ?? 0), 0)}
+                </span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:13px;color:var(--color-muted);">Total Speakers</span>
+                <span style="font-size:20px;font-weight:900;color:#FFFFFF;">
+                  {allEvents.reduce((acc, e) => acc + (e.data.speakers?.length ?? 0), 0)}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Widget */}
+          <div class="widget">
+            <h3 class="widget-title">Host an Event</h3>
+            <p style="font-size:13px;color:var(--color-muted);line-height:1.6;margin-bottom:16px;">
+              Interested in co-hosting a summit or workshop with EDGE Platform? Let's talk.
+            </p>
+            <a href="/contact" class="btn" style="width:100%;justify-content:center;" id="events-host-btn">
+              Get In Touch
+            </a>
+          </div>
+
         </aside>
       </div>
     </div>
