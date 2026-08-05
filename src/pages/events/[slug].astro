@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageTitle from '../../components/PageTitle.astro';
 import EntryListMeta from '../../components/EntryListMeta.astro';
 import CTABand from '../../components/CTABand.astro';
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 
 export const prerender = false;
 
@@ -17,7 +17,7 @@ try {
   const entry = await getEntry('events', slug!);
   if (entry) {
     event = entry.data;
-    const rendered = await entry.render();
+    const rendered = await render(entry);
     Content = rendered.Content;
   }
 } catch (_) {
