@@ -255,12 +255,15 @@ const spotsLeft = event.capacity?.totalSeats && event.capacity?.registeredCount
           <div class="widget">
             <h3 class="widget-title">Share This Event</h3>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(event.title)}`} target="_blank" rel="noopener noreferrer" style="flex:1;min-width:80px;padding:8px;background:var(--color-surface-2);border:1px solid var(--color-border-deep);border-radius:var(--radius-base);font-size:11px;font-weight:700;color:var(--color-silver);text-decoration:none;text-align:center;transition:border-color 0.2s ease;" onmouseover="this.style.borderColor='#DC2626'" onmouseout="this.style.borderColor='var(--color-border-deep)'">
+              <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(event.title)}`} target="_blank" rel="noopener noreferrer" style="flex:1;min-width:70px;padding:8px;background:var(--color-surface-2);border:1px solid var(--color-border-deep);border-radius:var(--radius-base);font-size:11px;font-weight:700;color:var(--color-silver);text-decoration:none;text-align:center;transition:border-color 0.2s ease;" onmouseover="this.style.borderColor='#DC2626'" onmouseout="this.style.borderColor='var(--color-border-deep)'">
                 𝕏 Twitter
               </a>
-              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://edge-platform.com/events/' + slug)}`} target="_blank" rel="noopener noreferrer" style="flex:1;min-width:80px;padding:8px;background:var(--color-surface-2);border:1px solid var(--color-border-deep);border-radius:var(--radius-base);font-size:11px;font-weight:700;color:var(--color-silver);text-decoration:none;text-align:center;transition:border-color 0.2s ease;" onmouseover="this.style.borderColor='#DC2626'" onmouseout="this.style.borderColor='var(--color-border-deep)'">
+              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://edge-platform.com/events/' + slug)}`} target="_blank" rel="noopener noreferrer" style="flex:1;min-width:70px;padding:8px;background:var(--color-surface-2);border:1px solid var(--color-border-deep);border-radius:var(--radius-base);font-size:11px;font-weight:700;color:var(--color-silver);text-decoration:none;text-align:center;transition:border-color 0.2s ease;" onmouseover="this.style.borderColor='#DC2626'" onmouseout="this.style.borderColor='var(--color-border-deep)'">
                 LinkedIn
               </a>
+              <button id="copy-url-btn" style="flex:1;min-width:70px;padding:8px;background:var(--color-surface-2);border:1px solid var(--color-border-deep);border-radius:var(--radius-base);font-size:11px;font-weight:700;color:var(--color-silver);cursor:pointer;transition:border-color 0.2s ease;" onmouseover="this.style.borderColor='#DC2626'" onmouseout="this.style.borderColor='var(--color-border-deep)'">
+                📋 Copy Link
+              </button>
             </div>
           </div>
 
@@ -304,6 +307,16 @@ const spotsLeft = event.capacity?.totalSeats && event.capacity?.registeredCount
         calDrop.style.display = 'none';
         calBtn.setAttribute('aria-expanded', 'false');
       }
+    });
+  }
+
+  // Copy URL button
+  const copyBtn = document.getElementById('copy-url-btn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(window.location.href);
+      copyBtn.textContent = '✓ Copied!';
+      setTimeout(() => { copyBtn.textContent = '📋 Copy Link'; }, 2000);
     });
   }
 </script>
