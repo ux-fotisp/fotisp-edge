@@ -45,13 +45,15 @@ fotisp-edge/
 │   │   ├── BackToTop.astro      # Circular scroll progress indicator
 │   │   ├── CTABand.astro        # High-impact full-width call-to-action (3 variants)
 │   │   ├── CyberGridBg.astro    # Animated horizontal & vertical red light trails
+│   │   ├── EntryListMeta.astro  # Enriched monospace event meta pill bar
+│   │   ├── EventCard.astro      # Rich event archive card with avatars & capacity bar
 │   │   ├── Footer.astro         # Obsidian dark upper & white lower footer
 │   │   ├── Header.astro         # Glassmorphic header with AstroAnimate Dock & aria-current
 │   │   ├── PageTitle.astro      # Dark hero banner with red grid, laser & dynamic breadcrumbs
 │   │   └── ...                  # Cards (ArticleCard, PortfolioCard, ServiceCard)
 │   ├── content/                 # MDX Content Collections
 │   │   ├── blog/                # News & insights posts
-│   │   ├── events/              # Company events & webinars
+│   │   ├── events/              # Strategy sessions, summits & webinars
 │   │   ├── portfolio/           # Case studies & client work
 │   │   ├── services/            # Core service offerings
 │   │   └── team/                # Leadership & engineering team
@@ -63,7 +65,9 @@ fotisp-edge/
 │   │   ├── blog/[...slug].astro # Archetype A: Editorial Reader Column
 │   │   ├── portfolio/[...slug].astro # Archetype B: Full-Width Case Study Grid
 │   │   ├── services/[...slug].astro  # Archetype C: 70/30 Sticky Sidebar Doc Layout
-│   │   └── ...                  # Events, team routes
+│   │   ├── events/index.astro   # Events Archive (Upcoming, Recurring, Past sections)
+│   │   ├── events/[slug].astro  # Archetype D: Single Event 70/30 Layout with Sticky Sidebar
+│   │   └── ...                  # Team routes
 │   └── styles/
 │       ├── base.css             # Base reset, buttons, entry-content & sidebar styles
 │       ├── tokens.css           # EDGE CSS custom property design system

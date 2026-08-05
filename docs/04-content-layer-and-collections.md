@@ -38,32 +38,45 @@ const posts = defineCollection({
 });
 ```
 
-### Portfolio Collection
+### Events Collection (`src/content.config.ts`)
 ```typescript
-const portfolio = defineCollection({
-  type: 'content',
+const events = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/events' }),
   schema: z.object({
     title: z.string(),
+    tagline: z.string().optional(),
     excerpt: z.string().optional(),
-    client: z.string().optional(),
-    category: z.string().optional(),
+    pubDate: z.string().optional(),
+    eventDate: z.string(),
+    endDate: z.string().optional(),
+    timeSlot: z.string(),                         // e.g. "18:00 – 20:30 UTC"
+    status: z.enum(['UPCOMING', 'LIVE', 'COMPLETED', 'RECURRING']).default('UPCOMING'),
+    category: z.enum(['Upcoming', 'Recurring', 'Past']).default('Upcoming'),
+    eventType: z.enum(['VIRTUAL', 'HYBRID', 'IN_PERSON']).default('IN_PERSON'),
+    capacity: z.object({
+      totalSeats: z.number().optional(),
+      registeredCount: z.number().optional(),
+    }).optional(),
+    location: z.object({
+      name: z.string(),
+      address: z.string().optional(),
+      virtualLink: z.string().optional(),
+    }),
     featuredImage: z.string().optional(),
-    publishedAt: z.string().optional(),
-    draft: z.boolean().default(false),
-  }),
-});
-```
-
-### Services Collection
-```typescript
-const services = defineCollection({
-  type: 'content',
-  schema: z.object({
-    title: z.string(),
-    excerpt: z.string().optional(),
-    icon: z.string().optional(),
-    featuredImage: z.string().optional(),
-    order: z.number().default(0),
+    registrationUrl: z.string().optional(),
+    keyTakeaways: z.array(z.string()).optional(),
+    speakers: z.array(z.object({
+      name: z.string(),
+      role: z.string(),
+      company: z.string(),
+      avatar: z.string().optional(),
+    })).optional(),
+    agenda: z.array(z.object({
+      time: z.string(),
+      topic: z.string(),
+      speakerName: z.string().optional(),
+      description: z.string().optional(),
+    })).optional(),
     draft: z.boolean().default(false),
   }),
 });
@@ -80,45 +93,58 @@ Each collection renders through its dedicated UX archetype template:
 | `blog` | `src/pages/blog/[...slug].astro` | **Archetype A (Editorial)** | 720px reader column, `#read-progress` top scroll bar, author avatar row, reading time |
 | `portfolio` | `src/pages/portfolio/[...slug].astro` | **Archetype B (Case Study)** | 1200px full grid, `CASE STUDY // ID` badge, 4-col scarlet metric grid, tech stack badges |
 | `services` | `src/pages/services/[...slug].astro` | **Archetype C (Services)** | 70/30 split layout, sticky sidebar with IntersectionObserver anchor nav, inline validation |
+| `events` | `src/pages/events/[slug].astro` | **Archetype D (Events System)** | 70/30 split layout, sticky conversion sidebar with capacity bar, Add to Calendar dropdown, agenda grid & speaker showcase |
 
 ---
 
 ## 4. Sample MDX File Format
 
-### Creating a Service Entry (`src/content/services/kpi-reporting.mdx`)
+### Creating an Event Entry (`src/content/events/q1-strategy-review.mdx`)
 ```mdx
 ---
-title: "KPI Reporting"
-excerpt: "Real-time key performance indicator measurement for operational clarity."
-icon: "📊"
-order: 1
+title: "Q1 Strategy Review & Planning Session"
+tagline: "Calibrating Direction — Numbers, Markets, and the Year Ahead"
+excerpt: "Annual strategy review where senior leadership reviews KPI performance and market shifts."
+eventDate: "2024-03-15"
+timeSlot: "09:00 – 17:00 GMT"
+status: "COMPLETED"
+category: "Past"
+eventType: "HYBRID"
+capacity:
+  totalSeats: 80
+  registeredCount: 74
+location:
+  name: "Hilton London Bankside"
+  address: "London SE1 0UG, United Kingdom"
+speakers:
+  - name: "James Flanagan"
+    role: "Chief Network Officer"
+    company: "EDGE Platform"
+keyTakeaways:
+  - "Q4 2023 KPI performance analysis across 6 departments"
+  - "Market intelligence briefing on emerging sector trends"
 ---
 
-KPI Reporting is an essential practice for any performance-driven organization. Our consultants work closely with your team to identify the most impactful metrics.
-
-## Our Approach
-We begin with a thorough audit of your existing measurement frameworks.
-
-## Key Benefits
-- Real-time performance visibility
-- Data-driven decision making
-- Custom dashboards for each stakeholder level
+# Strategic Roadmap & Objectives
+Full event summary and body content...
 ```
 
 ---
 
-## 5. Dynamic Route Rendering Strategy
+## 5. Dynamic Route Rendering Strategy (Astro 7 Content Layer)
 
-Detail pages support both static pre-rendering and Cloudflare server-side rendering:
+Detail pages support both static pre-rendering and Cloudflare server-side rendering using the Astro 7 Content Layer `render(entry)` API:
 
 ```astro
 ---
-import { getCollection } from 'astro:content';
+import { getEntry, render } from 'astro:content';
 
 const { slug } = Astro.params;
-const entries = await getCollection('portfolio');
-const entry = entries.find(c => c.id === slug || c.slug === slug);
-const { Content } = await entry.render();
+const entry = await getEntry('events', slug!);
+if (!entry) return Astro.redirect('/404');
+
+const event = entry.data;
+const { Content } = await render(entry);
 ---
 ```
 

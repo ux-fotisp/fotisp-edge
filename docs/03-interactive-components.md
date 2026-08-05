@@ -105,9 +105,18 @@ Cards on the homepage (`.feature-card`) track cursor coordinates dynamically (`-
 
 ---
 
-## 8. Circular Scroll Progress Ring (`<BackToTop.astro>`)
+## 9. Events Archive & Single Card Components (`<EventCard.astro>`)
 
-The BackToTop button features an integrated SVG progress ring around its perimeter:
-- **Scroll Tracking**: Listens to `window.scrollY` and calculates page scroll percentage.
-- **SVG Dash Offset**: Dynamically adjusts `strokeDashoffset` on the `#progress-circle` SVG element (`stroke="#DC2626"`).
-- **Visibility Trigger**: Scales in smoothly when scroll position exceeds 300px.
+- **Status Badges**: Visual status indicators (`UPCOMING` green `#22C55E`, `LIVE` red `#EF4444`, `COMPLETED` charcoal `#9CA3AF`, `RECURRING` purple `#A78BFA`).
+- **Stacked Avatar Circles**: Multi-speaker avatar stack rendering overlapping initial circles (`margin-left: -8px`) with `+N` count indicators.
+- **Dynamic Capacity Bar**: Color-shifting progress bar tracking percentage filled (<70% green, 70-89% amber, 90%+ red).
+- **Crimson Hover Glow**: Card border transitions to `#DC2626` with a `0 0 24px rgba(220,38,38,0.2)` glow and -2px vertical lift.
+
+---
+
+## 10. Single Event Conversion & Sharing Widgets (`events/[slug].astro`)
+
+- **Collapsible Calendar Dropdown**: Accessible menu (`aria-expanded`) offering instant export options for Google Calendar, Apple (.ics), and Outlook.
+- **1-Click Copy Link Toast**: Interactive URL copy button that copies `window.location.href` to clipboard and provides immediate `✓ Copied!` feedback for 2 seconds.
+- **Sticky Conversion Sidebar**: Sticky sidebar (`top: 100px`) locking registration CTAs and event specs in view during content scroll.
+
