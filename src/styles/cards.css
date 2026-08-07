@@ -103,43 +103,6 @@
 .team-card-name { font-size: 1.1rem; margin-bottom: 4px; letter-spacing: var(--tracking-tight); }
 .team-card-role { font-size: 14px; color: var(--color-text-light); }
 
-/* ── Event card ── */
-.event-card { display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--color-border); }
-.event-card-date-badge {
-  flex-shrink: 0;
-  width: 60px;
-  text-align: center;
-  background: var(--color-primary);
-  color: #fff;
-  border-radius: var(--radius-base);
-  padding: 10px 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.event-card-date-day { font-size: 1.5rem; font-weight: 700; line-height: 1; }
-.event-card-date-month { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
-
-/* ── Entry list meta (event single) ── */
-.entry-list-meta {
-  display: flex;
-  justify-content: space-between;
-  margin: 0 0 30px;
-  padding: 20px;
-  list-style: none;
-  border-radius: var(--radius-base);
-  background: var(--color-primary);
-  color: #fff;
-}
-.entry-list-meta-label {
-  display: block;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2.9px;
-}
-.entry-list-meta-value { display: block; font-size: 16px; line-height: 1.4; }
-
 /* ── Portfolio card ── */
 .portfolio-card { position: relative; overflow: hidden; border-radius: var(--radius-base); }
 .portfolio-card img { width: 100%; aspect-ratio: 4/3; object-fit: cover; transition: transform 0.3s ease; }
@@ -156,6 +119,5 @@
 
 @media (max-width: 767px) {
   .entry-item-media { grid-template-columns: 1fr; }
-  .entry-list-meta { flex-wrap: wrap; padding: 10px; }
-  .entry-list-meta-item { width: 100%; }
 }
+
