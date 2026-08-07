@@ -30,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `TeamCard.astro` to support social links, team profile routes, and image rendering.
 - Enhanced `PortfolioCard.astro` with electric scarlet tags, client metadata, and link arrows.
 - Updated `src/styles/homepage.css` with responsive section header splits, grid layouts, and card hover spotlight mechanics.
+- Updated mobile header layout in `src/styles/navigation.css` to hide the outer `Access Edge` button while sustaining it cleanly inside the mobile drawer menu.
+- Enforced strict global `overflow-x: hidden` across `html`, `body`, `.page-wrap`, `.site-content-wrap`, and `.main` in `src/styles/base.css` to eliminate horizontal scrolling on mobile viewports.
 
 ---
 

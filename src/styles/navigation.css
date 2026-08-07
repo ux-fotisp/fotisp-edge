@@ -217,4 +217,6 @@
 @media (max-width: 991px) {
   .navigation-main { display: none; }
   .mobile-nav-trigger { display: flex; }
+  /* Hide the outside Access Edge button on mobile; sustained within the drawer menu */
+  .header-actions .header-cta { display: none !important; }
 }

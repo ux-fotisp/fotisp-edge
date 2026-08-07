@@ -6,7 +6,12 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { font-size: var(--font-size-base); scroll-behavior: smooth; }
+html {
+  font-size: var(--font-size-base);
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100%;
+}
 
 body {
   font-family: var(--font-primary);
@@ -16,6 +21,9 @@ body {
   background-color: var(--color-body-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  max-width: 100%;
+  position: relative;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -45,9 +53,9 @@ ul, ol { list-style: none; }
   padding-inline: 24px;
 }
 
-.page-wrap { display: flex; flex-direction: column; min-height: 100vh; }
-.site-content-wrap { flex: 1; }
-.main { padding: 80px 0; }
+.page-wrap { display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; width: 100%; max-width: 100%; }
+.site-content-wrap { flex: 1; overflow-x: hidden; width: 100%; max-width: 100%; }
+.main { padding: 80px 0; overflow-x: hidden; }
 
 /* ── FillHoverButton (AstroAnimate Effect) ── */
 .btn, button[type="submit"], input[type="submit"], .header-cta, .btn-fill-hover {
