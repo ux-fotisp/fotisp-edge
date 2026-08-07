@@ -5,6 +5,8 @@
   "compatibility_flags": ["nodejs_compat"],
   "pages_build_output_dir": "./dist",
 
+  // Provision bindings in Cloudflare Dashboard or uncomment once resources are created:
+  /*
   "d1_databases": [
     {
       "binding": "DB",
@@ -27,6 +29,7 @@
       "bucket_name": "fotisp-media"
     }
   ],
+  */
 
   "vars": {
     "SITE_URL": "http://localhost:4321",
