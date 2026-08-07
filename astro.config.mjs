@@ -16,6 +16,9 @@ export default defineConfig({
     keystatic(),
   ],
   vite: {
+    build: {
+      chunkSizeWarningLimit: 1200,
+    },
     optimizeDeps: {
       exclude: ['@keystatic/core', '@astrojs/cloudflare', 'astro/compiler-runtime'],
     },
