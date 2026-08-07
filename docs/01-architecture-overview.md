@@ -9,7 +9,7 @@
 
 ## 1. Overview
 
-**EDGE** is a high-performance, dark-obsidian web application framework engineered for high-stakes digital operations, tech consultancies, and modern digital platforms. Designed from the ground up by **Fotis Pastrakis**, EDGE delivers surgical performance, zero-latency interactions, high-contrast visual precision, and strict compliance with Don Norman's core UX heuristics.
+**EDGE** is a high-performance, dark-obsidian web application framework engineered for high-stakes digital operations, tech consultancies, and modern digital platforms. Designed from the ground up, EDGE delivers surgical performance, zero-latency interactions, high-contrast visual precision, and strict compliance with Don Norman's core UX heuristics.
 
 ---
 
@@ -32,10 +32,15 @@
 fotisp-edge/
 ├── docs/                        # Complete technical documentation
 │   ├── 01-architecture-overview.md
-│   ├── 02-design-system-and-tokens.md
-│   ├── 03-interactive-components.md
+│   ├── 02-design-system-and-tokens.md    # Points to design.md
+│   ├── 03-interactive-components.md     # Points to design.md
 │   ├── 04-content-layer-and-collections.md
-│   └── 05-deployment-guide.md
+│   ├── 05-deployment-guide.md
+│   ├── 06-versioning-and-safety-strategy.md
+│   ├── 07-css-sanitization-and-deployment-fix.md
+│   ├── 08-homepage-v02-upgrade-and-ooux-integration.md
+│   ├── design.md                # Master UI/UX Design System & Experience Architecture
+│   └── information-architecture.md # OOUX / ORCA Domain Model & Evaluation
 ├── public/
 │   ├── favicon.svg              # EDGE emblem favicon
 │   └── images/                  # Static assets & circuit board illustrations
@@ -60,7 +65,7 @@ fotisp-edge/
 │   ├── layouts/
 │   │   └── BaseLayout.astro     # Master layout template
 │   ├── pages/                   # Application routes (Archetype Engine)
-│   │   ├── index.astro          # Homepage (5 core sections)
+│   │   ├── index.astro          # Homepage (v0.2 Dynamic OOUX Portal)
 │   │   ├── contact.astro        # Terminal contact page
 │   │   ├── blog/[...slug].astro # Archetype A: Editorial Reader Column
 │   │   ├── portfolio/[...slug].astro # Archetype B: Full-Width Case Study Grid
@@ -77,54 +82,26 @@ fotisp-edge/
 │       ├── cards.css            # Dark card component styles
 │       └── footer.css           # Dual-layer footer styles
 ├── tests/                       # QA & Unit test suites
-│   ├── qa-interactive-components.ts
-│   ├── qa-full-routing-suite.ts
-│   └── qa-edge-suite.ts
 ├── astro.config.mjs             # Astro server configuration & Cloudflare adapter
 └── package.json                 # Node dependencies & build scripts
 ```
 
 ---
 
-## 4. Sub-Page Archetype Layout Engine
+## 4. Sub-Page Archetype Routing Overview
 
-EDGE implements three specialized page archetypes to enforce natural mental models:
+EDGE routes content through four specialized page archetypes to enforce natural mental models. For comprehensive architectural specifications, refer to [`docs/design.md`](design.md#7-sub-page-archetype-layout-engine-ooux-structural-layouts):
 
-```
-+-----------------------------------------------------------------------------------+
-| ARCHETYPE A: Editorial         | ARCHETYPE B: Portfolio        | ARCHETYPE C: Services
-| (max-width: 720px)             | (max-width: 1200px)           | (70/30 Split Layout)
-| - Top #read-progress bar       | - CASE STUDY // ID badge      | - Sticky sidebar (30%)
-| - Category badge               | - 4-col Metric Grid (Scarlet) | - Section anchor nav
-| - Author avatar & reading time | - Tech stack pill badges      | - Structured doc blocks
-| - Single column reader flow    | - 2-column visual & content   | - Inline blur validation
-+-----------------------------------------------------------------------------------+
-```
-
-1. **Archetype A — Blog & Editorial (`blog/[...slug].astro`)**:
-   - Constrained 720px reader column.
-   - Top-fixed `#read-progress` bar tracking scroll depth.
-   - Author avatar initials badge, date, and calculated reading time.
-
-2. **Archetype B — Portfolio & Case Studies (`portfolio/[...slug].astro`)**:
-   - Full 1200px case study grid.
-   - `CASE STUDY // [ID]` identifier tag.
-   - 4-column metric grid featuring large electric scarlet numbers.
-   - Tech stack pill badges (`#1A080B` surface, `#380F15` crimson border).
-   - 2-column grid pairing interactive architecture visual panel with MDX content.
-
-3. **Archetype C — Services & Informational (`services/[...slug].astro`)**:
-   - 70/30 split layout with sticky sidebar navigation.
-   - Real-time `IntersectionObserver` section anchor tracking (`#overview`, `#specs`, `#pricing`).
-   - Structured documentation blocks with 1px `#380F15` borders.
-   - Strict button hierarchy (solid `#DC2626` primary vs. outlined red secondary).
-   - Real-time inline blur validation with disabled-until-valid submit buttons.
+1. **Archetype A — Editorial (`blog/[...slug].astro`)**: 720px reader column with `#read-progress` depth tracking.
+2. **Archetype B — Case Studies (`portfolio/[...slug].astro`)**: 1200px full grid with 4-column scarlet numeric callouts.
+3. **Archetype C — Services (`services/[...slug].astro`)**: 70/30 split layout with `IntersectionObserver` sticky sidebar anchor navigation.
+4. **Archetype D — Event System (`events/[slug].astro`)**: 70/30 split layout with sticky conversion sidebar, capacity progress bar, and calendar dropdown.
 
 ---
 
 ## 5. Master Layout Engine (`BaseLayout.astro`)
 
-All pages are wrapped by `BaseLayout.astro`, which guarantees global visual and functional parity across the platform:
+All pages are wrapped by `BaseLayout.astro`, guaranteeing global visual and functional parity across the platform:
 
 ```astro
 ---
