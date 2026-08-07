@@ -17,6 +17,12 @@
     "emergency:rollback": "git checkout main && git reset --hard v1.0.0-stable && git clean -fd",
     "astro": "astro"
   },
+  "allowScripts": {
+    "esbuild": true,
+    "esbuild@0.28.1": true,
+    "workerd": true,
+    "workerd@1.20260730.1": true
+  },
   "dependencies": {
     "@astrojs/cloudflare": "14.1.7",
     "@astrojs/mdx": "^7.0.5",
