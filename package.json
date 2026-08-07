@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "postbuild": "node scripts/fix-wrangler-config.mjs",
     "preview": "astro preview",
     "clean:cache": "powershell -Command \"Remove-Item -Recurse -Force .astro, .wrangler, node_modules\\.vite -ErrorAction SilentlyContinue\"",
     "test": "npx tsx tests/qa-interactive-components.ts",
