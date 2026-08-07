@@ -1,23 +1,41 @@
 ---
-// PortfolioCard.astro — fotisp-portfolio CPT card
+// PortfolioCard.astro — fotisp-portfolio CPT card (OOUX Case Study Object)
 interface Props {
   title: string;
   slug: string;
   excerpt?: string;
   featuredImage?: string;
   category?: string;
+  client?: string;
 }
-const { title, slug, excerpt, featuredImage, category } = Astro.props;
+const { title, slug, excerpt, featuredImage, category, client } = Astro.props;
 ---
 <article class="portfolio-card">
-  {featuredImage && (
-    <a href={`/portfolio/${slug}`}>
+  {featuredImage ? (
+    <a href={`/portfolio/${slug}`} class="portfolio-card-img-link">
       <img src={featuredImage} alt={title} width="615" height="410" loading="lazy" />
     </a>
+  ) : (
+    <div class="portfolio-card-placeholder" aria-hidden="true">
+      <span class="portfolio-card-placeholder-text">MISSION // {category || 'CASE STUDY'}</span>
+    </div>
   )}
   <div class="portfolio-card-meta">
-    {category && <span style="font-size:12px;text-transform:uppercase;letter-spacing:1px;opacity:0.8;">{category}</span>}
-    <h3 style="font-size:1rem;margin:4px 0;"><a href={`/portfolio/${slug}`} style="color:#fff;">{title}</a></h3>
-    <a href={`/portfolio/${slug}`} class="btn" style="margin-top:10px;font-size:13px;padding:6px 18px;">Learn More</a>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+      {category && <span class="portfolio-card-badge">{category}</span>}
+      {client && <span style="font-size:11px;color:var(--color-muted);font-weight:600;">{client}</span>}
+    </div>
+    <h3 style="font-size:1.15rem;font-weight:800;line-height:1.3;margin:0 0 10px 0;">
+      <a href={`/portfolio/${slug}`} style="color:#FFFFFF;text-decoration:none;transition:color 0.2s ease;">{title}</a>
+    </h3>
+    {excerpt && (
+      <p style="font-size:13.5px;color:var(--color-text-light);line-height:1.6;margin:0 0 18px 0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
+        {excerpt}
+      </p>
+    )}
+    <a href={`/portfolio/${slug}`} class="link-arrow" style="margin-top:auto;">
+      Inspect Mission Brief <span aria-hidden="true">→</span>
+    </a>
   </div>
 </article>
+

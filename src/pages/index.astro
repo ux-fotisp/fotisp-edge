@@ -1,14 +1,38 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CyberGridBg from '../components/CyberGridBg.astro';
+import StatsBar from '../components/StatsBar.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import EventCard from '../components/EventCard.astro';
+import PortfolioCard from '../components/PortfolioCard.astro';
+import TeamCard from '../components/TeamCard.astro';
+import AccessModal from '../components/AccessModal.astro';
 import '../styles/homepage.css';
 
-// Team data
-const team = [
-  { name: 'Martin Dylon',        slug: 'martin-dylon',        role: 'Chief Financial Officer' },
-  { name: 'James Flanagan',      slug: 'james-flanagan',      role: 'Chief Network Officer' },
-  { name: 'Mark Price',          slug: 'mark-price',          role: 'Chief Diversity Officer' },
-  { name: 'Christopher Walker',  slug: 'christopher-walker',  role: 'Chief Commercial Officer' },
+// Query Content Layer Collections (OOUX Object Collections)
+const allEvents = await getCollection('events', ({ data }) => !data.draft);
+const featuredEvents = allEvents
+  .sort((a, b) => new Date(b.data.eventDate).getTime() - new Date(a.data.eventDate).getTime())
+  .slice(0, 2);
+
+const allServices = await getCollection('services', ({ data }) => !data.draft);
+const featuredServices = allServices
+  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
+  .slice(0, 3);
+
+const allPortfolio = await getCollection('portfolio', ({ data }) => !data.draft);
+const featuredPortfolio = allPortfolio.slice(0, 2);
+
+const allTeam = (await getCollection('team'))
+  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+// System Telemetry Data (Don Norman Usability Heuristic: System Status Visibility)
+const telemetryStats = [
+  { value: '99.99%', label: 'Uptime Reliability' },
+  { value: '< 1ms', label: 'Edge TTFB Latency' },
+  { value: '500+', label: 'Infrastructure Audits' },
+  { value: '24/7', label: 'Autonomous Defense' },
 ];
 ---
 
@@ -51,14 +75,19 @@ const team = [
           Precision engineering for the high-stakes digital frontier. Uncompromising performance, surgical accuracy, seamless speed designed for those who command the cutting-edge.
         </p>
 
-        <!-- CTAs -->
+        <!-- CTAs (Don Norman Explicit Signifiers & Affordances) -->
         <div class="hero-actions">
-          <a href="/contact" class="btn" id="hero-deploy-btn">DEPLOY INFRASTRUCTURE</a>
+          <button class="btn" data-open-modal id="hero-deploy-btn">DEPLOY INFRASTRUCTURE</button>
           <a href="/services" class="btn btn-outline" id="hero-specs-btn">VIEW SPECS</a>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       TELEMETRY STATS BAR (Don Norman Visibility of System Status)
+  ════════════════════════════════════════════════════════ -->
+  <StatsBar stats={telemetryStats} bgColor="#0B0C10" textColor="#F3F4F6" />
 
   <!-- ═══════════════════════════════════════════════════════
        TRUSTED BY SECTION
@@ -77,60 +106,89 @@ const team = [
   </section>
 
   <!-- ═══════════════════════════════════════════════════════
-       COMMAND COMPLETE CONTROL
+       CORE SERVICES MATRIX SECTION (OOUX Service Objects)
   ════════════════════════════════════════════════════════ -->
-  <section class="command-control" aria-label="Features">
+  <section class="command-control" aria-label="Services">
     <div class="container">
-      <div class="section-header">
-        <h2>Command Complete Control</h2>
-        <p>
-          Architected from the ground up for environments where micro-seconds matter. Our core
-          systems are designed to eliminate latency and neutralize threats autonomously.
-        </p>
+      <div class="section-header section-header-split">
+        <div>
+          <h2>Core Engineering Services</h2>
+          <p>Architected from the ground up for environments where micro-seconds matter.</p>
+        </div>
+        <a href="/services" class="link-arrow">Inspect All Services & Specs <span aria-hidden="true">→</span></a>
       </div>
 
       <div class="feature-cards">
+        {featuredServices.map(service => (
+          <ServiceCard
+            title={service.data.title}
+            slug={service.id || service.slug}
+            excerpt={service.data.excerpt}
+            icon={service.data.icon}
+            featuredImage={service.data.featuredImage}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
 
-        <!-- Card 1: Zero-Trust Matrix -->
-        <article class="feature-card">
-          <div class="feature-card-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7L12 2z"/>
-            </svg>
-          </div>
-          <h3 class="feature-card-title">Zero-Trust Matrix</h3>
-          <p class="feature-card-desc">
-            Cryptographic assertion architecture ensuring absolute integrity across all distributed environments. Every node verified, every packet authenticated.
-          </p>
-        </article>
+  <!-- ═══════════════════════════════════════════════════════
+       UPCOMING STRATEGY SESSIONS & SUMMITS (OOUX Event Objects)
+  ════════════════════════════════════════════════════════ -->
+  <section class="events-section" aria-label="Upcoming Events">
+    <div class="container">
+      <div class="section-header section-header-split">
+        <div>
+          <h2>Upcoming Strategy Sessions & Summits</h2>
+          <p>Live strategy gatherings, keynotes, and engineering briefings.</p>
+        </div>
+        <a href="/events" class="link-arrow">View Full Event Archive <span aria-hidden="true">→</span></a>
+      </div>
 
-        <!-- Card 2: Hyper-Threaded Routing -->
-        <article class="feature-card">
-          <div class="feature-card-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-            </svg>
-          </div>
-          <h3 class="feature-card-title">Hyper-Threaded Routing</h3>
-          <p class="feature-card-desc">
-            Dynamic path optimization reducing latency to sub-millisecond range. Eliminates congestion and reroutes around failure in real-time margins.
-          </p>
-        </article>
+      <div class="events-grid">
+        {featuredEvents.map(event => (
+          <EventCard
+            title={event.data.title}
+            slug={event.id || event.slug}
+            tagline={event.data.tagline}
+            excerpt={event.data.excerpt}
+            eventDate={event.data.eventDate}
+            timeSlot={event.data.timeSlot}
+            status={event.data.status}
+            eventType={event.data.eventType}
+            location={event.data.location}
+            capacity={event.data.capacity}
+            speakers={event.data.speakers}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
 
-        <!-- Card 3: Neural Telemetry -->
-        <article class="feature-card">
-          <div class="feature-card-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/>
-            </svg>
-          </div>
-          <h3 class="feature-card-title">Neural Telemetry</h3>
-          <p class="feature-card-desc">
-            Predictive analytics engine processing terabytes of log data to pre-empt system strain. Self-healing infrastructure before failure occurs.
-          </p>
-        </article>
+  <!-- ═══════════════════════════════════════════════════════
+       ENGINEERING MISSIONS & CASE STUDIES (OOUX Portfolio Objects)
+  ════════════════════════════════════════════════════════ -->
+  <section class="portfolio-showcase" aria-label="Engineering Missions and Case Studies">
+    <div class="container">
+      <div class="section-header section-header-split">
+        <div>
+          <h2>Engineering Missions & Case Studies</h2>
+          <p>Proven high-stakes architectural overhauls and strategic performance metrics.</p>
+        </div>
+        <a href="/portfolio" class="link-arrow">Explore All Case Studies <span aria-hidden="true">→</span></a>
+      </div>
 
+      <div class="portfolio-grid">
+        {featuredPortfolio.map(item => (
+          <PortfolioCard
+            title={item.data.title}
+            slug={item.id || item.slug}
+            excerpt={item.data.excerpt}
+            category={item.data.category}
+            featuredImage={item.data.featuredImage}
+            client={item.data.client}
+          />
+        ))}
       </div>
     </div>
   </section>
@@ -196,34 +254,43 @@ const team = [
   </section>
 
   <!-- ═══════════════════════════════════════════════════════
-       THE TEAM BEHIND EDGE
+       INTERACTIVE TEAM DIRECTORY (OOUX Team Objects)
   ════════════════════════════════════════════════════════ -->
   <section class="team-section" aria-label="Our team">
     <div class="container">
-      <div class="section-header section-header-dark">
-        <h2>The Team behind Edge</h2>
-        <p>Every service that blooms, has the right people that make it happen.</p>
+      <div class="section-header section-header-dark section-header-split">
+        <div>
+          <h2>The Team Behind Edge</h2>
+          <p>Every service that blooms, has the right people that make it happen.</p>
+        </div>
+        <a href="/team" class="link-arrow link-arrow-dark">Meet The Full Team <span aria-hidden="true">→</span></a>
       </div>
 
       <div class="team-grid">
-        {team.map(member => (
-          <div class="team-member-card">
-            <div class="team-member-avatar" aria-hidden="true">
-              {member.name.split(' ').map(n => n[0]).join('')}
-            </div>
-            <p class="team-member-name">{member.name}</p>
-            <p class="team-member-role">{member.role}</p>
-          </div>
+        {allTeam.map(member => (
+          <TeamCard
+            name={member.data.name}
+            slug={member.id || member.slug}
+            role={member.data.role}
+            photo={member.data.photo}
+            social={member.data.social}
+          />
         ))}
       </div>
     </div>
   </section>
 
+  <!-- TERMINAL ACCESS DRAWER MODAL -->
+  <AccessModal />
+
 </BaseLayout>
 
 <script>
-  // Feature Card Interactive Spotlight Tracker
-  const cards = document.querySelectorAll('.feature-card') as NodeListOf<HTMLElement>;
+  // Don Norman Micro-Interactions: Mouse Spotlight & Physics Tracker across all OOUX cards
+  const cards = document.querySelectorAll(
+    '.feature-card, .service-card, .event-card, .portfolio-card, .team-card'
+  ) as NodeListOf<HTMLElement>;
+
   cards.forEach((card) => {
     card.addEventListener('mousemove', (e: MouseEvent) => {
       const rect = card.getBoundingClientRect();

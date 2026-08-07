@@ -479,27 +479,203 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
+   v0.2 OOUX & USABILITY LAYOUT UTILITIES & SIGNIFIERS
+   ═══════════════════════════════════════════════════════════ */
+.section-header-split {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  text-align: left;
+  flex-wrap: wrap;
+}
+.section-header-split > div {
+  max-width: 600px;
+}
+
+.link-arrow {
+  color: var(--color-primary, #DC2626);
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s ease;
+  white-space: nowrap;
+}
+.link-arrow:hover {
+  gap: 12px;
+  color: #EF4444;
+}
+.link-arrow-dark {
+  color: #111827;
+}
+.link-arrow-dark:hover {
+  color: #DC2626;
+}
+
+/* Events Section Grid */
+.events-section {
+  padding: 100px 0;
+  background: #0B0C10;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+
+/* Portfolio Showcase Grid */
+.portfolio-showcase {
+  padding: 100px 0;
+  background: var(--color-obsidian, #080303);
+  border-top: 1px solid rgba(220, 38, 38, 0.15);
+}
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  margin-top: 40px;
+}
+
+/* OOUX Card Physics & Hover Spotlight */
+.feature-card,
+.service-card,
+.event-card,
+.portfolio-card,
+.team-card {
+  position: relative;
+  will-change: transform, box-shadow, border-color;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+.feature-card::before,
+.service-card::before,
+.event-card::before,
+.portfolio-card::before,
+.team-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(239, 68, 68, 0.12),
+    transparent 80%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.feature-card:hover::before,
+.service-card:hover::before,
+.event-card:hover::before,
+.portfolio-card:hover::before,
+.team-card:hover::before {
+  opacity: 1;
+}
+
+.feature-card:hover,
+.service-card:hover,
+.event-card:hover,
+.portfolio-card:hover,
+.team-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(220, 38, 38, 0.55) !important;
+  box-shadow: 0 0 24px rgba(220, 38, 38, 0.18), 0 12px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Portfolio Card specific styling */
+.portfolio-card {
+  background: var(--color-surface, #0F0909);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.portfolio-card-img-link {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+}
+.portfolio-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.portfolio-card:hover img {
+  transform: scale(1.04);
+}
+.portfolio-card-placeholder {
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, rgba(220,38,38,0.15), rgba(112,26,26,0.3));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(220, 38, 38, 0.2);
+}
+.portfolio-card-placeholder-text {
+  font-family: var(--font-secondary);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--color-primary, #DC2626);
+}
+.portfolio-card-meta {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.portfolio-card-badge {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary, #DC2626);
+  background: rgba(220, 38, 38, 0.12);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  padding: 3px 10px;
+  border-radius: 9999px;
+}
+
+/* ═══════════════════════════════════════════════════════════
    RESPONSIVE MOBILE STACKING
    ═══════════════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
   .feature-cards { grid-template-columns: repeat(2, 1fr); }
   .team-grid { grid-template-columns: repeat(2, 1fr); }
   .forged-inner { gap: 48px; }
+  .events-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {
   .hero-edge { min-height: auto; padding: 140px 0 80px; }
   .feature-cards { grid-template-columns: 1fr; }
+  .portfolio-grid { grid-template-columns: 1fr; }
   .forged-inner { grid-template-columns: 1fr; gap: 40px; }
   .forged-illustration { order: 2; }
   .forged-content { order: 1; }
   .team-grid { grid-template-columns: 1fr; }
   .trusted-logos { gap: 28px; }
   .command-control,
+  .events-section,
+  .portfolio-showcase,
   .forged-section,
   .team-section { padding: 72px 0; }
   .hero-headline { font-size: clamp(2.4rem, 10vw, 3.5rem); }
   .hero-actions { flex-direction: column; align-items: center; }
+  .section-header-split { flex-direction: column; align-items: flex-start; }
 }
 
 @media (max-width: 480px) {
@@ -507,3 +683,4 @@
   .trusted-logos { gap: 20px; }
   .trusted-logo-item { font-size: 0.85rem; }
 }
+

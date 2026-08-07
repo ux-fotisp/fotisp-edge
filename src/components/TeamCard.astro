@@ -1,16 +1,31 @@
 ---
-// TeamCard.astro — fotisp-team CPT card
+// TeamCard.astro — fotisp-team CPT card (OOUX Object Component)
 interface Props {
   name: string;
   slug: string;
   role?: string;
   photo?: string;
+  social?: { linkedin?: string; twitter?: string; facebook?: string };
 }
-const { name, slug, role, photo } = Astro.props;
+const { name, slug, role, photo, social } = Astro.props;
 ---
 <article class="team-card">
-  {photo && <img src={photo} alt={name} width="615" height="820" loading="lazy" />}
-  <h3 class="team-card-name"><a href={`/team/${slug}`}>{name}</a></h3>
-  {role && <p class="team-card-role">{role}</p>}
-  <a href={`/team/${slug}`} class="btn btn-outline" style="margin-top:12px;">Learn More</a>
+  <a href={`/team/${slug}`} class="team-card-link" aria-label={`View profile for ${name}`}>
+    {photo ? (
+      <img src={photo} alt={name} class="team-member-photo" width="615" height="820" loading="lazy" />
+    ) : (
+      <div class="team-member-avatar" aria-hidden="true">
+        {name.split(' ').map(n => n[0]).join('')}
+      </div>
+    )}
+    <h3 class="team-member-name">{name}</h3>
+    {role && <p class="team-member-role">{role}</p>}
+  </a>
+  {social && (
+    <div class="team-member-social" style="display:flex;justify-content:center;gap:12px;margin-top:10px;">
+      {social.linkedin && <a href={social.linkedin} target="_blank" rel="noopener noreferrer" style="font-size:11px;color:#6B7280;text-decoration:none;">LinkedIn</a>}
+      {social.twitter && <a href={social.twitter} target="_blank" rel="noopener noreferrer" style="font-size:11px;color:#6B7280;text-decoration:none;">Twitter</a>}
+    </div>
+  )}
 </article>
+
