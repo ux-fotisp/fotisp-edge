@@ -30,11 +30,12 @@ Created by **Fotis Pastrakis**, EDGE is released for free community usage and mo
 
 Comprehensive technical guides are available in the [`docs/`](./docs/) directory:
 
+- [**Design System & Component Specs**](./docs/design.md): Comprehensive reference for colors, typography, UX heuristics, and interactive components.
+- [**Information Architecture**](./docs/information-architecture.md): OOUX Object-Oriented User Experience specifications for all system entities.
+- [**Changelog**](./CHANGELOG.md): Version release history and detailed feature logs.
 - [**01. Architecture Overview**](./docs/01-architecture-overview.md): System stack, directory map, layout engine, and performance principles.
-- [**02. Design System & Tokens**](./docs/02-design-system-and-tokens.md): Obsidian & Scarlet Red color palette, typography strategy, and CSS tokens architecture.
-- [**03. Interactive Components**](./docs/03-interactive-components.md): Deep-dive into Header Dock proximity scaling, CyberGrid canvas, AccessModal drawer, and scroll progress ring.
 - [**04. Content Layer & Collections**](./docs/04-content-layer-and-collections.md): MDX schemas, dynamic route pre-rendering, and D1 database seeding.
-- [**05. Deployment Guide**](./docs/05-deployment-guide.md): Cloudflare Pages build configuration (`npm run build`), environment bindings, and alternative target hosting (Vercel / Netlify / Static).
+- [**05. Deployment Guide**](./docs/05-deployment-guide.md): Cloudflare Pages build configuration (`npm run build`), environment bindings, and hosting options.
 
 ---
 
