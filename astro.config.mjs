@@ -8,4 +8,9 @@ export default defineConfig({
   adapter: cloudflare({
     imageService: 'cloudflare',
   }),
+  vite: {
+    ssr: {
+      external: ['node:fs/promises', 'node:path', 'node:url', 'node:crypto', 'node:buffer'],
+    },
+  },
 });
