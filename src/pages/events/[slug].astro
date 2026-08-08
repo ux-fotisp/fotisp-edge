@@ -14,7 +14,8 @@ let event: any = null;
 let Content: any = null;
 
 try {
-  const entry = await getEntry('events', slug!);
+  const allEvents = await getCollection('events');
+  const entry = allEvents.find(e => e.id === slug || e.id === `${slug}.mdx` || e.id === `${slug}.md` || (e as any).slug === slug);
   if (entry) {
     event = entry.data;
     const rendered = await render(entry);

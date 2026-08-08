@@ -1,413 +1,444 @@
 ---
-// Archetype C: Services / Informational — Don Norman UX Heuristics
-// - 70/30 split layout: sticky left sidebar (30%) + main content (70%)
-// - Sticky sub-navigation linking to section anchors (#overview, #specs, #pricing)
-// - Structured documentation blocks separated by 1px #380F15 card borders
-// - Primary: solid #DC2626 CTA buttons; Secondary: outlined red (Heuristic 2)
-// - Inline form validation feedback (Heuristic 3/4)
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageTitle from '../../components/PageTitle.astro';
 import CTABand from '../../components/CTABand.astro';
+import { getCollection, render } from 'astro:content';
 
-export const prerender = false;
+export async function getStaticPaths() {
+  const services = await getCollection('services');
+  return services.map(entry => ({
+    params: { slug: (entry as any).slug || entry.id.replace(/\.mdx?$/, '') },
+    props: { entry },
+  }));
+}
 
-const slug = Astro.params.slug ?? 'sample';
+const { slug } = Astro.params;
+const allServicesCollection = await getCollection('services');
+const entry = Astro.props.entry || allServicesCollection.find(s => 
+  s.id === slug || s.id === `${slug}.mdx` || s.id === `${slug}.md` || (s as any).slug === slug
+);
 
-const service = {
-  title: 'KPI Reporting',
-  slug,
-  icon: '📊',
-  excerpt: 'A Key Performance Indicator (KPI) is a measurable value that demonstrates how effectively a company is achieving key business objectives.',
-  content: `<p>KPI Reporting is an essential practice for any performance-driven organization. Our consultants work closely with your team to identify the most impactful metrics and develop custom dashboards that provide real-time insights.</p>
-<h2>Our Approach</h2>
-<p>We begin with a thorough audit of your existing measurement frameworks, then design a reporting system tailored to your industry and strategic goals.</p>
-<h2>Key Benefits</h2>
-<ul><li>Real-time performance visibility</li><li>Data-driven decision making</li><li>Custom dashboards for each stakeholder level</li><li>Monthly executive reporting packages</li></ul>`,
-  featuredImage: '',
-};
+if (!entry) {
+  return Astro.redirect('/services');
+}
 
-const sectionAnchors = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'specs', label: 'Specifications' },
-  { id: 'benefits', label: 'Key Benefits' },
-  { id: 'pricing', label: 'Pricing & Access' },
+const { Content } = await render(entry);
+const { title, tagline, excerpt, category = 'INFRASTRUCTURE', icon = '⚡', deliverables, slaMetrics, pricingTier = 'ENTERPRISE // CUSTOM SCOPE' } = entry.data;
+
+const summaryText = tagline || excerpt || 'High-throughput, enterprise-grade engineering solutions designed for mission-critical infrastructure.';
+
+const defaultDeliverables = [
+  'Zero-Trust System Audits',
+  'Automated Telemetry Pipeline',
+  'Sub-Millisecond Edge Routing',
+  '24/7 Monitoring & Incident Escalation'
 ];
+const activeDeliverables = deliverables && deliverables.length > 0 ? deliverables : defaultDeliverables;
 
-const allServices = [
-  { href: '/services/kpi-reporting', label: 'KPI Reporting' },
-  { href: '/services/reverse-logistics', label: 'Reverse Logistics' },
-  { href: '/services/it-business-consulting', label: 'IT Consulting' },
-  { href: '/services/strategic-planning', label: 'Strategic Planning' },
-  { href: '/services/market-research', label: 'Market Research' },
-  { href: '/services/operations-management', label: 'Operations Mgmt' },
+const defaultMetrics = [
+  { label: 'EDGE LATENCY', value: '< 1ms' },
+  { label: 'SLA UPTIME', value: '99.999%' },
+  { label: 'SECURITY SCORE', value: '100/100' }
 ];
+const activeMetrics = slaMetrics && slaMetrics.length > 0 ? slaMetrics : defaultMetrics;
 ---
 
-<BaseLayout
-  title={`${service.title} — Services — EDGE`}
-  description={service.excerpt}
+<BaseLayout 
+  title={`${title} — Services | EDGE`} 
+  description={summaryText}
 >
-  <PageTitle
-    title={service.title}
-    breadcrumbs={[{ label: 'Services', href: '/services' }, { label: service.title }]}
+  {/* Fixed top reading progress bar */}
+  <div id="read-progress" class="read-progress-bar" aria-hidden="true"></div>
+
+  <PageTitle 
+    title={title} 
+    breadcrumbs={[
+      { label: 'HOME', href: '/' },
+      { label: 'SERVICES', href: '/services' },
+      { label: title.toUpperCase() }
+    ]} 
   />
 
   <main class="main service-main" id="site-content">
     <div class="container">
-
-      <!-- Archetype C: 70/30 split layout -->
-      <div class="service-layout">
-
-        <!-- LEFT SIDEBAR (30%) — sticky section navigation + service list -->
-        <aside class="service-sidebar">
-          <!-- Section anchor nav -->
-          <div class="service-sidenav widget">
-            <h3 class="widget-title">On This Page</h3>
-            <nav aria-label="Page sections">
-              <ul id="section-nav-list">
-                {sectionAnchors.map(s => (
-                  <li>
-                    <a href={`#${s.id}`} class="section-nav-link" data-section={s.id}>
-                      {s.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+      
+      {/* 70/30 Split Layout */}
+      <div class="service-detail-layout">
+        
+        {/* Main Column (70%) */}
+        <article class="service-detail-content">
+          
+          {/* Executive Summary Box (bg-[#1A080B] with 4px #ee2626 left border) */}
+          <div class="executive-summary-box">
+            <span class="summary-badge">{category}</span>
+            <p class="summary-text">{summaryText}</p>
           </div>
 
-          <!-- All services list -->
-          <div class="widget" style="margin-top: 16px;">
-            <h3 class="widget-title">Our Services</h3>
-            <ul>
-              {allServices.map(s => (
-                <li>
-                  <a
-                    href={s.href}
-                    class={`service-nav-link${s.href.includes(slug) ? ' is-current' : ''}`}
-                    aria-current={s.href.includes(slug) ? 'page' : undefined}
-                  >
-                    {s.label}
-                  </a>
-                </li>
+          {/* 2-Column Key Deliverables Card Grid */}
+          <div class="deliverables-section">
+            <h2 class="deliverables-grid-title">Key Capabilities & Deliverables</h2>
+            <div class="deliverables-2col-grid">
+              {activeDeliverables.map(del => (
+                <div class="deliverable-grid-card">
+                  <span class="del-check">✓</span>
+                  <span class="del-text">{del}</span>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
 
-          <!-- Heuristic 2: Primary CTA (solid) vs Secondary (outlined) -->
-          <div class="service-sidebar-cta">
-            <!-- Primary: solid #DC2626 — main action -->
-            <a href="/contact" class="btn" style="width:100%;justify-content:center;" id="service-primary-cta">
-              DEPLOY NOW
+          {/* Rendered MDX Technical Specifications */}
+          <div class="entry-content service-mdx-content">
+            <h2 class="tech-specs-heading">Technical Specifications & Architecture</h2>
+            <Content />
+          </div>
+
+        </article>
+
+        {/* Sidebar (30%) — Sticky card top-24 */}
+        <aside class="service-sidebar sticky top-24">
+          <div class="service-proposal-card">
+            
+            {/* Category & Pricing Tier Badge */}
+            <div class="proposal-badge-row">
+              <span class="pricing-badge">{pricingTier}</span>
+            </div>
+
+            <h3 class="proposal-title">Scope Engagement</h3>
+            <p class="proposal-desc">Deploy dedicated senior engineering leads to architect your custom solution.</p>
+
+            {/* SLA Metrics Bar */}
+            <div class="sla-metrics-container">
+              <span class="sla-heading">VERIFIED SLA METRICS</span>
+              <div class="sla-metrics-grid">
+                {activeMetrics.map(metric => (
+                  <div class="sla-metric-box">
+                    <span class="sla-val">{metric.value}</span>
+                    <span class="sla-lbl">{metric.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Primary CTA */}
+            <a href="/contact" class="scope-project-btn">
+              SCOPE PROJECT <span aria-hidden="true">→</span>
             </a>
-            <!-- Secondary: outlined — lower priority -->
-            <a href="/portfolio" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:10px;" id="service-secondary-cta">
-              VIEW CASE STUDIES
-            </a>
+
+            <div class="proposal-telemetry-foot">
+              <span class="status-dot"></span>
+              STATUS: SLA GUARANTEED
+            </div>
+
           </div>
         </aside>
 
-        <!-- MAIN CONTENT (70%) — structured documentation blocks -->
-        <div class="service-content-area">
-
-          <!-- Section: Overview -->
-          <section id="overview" class="service-doc-block" aria-labelledby="overview-heading">
-            <h2 id="overview-heading">Overview</h2>
-            {service.excerpt && <p class="lead">{service.excerpt}</p>}
-          </section>
-
-          <!-- Section: Specs -->
-          <section id="specs" class="service-doc-block" aria-labelledby="specs-heading">
-            <h2 id="specs-heading">Specifications</h2>
-            <div class="service-spec-grid">
-              <div class="service-spec-item">
-                <span class="service-spec-label">Delivery Mode</span>
-                <span class="service-spec-value">Retainer / Project-Based</span>
-              </div>
-              <div class="service-spec-item">
-                <span class="service-spec-label">Reporting Cadence</span>
-                <span class="service-spec-value">Weekly / Monthly</span>
-              </div>
-              <div class="service-spec-item">
-                <span class="service-spec-label">Team Size</span>
-                <span class="service-spec-value">2–4 Consultants</span>
-              </div>
-              <div class="service-spec-item">
-                <span class="service-spec-label">Onboarding</span>
-                <span class="service-spec-value">&lt; 72 Hours</span>
-              </div>
-            </div>
-          </section>
-
-          <!-- Section: Benefits (MDX entry-content) -->
-          <section id="benefits" class="service-doc-block" aria-labelledby="benefits-heading">
-            <h2 id="benefits-heading">Key Benefits</h2>
-            <div class="entry-content" set:html={service.content} />
-          </section>
-
-          <!-- Section: Pricing -->
-          <section id="pricing" class="service-doc-block" aria-labelledby="pricing-heading">
-            <h2 id="pricing-heading">Pricing & Access</h2>
-            <p class="entry-content" style="color:#D1D5DB;line-height:1.8;">
-              EDGE pricing is scoped per engagement. Contact us for a tailored proposal with full infrastructure specifications and projected ROI.
-            </p>
-            <!-- Heuristic 3 & 4: Inline form with immediate feedback + disabled-until-valid -->
-            <form id="quick-quote-form" class="quick-quote-form" novalidate>
-              <div class="quick-quote-row">
-                <div class="quick-quote-group">
-                  <label for="qq-email">OPERATOR EMAIL *</label>
-                  <input
-                    type="email"
-                    id="qq-email"
-                    name="email"
-                    placeholder="operator@domain.com"
-                    required
-                    autocomplete="email"
-                  />
-                  <span class="field-feedback" id="qq-email-feedback" aria-live="polite"></span>
-                </div>
-                <div class="quick-quote-group">
-                  <label for="qq-org">ORGANIZATION</label>
-                  <input
-                    type="text"
-                    id="qq-org"
-                    name="org"
-                    placeholder="Company / Node ID"
-                    autocomplete="organization"
-                  />
-                </div>
-              </div>
-              <!-- Heuristic 4: disabled until valid -->
-              <button type="submit" class="btn" id="qq-submit-btn" disabled style="opacity:0.45;cursor:not-allowed;">
-                REQUEST QUOTE
-              </button>
-              <p id="qq-status" class="contact-status" aria-live="polite"></p>
-            </form>
-          </section>
-
-        </div>
       </div>
+
     </div>
   </main>
 
-  <CTABand
-    title="Ready to get started?"
-    subtitle="Let's identify your next performance breakthrough."
-    buttonLabel="Access EDGE"
-    buttonUrl="/contact"
-    variant="dark"
+  <CTABand 
+    title="Ready to engineer your infrastructure breakthrough?" 
+    description="Engage our senior team to conduct an architectural audit and deploy your micro-runtimes." 
+    primaryCtaText="SCHEDULE TECHNICAL AUDIT" 
+    primaryCtaHref="/contact" 
   />
 </BaseLayout>
 
 <style>
-  .service-main { background: var(--color-obsidian); }
+  /* Fixed top reading progress bar */
+  .read-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--color-scarlet-red, #ee2626);
+    box-shadow: 0 0 10px var(--color-scarlet-red, #ee2626);
+    width: 0%;
+    z-index: 1000;
+    transition: width 0.1s ease-out;
+  }
 
-  /* Archetype C: 70/30 split */
-  .service-layout {
+  .service-main {
+    background: var(--color-obsidian, #080303);
+    padding-bottom: 80px;
+  }
+
+  /* 70/30 Split Layout */
+  .service-detail-layout {
     display: grid;
-    grid-template-columns: 30% 70%;
-    gap: 40px;
+    grid-template-columns: 1fr 340px;
+    gap: 48px;
     align-items: start;
   }
 
-  /* Sticky sidebar */
-  .service-sidebar {
+  @media (max-width: 992px) {
+    .service-detail-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Sticky Sidebar */
+  .sticky {
     position: sticky;
-    top: 110px;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+    top: 100px;
   }
 
-  /* Section anchor nav */
-  .service-sidenav ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
-
-  .section-nav-link {
-    display: block;
-    padding: 9px 12px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #9CA3AF;
-    border-radius: var(--radius-base);
-    border-left: 2px solid transparent;
-    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, padding-left 0.2s ease;
-  }
-  .section-nav-link:hover,
-  .section-nav-link.is-active {
-    color: #FFFFFF;
-    border-left-color: #DC2626;
-    background: rgba(220, 38, 38, 0.08);
-    padding-left: 16px;
+  /* Executive Summary Box (bg-[#1A080B] with 4px #ee2626 left border) */
+  .executive-summary-box {
+    background: var(--color-burgundy, #1A080B);
+    border-left: 4px solid var(--color-scarlet-red, #ee2626);
+    border-top: 1px solid var(--color-border-deep, #380F15);
+    border-right: 1px solid var(--color-border-deep, #380F15);
+    border-bottom: 1px solid var(--color-border-deep, #380F15);
+    border-radius: 0 var(--radius-md, 8px) var(--radius-md, 8px) 0;
+    padding: 32px;
+    margin-bottom: 40px;
   }
 
-  /* Heuristic 2: active service link */
-  .service-nav-link.is-current {
-    color: #DC2626 !important;
-    font-weight: 700;
-  }
-
-  .service-sidebar-cta {
-    margin-top: 20px;
-  }
-
-  /* Structured doc blocks — separated by 1px #380F15 border (Heuristic 2) */
-  .service-content-area {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .service-doc-block {
-    padding: 40px 0;
-    border-top: 1px solid var(--color-border-deep);
-  }
-  .service-doc-block:first-child { border-top: none; padding-top: 0; }
-
-  .service-doc-block h2 {
-    font-size: 1.4rem;
-    color: #FFFFFF;
+  .summary-badge {
+    font-size: 10px;
     font-weight: 800;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--color-border-deep);
+    letter-spacing: 0.14em;
+    color: var(--color-scarlet-red, #ee2626);
+    background: rgba(238, 38, 38, 0.1);
+    border: 1px solid rgba(238, 38, 38, 0.3);
+    padding: 4px 10px;
+    border-radius: 9999px;
+    display: inline-block;
+    margin-bottom: 12px;
   }
 
-  /* Spec grid */
-  .service-spec-grid {
+  .summary-text {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: #FFFFFF;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  /* Key Deliverables 2-Column Grid */
+  .deliverables-section {
+    margin-bottom: 40px;
+  }
+
+  .deliverables-grid-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-bottom: 20px;
+    letter-spacing: var(--tracking-tight, -0.02em);
+  }
+
+  .deliverables-2col-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
 
-  .service-spec-item {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border-deep);
-    border-radius: var(--radius-md);
-    padding: 16px 20px;
+  @media (max-width: 640px) {
+    .deliverables-2col-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .deliverable-grid-card {
+    background: var(--color-surface, #0F0909);
+    border: 1px solid var(--color-border-deep, #380F15);
+    border-radius: var(--radius-md, 8px);
+    padding: 18px 20px;
     display: flex;
-    flex-direction: column;
-    gap: 6px;
-    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.25s ease;
   }
-  .service-spec-item:hover {
-    border-color: #DC2626;
-    box-shadow: 0 0 16px rgba(220, 38, 38, 0.2);
+
+  .deliverable-grid-card:hover {
+    border-color: rgba(238, 38, 38, 0.5);
+    box-shadow: 0 0 16px rgba(238, 38, 38, 0.2);
+    transform: translateY(-2px);
   }
-  .service-spec-label {
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #DC2626;
+
+  .del-check {
+    color: var(--color-scarlet-red, #ee2626);
+    font-weight: 900;
+    font-size: 1.1rem;
+    filter: drop-shadow(0 0 6px rgba(238, 38, 38, 0.6));
   }
-  .service-spec-value {
-    font-size: 14px;
+
+  .del-text {
+    font-size: 13px;
     font-weight: 600;
     color: #D1D5DB;
   }
 
-  /* Quick quote form */
-  .quick-quote-form {
-    margin-top: 24px;
+  /* Tech Specs Heading & Rendered MDX Content */
+  .tech-specs-heading {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border-deep, #380F15);
+  }
+
+  .service-mdx-content {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #D1D5DB;
+  }
+
+  .service-mdx-content h2,
+  .service-mdx-content h3 {
+    color: #FFFFFF;
+    margin-top: 28px;
+    margin-bottom: 14px;
+  }
+
+  .service-mdx-content ul {
+    margin-bottom: 24px;
+    padding-left: 20px;
+  }
+
+  .service-mdx-content li {
+    margin-bottom: 8px;
+  }
+
+  /* Sidebar Proposal Card */
+  .service-proposal-card {
+    background: var(--color-surface, #0F0909);
+    border: 1px solid var(--color-border-deep, #380F15);
+    border-radius: var(--radius-md, 8px);
+    padding: 28px 24px;
     display: flex;
     flex-direction: column;
     gap: 16px;
   }
-  .quick-quote-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-  .quick-quote-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .quick-quote-group label {
+
+  .pricing-badge {
+    font-family: monospace;
     font-size: 10px;
     font-weight: 800;
     letter-spacing: 0.12em;
-    color: #DC2626;
+    color: var(--color-scarlet-red, #ee2626);
+    background: rgba(238, 38, 38, 0.12);
+    border: 1px solid rgba(238, 38, 38, 0.3);
+    padding: 4px 12px;
+    border-radius: 9999px;
   }
 
-  /* Heuristic 3: immediate feedback on blur */
-  .field-feedback {
+  .proposal-title {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: #FFFFFF;
+    margin: 0;
+  }
+
+  .proposal-desc {
+    font-size: 13px;
+    color: #9CA3AF;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* SLA Metrics Grid */
+  .sla-metrics-container {
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .sla-heading {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: var(--color-scarlet-red, #ee2626);
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .sla-metrics-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .sla-metric-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(26, 8, 11, 0.8);
+    border: 1px solid var(--color-border-deep, #380F15);
+    padding: 10px 14px;
+    border-radius: 6px;
+  }
+
+  .sla-val {
+    font-size: 1rem;
+    font-weight: 900;
+    color: #FFFFFF;
+  }
+
+  .sla-lbl {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #9CA3AF;
+  }
+
+  /* Scope Project Button (#ee2626 background) */
+  .scope-project-btn {
     font-size: 11px;
-    min-height: 16px;
-    transition: color 0.2s ease;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    background: var(--color-scarlet-red, #ee2626);
+    padding: 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 0 16px rgba(238, 38, 38, 0.4);
+    transition: all 0.2s ease;
   }
-  .field-feedback.valid   { color: #10B981; }
-  .field-feedback.invalid { color: #EF4444; }
 
-  input.input-valid   { border-color: #10B981 !important; box-shadow: 0 0 8px rgba(16, 185, 129, 0.3) !important; }
-  input.input-invalid { border-color: #EF4444 !important; box-shadow: 0 0 8px rgba(239, 68, 68, 0.3) !important; }
+  .scope-project-btn:hover {
+    gap: 12px;
+    box-shadow: 0 0 24px rgba(238, 38, 38, 0.6);
+  }
 
-  @media (max-width: 900px) {
-    .service-layout { grid-template-columns: 1fr; }
-    .service-sidebar { position: static; }
-    .service-spec-grid { grid-template-columns: 1fr; }
-    .quick-quote-row { grid-template-columns: 1fr; }
+  .proposal-telemetry-foot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #9CA3AF;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 8px #10B981;
   }
 </style>
 
 <script>
-  // Heuristic 1: Section anchor highlighting in sidebar
-  const sectionLinks = document.querySelectorAll('.section-nav-link') as NodeListOf<HTMLElement>;
-  const sections = document.querySelectorAll('.service-doc-block[id]') as NodeListOf<HTMLElement>;
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        sectionLinks.forEach(link => {
-          link.classList.toggle('is-active', link.dataset.section === entry.target.id);
-        });
-      }
-    });
-  }, { rootMargin: '-20% 0px -70% 0px' });
-
-  sections.forEach(s => observer.observe(s));
-
-  // Heuristic 3 & 4: Inline blur validation + disable submit until valid
-  const emailInput  = document.getElementById('qq-email') as HTMLInputElement;
-  const submitBtn   = document.getElementById('qq-submit-btn') as HTMLButtonElement;
-  const emailFeedback = document.getElementById('qq-email-feedback')!;
-  const statusEl    = document.getElementById('qq-status')!;
-
-  function validateEmail(val: string): boolean {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+  // Scroll progress bar calculation
+  const bar = document.getElementById('read-progress');
+  if (bar) {
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      bar.style.width = Math.min(100, Math.max(0, scrolled)) + '%';
+    }, { passive: true });
   }
-
-  function updateSubmitState() {
-    const valid = validateEmail(emailInput.value);
-    submitBtn.disabled = !valid;
-    submitBtn.style.opacity = valid ? '1' : '0.45';
-    submitBtn.style.cursor = valid ? 'pointer' : 'not-allowed';
-  }
-
-  emailInput?.addEventListener('blur', () => {
-    const valid = validateEmail(emailInput.value);
-    emailInput.classList.toggle('input-valid', valid);
-    emailInput.classList.toggle('input-invalid', !valid && emailInput.value.length > 0);
-    emailFeedback.className = 'field-feedback ' + (valid ? 'valid' : emailInput.value ? 'invalid' : '');
-    emailFeedback.textContent = valid ? '✓ Valid email' : emailInput.value ? '✗ Enter a valid email address' : '';
-    updateSubmitState();
-  });
-  emailInput?.addEventListener('input', updateSubmitState);
-
-  // Quick quote form submission
-  const form = document.getElementById('quick-quote-form') as HTMLFormElement;
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'TRANSMITTING…';
-
-    // Simulate submission
-    setTimeout(() => {
-      statusEl.style.color = '#10B981';
-      statusEl.textContent = '✓ Quote request transmitted. Expect a response within 4 hours.';
-      form.reset();
-      updateSubmitState();
-      submitBtn.textContent = 'REQUEST QUOTE';
-    }, 1200);
-  });
 </script>

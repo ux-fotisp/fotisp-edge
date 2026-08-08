@@ -1,37 +1,377 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageTitle from '../../components/PageTitle.astro';
-import ArticleCard from '../../components/ArticleCard.astro';
-import Pagination from '../../components/Pagination.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import CTABand from '../../components/CTABand.astro';
 import { getCollection } from 'astro:content';
 
-const allPosts = (await getCollection('posts', ({ data }) => !data.draft))
-  .sort((a, b) => new Date(b.data.publishedAt).getTime() - new Date(a.data.publishedAt).getTime());
+const postsCollection = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => new Date(b.data.publishedAt || '2026-01-01').getTime() - new Date(a.data.publishedAt || '2026-01-01').getTime());
 
-const POSTS_PER_PAGE = 6;
-const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
-const currentPage = 1;
-const posts = allPosts.slice(0, POSTS_PER_PAGE);
+let newsCollection = [];
+try {
+  newsCollection = await getCollection('news');
+} catch (e) {
+  newsCollection = [];
+}
+
+// Combine posts and news for unified news hub
+const allArticles = [...newsCollection, ...postsCollection.map(p => ({
+  id: p.id,
+  data: {
+    title: p.data.title,
+    tagline: p.data.excerpt || 'Technical analysis & infrastructure insights.',
+    pubDate: new Date(p.data.publishedAt || '2026-08-01'),
+    category: (p.data.categories && p.data.categories[0]) ? p.data.categories[0].toUpperCase() : 'THOUGHT LEADERSHIP',
+    author: p.data.author || 'EDGE Intelligence Team',
+    readingTime: '4 min read',
+    featuredImage: p.data.featuredImage,
+    featured: false,
+    tags: p.data.categories || ['ENGINEERING', 'INFRASTRUCTURE'],
+  }
+}))];
+
+const featuredArticle = allArticles.find(item => item.data.featured) || allArticles[0];
+const categories = ['ALL', 'PRESS RELEASES', 'PRODUCT', 'OPERATIONS', 'THOUGHT LEADERSHIP', 'MARKETING'];
 ---
 
-<BaseLayout title="News & Insights — fotisp" description="Stay up to date with the latest news and thinking from the fotisp team.">
-  <PageTitle title="News" breadcrumbs={[{ label: 'News' }]} />
+<BaseLayout 
+  title="News & Intelligence | EDGE Core Technical Updates" 
+  description="Official press releases, engineering updates, telemetry benchmarks, and architecture briefings."
+>
+  <PageTitle 
+    title="LATEST INTELLIGENCE" 
+    breadcrumbs={[{ label: 'HOME', href: '/' }, { label: 'NEWS' }]} 
+  />
+
   <main class="main" id="site-content">
     <div class="container">
-      <div class="row row-columns-3">
-        {posts.map(post => (
-          <ArticleCard
-            title={post.data.title}
-            slug={post.slug}
-            date={post.data.publishedAt}
-            author={post.data.author}
-            excerpt={post.data.excerpt}
-            featuredImage={post.data.featuredImage}
-            categories={post.data.categories}
-          />
+      
+      {/* Featured Article Hero Block */}
+      {featuredArticle && (
+        <section class="featured-news-hero" aria-label="Featured News Article">
+          <div class="featured-card">
+            <div class="featured-image-col">
+              <img 
+                src={featuredArticle.data.featuredImage || "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1200&auto=format&fit=crop"} 
+                alt={featuredArticle.data.title} 
+                class="featured-img"
+              />
+              <div class="featured-img-overlay"></div>
+            </div>
+
+            <div class="featured-content-col">
+              <div class="featured-meta">
+                <span class="featured-badge">FEATURED INTELLIGENCE</span>
+                <span class="featured-category">{featuredArticle.data.category}</span>
+              </div>
+
+              <h2 class="featured-title">
+                <a href={`/blog/${featuredArticle.id.replace(/\.mdx?$/, '')}`}>
+                  {featuredArticle.data.title}
+                </a>
+              </h2>
+
+              <p class="featured-tagline">{featuredArticle.data.tagline}</p>
+
+              <div class="featured-footer">
+                <div class="featured-author-info">
+                  <span class="author-name">{featuredArticle.data.author}</span>
+                  <span class="meta-sep">•</span>
+                  <time datetime={new Date(featuredArticle.data.pubDate).toISOString()}>
+                    {new Date(featuredArticle.data.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                  </time>
+                  <span class="meta-sep">•</span>
+                  <span>{featuredArticle.data.readingTime}</span>
+                </div>
+
+                <a href={`/blog/${featuredArticle.id.replace(/\.mdx?$/, '')}`} class="featured-cta-btn">
+                  READ FULL RELEASE <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Interactive Category Filter Bar */}
+      <div class="news-filter-bar" role="tablist" aria-label="News category filter">
+        {categories.map((cat, index) => (
+          <button
+            type="button"
+            class={`news-filter-tab ${index === 0 ? 'active' : ''}`}
+            data-category={cat}
+            role="tab"
+            aria-selected={index === 0 ? 'true' : 'false'}
+          >
+            {cat}
+          </button>
         ))}
       </div>
-      <Pagination currentPage={currentPage} totalPages={totalPages} baseUrl="/blog" />
+
+      {/* 3-Column News Grid */}
+      <div class="news-grid" id="news-cards-grid">
+        {allArticles.map((article) => {
+          const slug = article.id.replace(/\.mdx?$/, '');
+          return (
+            <div class="news-card-wrapper" data-category={article.data.category}>
+              <NewsCard
+                title={article.data.title}
+                slug={`/blog/${slug}`}
+                tagline={article.data.tagline}
+                pubDate={article.data.pubDate}
+                category={article.data.category}
+                author={article.data.author}
+                readingTime={article.data.readingTime}
+                featuredImage={article.data.featuredImage}
+              />
+            </div>
+          );
+        })}
+      </div>
+
     </div>
   </main>
+
+  <CTABand 
+    title="Stay plugged into the EDGE core telemetry feed." 
+    description="Subscribe to official developer updates and architecture releases." 
+    primaryCtaText="SUBSCRIBE TO FEED" 
+    primaryCtaHref="/contact" 
+  />
 </BaseLayout>
+
+<style>
+  /* Featured News Hero Block */
+  .featured-news-hero {
+    margin-bottom: 48px;
+  }
+
+  .featured-card {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    background: var(--color-burgundy, #1A080B);
+    border: 1px solid var(--color-border-deep, #380F15);
+    border-radius: var(--radius-md, 8px);
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .featured-card:hover {
+    border-color: rgba(238, 38, 38, 0.5);
+    box-shadow: 0 0 24px rgba(238, 38, 38, 0.25);
+  }
+
+  @media (max-width: 992px) {
+    .featured-card {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .featured-image-col {
+    position: relative;
+    min-height: 280px;
+    background: #080303;
+  }
+
+  .featured-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .featured-img-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, transparent 50%, rgba(26, 8, 11, 0.8) 100%);
+  }
+
+  .featured-content-col {
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .featured-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .featured-badge {
+    font-family: monospace;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: #FFFFFF;
+    background: var(--color-scarlet-red, #ee2626);
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+
+  .featured-category {
+    font-family: monospace;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: var(--color-scarlet-red, #ee2626);
+  }
+
+  .featured-title {
+    font-size: 1.6rem;
+    font-weight: 900;
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  .featured-title a {
+    color: #FFFFFF;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .featured-title a:hover {
+    color: var(--color-scarlet-red, #ee2626);
+  }
+
+  .featured-tagline {
+    font-size: 14px;
+    color: #D1D5DB;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .featured-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .featured-author-info {
+    font-size: 12px;
+    color: #9CA3AF;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .meta-sep {
+    color: var(--color-border-deep, #380F15);
+  }
+
+  .featured-cta-btn {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    background: var(--color-scarlet-red, #ee2626);
+    padding: 10px 18px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    box-shadow: 0 0 12px rgba(238, 38, 38, 0.3);
+    transition: all 0.2s ease;
+  }
+
+  .featured-cta-btn:hover {
+    gap: 12px;
+    box-shadow: 0 0 20px rgba(238, 38, 38, 0.5);
+  }
+
+  /* Interactive Filter Bar */
+  .news-filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+
+  .news-filter-tab {
+    background: rgba(15, 9, 9, 0.85);
+    border: 1px solid var(--color-border-deep, #380F15);
+    color: var(--color-text-light, #9CA3AF);
+    padding: 8px 20px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .news-filter-tab:hover {
+    color: #FFFFFF;
+    border-color: rgba(238, 38, 38, 0.4);
+    background: rgba(238, 38, 38, 0.1);
+  }
+
+  .news-filter-tab.active {
+    color: #FFFFFF;
+    background: var(--color-scarlet-red, #ee2626);
+    border-color: var(--color-scarlet-red, #ee2626);
+    box-shadow: 0 0 18px rgba(238, 38, 38, 0.45);
+  }
+
+  /* 3-Column News Grid */
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-bottom: 80px;
+  }
+
+  @media (max-width: 992px) {
+    .news-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .news-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Client-side category filter script
+  const tabs = document.querySelectorAll<HTMLButtonElement>('.news-filter-tab');
+  const wrappers = document.querySelectorAll<HTMLElement>('.news-card-wrapper');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const selectedCat = tab.getAttribute('data-category');
+
+      tabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+
+      wrappers.forEach(wrapper => {
+        const itemCat = wrapper.getAttribute('data-category');
+        if (selectedCat === 'ALL' || itemCat === selectedCat) {
+          wrapper.style.display = 'block';
+        } else {
+          wrapper.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>

@@ -25,7 +25,7 @@ const categories = [...new Set(cases.map(c => c.data.category).filter(Boolean))]
           <div data-category={c.data.category?.toLowerCase().replace(/\s+/g, '-')}>
             <PortfolioCard
               title={c.data.title}
-              slug={c.slug}
+              slug={(c as any).slug || c.id}
               excerpt={c.data.excerpt}
               category={c.data.category}
             />

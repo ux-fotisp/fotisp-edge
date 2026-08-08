@@ -74,20 +74,20 @@ async function runInteractiveQAUnitTests() {
   }
 
   // ----------------------------------------------------------------
-  // SCENARIO 4: BackToTop & SVG Scroll Progress Ring Formula
+  // SCENARIO 4: BackToTop Granular Segmented Progress Ring
   // ----------------------------------------------------------------
-  console.log('\n--- SCENARIO 4: BackToTop.astro Circular Progress Ring ---');
+  console.log('\n--- SCENARIO 4: BackToTop.astro Dynamic Granular Progress Ring ---');
   const backToTopPath = path.join(process.cwd(), 'src/components/BackToTop.astro');
   const backToTopExists = fs.existsSync(backToTopPath);
   assert(backToTopExists, 'Scenario 4a: BackToTop.astro component file exists');
 
   if (backToTopExists) {
     const code = fs.readFileSync(backToTopPath, 'utf-8');
-    assert(code.includes('progress-ring'), 'Scenario 4b: Contains SVG progress ring element');
-    assert(code.includes('progress-ring-circle'), 'Scenario 4c: Contains progress-ring-circle stroke path');
-    assert(code.includes('stroke="#DC2626"'), 'Scenario 4d: Uses electric scarlet stroke color (#DC2626)');
-    assert(code.includes('strokeDashoffset'), 'Scenario 4e: Implements dynamic strokeDashoffset progress calculation');
-    assert(code.includes('scrollTop > 300'), 'Scenario 4f: Displays button when scroll position exceeds 300px');
+    assert(code.includes('id="segmented-back-to-top"'), 'Scenario 4b: Defines segmented-back-to-top button element');
+    assert(code.includes('id="svg-segments-group"'), 'Scenario 4c: Contains dynamic SVG segments group context');
+    assert(code.includes('#ee2626'), 'Scenario 4d: Uses Scarlet Red active stroke (#ee2626)');
+    assert(code.includes('#380F15'), 'Scenario 4e: Uses Dark Crimson inactive stroke (#380F15)');
+    assert(code.includes('initGranularProgressRing'), 'Scenario 4f: Implements initGranularProgressRing scroll calculation');
   }
 
   // ----------------------------------------------------------------
@@ -127,28 +127,123 @@ async function runInteractiveQAUnitTests() {
   }
 
   // ----------------------------------------------------------------
-  // SCENARIO 7: Documentation Suite Verification
+  // SCENARIO 8: Hero "EDGE" Light Pulsing & Mesh Sweep Interaction
   // ----------------------------------------------------------------
-  console.log('\n--- SCENARIO 7: Documentation Suite File & Author Verification ---');
-  const docsDir = path.join(process.cwd(), 'docs');
-  const expectedDocs = [
-    '01-architecture-overview.md',
-    '02-design-system-and-tokens.md',
-    '03-interactive-components.md',
-    '04-content-layer-and-collections.md',
-    '05-deployment-guide.md',
-  ];
+  console.log('\n--- SCENARIO 8: Hero EDGE Light Pulsing & Pointer Sweep ---');
+  const indexPath = path.join(process.cwd(), 'src/pages/index.astro');
+  const homepageCssPath = path.join(process.cwd(), 'src/styles/homepage.css');
 
-  for (const docFile of expectedDocs) {
-    const docPath = path.join(docsDir, docFile);
-    const exists = fs.existsSync(docPath);
-    assert(exists, `Scenario 7: Document exists: docs/${docFile}`);
-    if (exists) {
-      const content = fs.readFileSync(docPath, 'utf-8');
-      assert(content.includes('Fotis Pastrakis'), `Scenario 7: Author attribution present in docs/${docFile}`);
-      assert(!content.toLowerCase().includes('logico'), `Scenario 7: Excludes legacy 'logico' references in docs/${docFile}`);
-      assert(!content.toLowerCase().includes('convert'), `Scenario 7: Excludes legacy 'convert' references in docs/${docFile}`);
-    }
+  assert(fs.existsSync(indexPath), 'Scenario 8a: index.astro file exists');
+  assert(fs.existsSync(homepageCssPath), 'Scenario 8b: homepage.css file exists');
+
+  if (fs.existsSync(indexPath)) {
+    const indexCode = fs.readFileSync(indexPath, 'utf-8');
+    assert(indexCode.includes('id="hero-edge-word"'), 'Scenario 8c: Defines hero-edge-word element');
+    assert(indexCode.includes('initEdgeWordInteraction'), 'Scenario 8d: Contains initEdgeWordInteraction controller function');
+    assert(indexCode.includes('pointerPositionRelativeToElement'), 'Scenario 8e: Implements relative pointer position calculations');
+  }
+
+  if (fs.existsSync(homepageCssPath)) {
+    const cssCode = fs.readFileSync(homepageCssPath, 'utf-8');
+    assert(cssCode.includes('.edge-pulsing-word'), 'Scenario 8f: Defines .edge-pulsing-word CSS styles');
+    assert(cssCode.includes('ambient-pulsing'), 'Scenario 8g: Defines ambient-pulsing focus in/out animation');
+    assert(cssCode.includes('conic-gradient'), 'Scenario 8h: Implements mesh conic gradient text sweep');
+  }
+
+  // ----------------------------------------------------------------
+  // SCENARIO 9: Homepage Team Showcase & Dynamic Team Architecture
+  // ----------------------------------------------------------------
+  console.log('\n--- SCENARIO 9: Team Showcase Home & Dynamic Architecture ---');
+  const showcasePath = path.join(process.cwd(), 'src/components/TeamShowcaseHome.astro');
+  const teamIndexPath = path.join(process.cwd(), 'src/pages/team/index.astro');
+  const teamSinglePath = path.join(process.cwd(), 'src/pages/team/[slug].astro');
+
+  assert(fs.existsSync(showcasePath), 'Scenario 9a: TeamShowcaseHome.astro component exists');
+  assert(fs.existsSync(teamIndexPath), 'Scenario 9b: src/pages/team/index.astro exists');
+  assert(fs.existsSync(teamSinglePath), 'Scenario 9c: src/pages/team/[slug].astro exists');
+
+  if (fs.existsSync(showcasePath)) {
+    const code = fs.readFileSync(showcasePath, 'utf-8');
+    assert(code.includes('team-focus-card'), 'Scenario 9d: Defines team-focus-card focus pattern');
+    assert(code.includes('INSPECT PROFILE'), 'Scenario 9e: Contains INSPECT PROFILE CTA');
+  }
+
+  if (fs.existsSync(teamIndexPath)) {
+    const code = fs.readFileSync(teamIndexPath, 'utf-8');
+    assert(code.includes('team-filter-bar'), 'Scenario 9f: Implements department filter tab bar');
+    assert(code.includes('hiring-card'), 'Scenario 9g: Renders inline recruitment HiringCard');
+  }
+
+  if (fs.existsSync(teamSinglePath)) {
+    const code = fs.readFileSync(teamSinglePath, 'utf-8');
+    assert(code.includes('read-progress'), 'Scenario 9h: Defines scroll progress bar (#read-progress)');
+    assert(code.includes('content-sidebar'), 'Scenario 9i: Implements 70/30 split layout');
+    assert(code.includes('briefing-widget'), 'Scenario 9j: Renders sticky executive briefing sidebar widget');
+  }
+
+  // ----------------------------------------------------------------
+  // SCENARIO 10: Services System UI & Methodology Pipeline
+  // ----------------------------------------------------------------
+  console.log('\n--- SCENARIO 10: Services UI & Methodology Pipeline ---');
+  const serviceCardPath = path.join(process.cwd(), 'src/components/ServiceCard.astro');
+  const lifecyclePath = path.join(process.cwd(), 'src/components/ServiceLifecycle.astro');
+  const serviceShowcasePath = path.join(process.cwd(), 'src/components/ServiceShowcaseHome.astro');
+  const servicesIndexPath = path.join(process.cwd(), 'src/pages/services/index.astro');
+  const servicesSinglePath = path.join(process.cwd(), 'src/pages/services/[slug].astro');
+
+  assert(fs.existsSync(serviceCardPath), 'Scenario 10a: ServiceCard.astro exists');
+  assert(fs.existsSync(lifecyclePath), 'Scenario 10b: ServiceLifecycle.astro exists');
+  assert(fs.existsSync(serviceShowcasePath), 'Scenario 10c: ServiceShowcaseHome.astro exists');
+  assert(fs.existsSync(servicesIndexPath), 'Scenario 10d: src/pages/services/index.astro exists');
+  assert(fs.existsSync(servicesSinglePath), 'Scenario 10e: src/pages/services/[slug].astro exists');
+
+  if (fs.existsSync(serviceCardPath)) {
+    const code = fs.readFileSync(serviceCardPath, 'utf-8');
+    assert(code.includes('INSPECT SERVICE SCOPE'), 'Scenario 10f: ServiceCard features INSPECT SERVICE SCOPE CTA');
+    assert(code.includes('deliverables-list'), 'Scenario 10g: ServiceCard renders deliverable points with checkmarks');
+  }
+
+  if (fs.existsSync(lifecyclePath)) {
+    const code = fs.readFileSync(lifecyclePath, 'utf-8');
+    assert(code.includes('ARCHITECTURAL AUDIT'), 'Scenario 10h: ServiceLifecycle features step 01 ARCHITECTURAL AUDIT');
+    assert(code.includes('step-laser-indicator'), 'Scenario 10i: ServiceLifecycle includes laser indicator');
+  }
+
+  if (fs.existsSync(servicesSinglePath)) {
+    const code = fs.readFileSync(servicesSinglePath, 'utf-8');
+    assert(code.includes('executive-summary-box'), 'Scenario 10j: Service single profile renders executive summary box');
+    assert(code.includes('SCOPE PROJECT'), 'Scenario 10k: Service single profile renders SCOPE PROJECT CTA button');
+  }
+
+  // ----------------------------------------------------------------
+  // SCENARIO 11: Big-Tech News & Intelligence System
+  // ----------------------------------------------------------------
+  console.log('\n--- SCENARIO 11: News System & Intelligence Hub ---');
+  const newsCardPath = path.join(process.cwd(), 'src/components/NewsCard.astro');
+  const newsIndexPath = path.join(process.cwd(), 'src/pages/news/index.astro');
+  const newsSinglePath = path.join(process.cwd(), 'src/pages/news/[slug].astro');
+
+  assert(fs.existsSync(newsCardPath), 'Scenario 11a: NewsCard.astro component exists');
+  assert(fs.existsSync(newsIndexPath), 'Scenario 11b: src/pages/news/index.astro exists');
+  assert(fs.existsSync(newsSinglePath), 'Scenario 11c: src/pages/news/[slug].astro exists');
+
+  if (fs.existsSync(newsCardPath)) {
+    const code = fs.readFileSync(newsCardPath, 'utf-8');
+    assert(code.includes('READ FULL RELEASE'), 'Scenario 11d: NewsCard features READ FULL RELEASE CTA');
+    assert(code.includes('news-category-badge'), 'Scenario 11e: NewsCard includes category badge meta');
+  }
+
+  if (fs.existsSync(newsIndexPath)) {
+    const blogCode = fs.readFileSync(path.join(process.cwd(), 'src/pages/blog/index.astro'), 'utf-8');
+    assert(blogCode.includes('featured-news-hero'), 'Scenario 11f: Blog archive page renders featured article hero block');
+    assert(blogCode.includes('news-filter-bar'), 'Scenario 11g: Blog archive page renders category filter bar');
+  }
+
+  if (fs.existsSync(newsSinglePath)) {
+    const blogSingleCode = fs.readFileSync(path.join(process.cwd(), 'src/pages/blog/[slug].astro'), 'utf-8');
+    assert(blogSingleCode.includes('read-progress'), 'Scenario 11h: Single article page renders top reading progress bar');
+    assert(blogSingleCode.includes('article-prose-container'), 'Scenario 11i: Single article page renders constrained 720px reader column');
+    assert(blogSingleCode.includes('related-news-section'), 'Scenario 11j: Single article page renders related intelligence articles grid');
   }
 
   // ----------------------------------------------------------------

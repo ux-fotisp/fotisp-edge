@@ -2,26 +2,240 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageTitle from '../../components/PageTitle.astro';
 import TeamCard from '../../components/TeamCard.astro';
+import CTABand from '../../components/CTABand.astro';
 import { getCollection } from 'astro:content';
 
 const members = (await getCollection('team'))
-  .sort((a, b) => a.data.order - b.data.order);
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+
+const departments = ['ALL', 'LEADERSHIP', 'ENGINEERING', 'RESEARCH', 'SECURITY'];
 ---
 
-<BaseLayout title="Our Team — fotisp" description="Meet the people behind fotisp.">
-  <PageTitle title="Our Team" breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Our Team' }]} />
+<BaseLayout 
+  title="Leadership & Team | EDGE" 
+  description="Meet the leaders, architects, and researchers engineering the EDGE platform."
+>
+  <PageTitle 
+    title="Leadership & Engineering Team" 
+    breadcrumbs={[{ label: 'HOME', href: '/' }, { label: 'TEAM' }]} 
+  />
+
   <main class="main" id="site-content">
     <div class="container">
-      <div class="row row-columns-3">
-        {members.map(m => (
-          <TeamCard
-            name={m.data.name}
-            slug={m.slug}
-            role={m.data.role}
-            photo={m.data.photo}
-          />
+      
+      <!-- Department Filter Tabs -->
+      <div class="team-filter-bar" role="tablist" aria-label="Department filter tabs">
+        {departments.map((dept, index) => (
+          <button 
+            type="button"
+            class={`filter-tab ${index === 0 ? 'active' : ''}`}
+            data-department={dept}
+            role="tab"
+            aria-selected={index === 0 ? 'true' : 'false'}
+          >
+            {dept}
+          </button>
         ))}
       </div>
+
+      <!-- Team Members Grid -->
+      <div class="team-grid row-columns-3" id="team-cards-grid">
+        {members.map(m => {
+          const slug = (m as any).slug || m.id.replace(/\.mdx?$/, '');
+          const dept = m.data.department || 'ENGINEERING';
+          return (
+            <div class="team-card-wrapper" data-department={dept}>
+              <TeamCard
+                name={m.data.name}
+                slug={slug}
+                role={m.data.role}
+                photo={m.data.avatar || m.data.photo}
+                bio={m.body ? m.body.split('\n\n')[0].trim() : undefined}
+                social={m.data.social || m.data.socials}
+              />
+            </div>
+          );
+        })}
+
+        <!-- Inline Recruitment / HiringCard -->
+        <div class="team-card-wrapper hiring-card-wrapper" data-department="ALL">
+          <article class="hiring-card">
+            <div class="hiring-badge">CAREERS</div>
+            <h3 class="hiring-title">YOUR NAME HERE</h3>
+            <p class="hiring-desc">We are always expanding our core systems & cryptographic research teams.</p>
+            <a href="/contact" class="hiring-cta-btn">
+              JOIN THE CORE <span aria-hidden="true">→</span>
+            </a>
+          </article>
+        </div>
+
+      </div>
+
     </div>
   </main>
+
+  <CTABand 
+    title="Want to collaborate with our team?" 
+    description="Connect with our principal architects and research leads to accelerate your infrastructure." 
+    primaryCtaText="SCHEDULE A BRIEFING" 
+    primaryCtaHref="/contact" 
+  />
+
 </BaseLayout>
+
+<style>
+  .team-filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+
+  .filter-tab {
+    background: rgba(15, 9, 9, 0.8);
+    border: 1px solid var(--color-border-deep, #380F15);
+    color: var(--color-text-light, #9CA3AF);
+    padding: 8px 18px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .filter-tab:hover {
+    color: #FFFFFF;
+    border-color: rgba(238, 38, 38, 0.4);
+    background: rgba(238, 38, 38, 0.1);
+  }
+
+  .filter-tab.active {
+    color: #FFFFFF;
+    background: var(--color-primary, #ee2626);
+    border-color: var(--color-primary, #ee2626);
+    box-shadow: 0 0 16px rgba(238, 38, 38, 0.4);
+  }
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-bottom: 80px;
+  }
+
+  @media (max-width: 992px) {
+    .team-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .team-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Hiring Card */
+  .hiring-card {
+    height: 100%;
+    min-height: 380px;
+    background: radial-gradient(circle at top right, rgba(238, 38, 38, 0.15), rgba(15, 9, 9, 0.95));
+    border: 1px dashed rgba(238, 38, 38, 0.5);
+    border-radius: var(--radius-md, 8px);
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .hiring-card:hover {
+    border-color: var(--color-primary, #ee2626);
+    border-style: solid;
+    box-shadow: 0 0 24px rgba(238, 38, 38, 0.25);
+    transform: translateY(-4px);
+  }
+
+  .hiring-badge {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: var(--color-primary, #ee2626);
+    background: rgba(238, 38, 38, 0.12);
+    border: 1px solid rgba(238, 38, 38, 0.3);
+    padding: 4px 12px;
+    border-radius: 9999px;
+    margin-bottom: 16px;
+  }
+
+  .hiring-title {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #FFFFFF;
+    letter-spacing: var(--tracking-tight);
+    margin-bottom: 12px;
+  }
+
+  .hiring-desc {
+    font-size: 13px;
+    color: var(--color-text-light, #9CA3AF);
+    line-height: 1.6;
+    margin-bottom: 24px;
+    max-width: 260px;
+  }
+
+  .hiring-cta-btn {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #FFFFFF;
+    background: var(--color-primary, #ee2626);
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .hiring-cta-btn:hover {
+    gap: 12px;
+    box-shadow: 0 0 16px rgba(238, 38, 38, 0.5);
+  }
+</style>
+
+<script>
+  // Client-side department tab filtering
+  const tabs = document.querySelectorAll<HTMLButtonElement>('.filter-tab');
+  const wrappers = document.querySelectorAll<HTMLElement>('.team-card-wrapper');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const selectedDept = tab.getAttribute('data-department');
+
+      tabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+
+      wrappers.forEach(wrapper => {
+        const itemDept = wrapper.getAttribute('data-department');
+        if (selectedDept === 'ALL' || itemDept === selectedDept || wrapper.classList.contains('hiring-card-wrapper')) {
+          wrapper.style.display = 'block';
+        } else {
+          wrapper.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>

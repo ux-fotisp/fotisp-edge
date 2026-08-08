@@ -4,9 +4,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import CyberGridBg from '../components/CyberGridBg.astro';
 import StatsBar from '../components/StatsBar.astro';
 import ServiceCard from '../components/ServiceCard.astro';
+import ServiceShowcaseHome from '../components/ServiceShowcaseHome.astro';
 import EventCard from '../components/EventCard.astro';
-import PortfolioCard from '../components/PortfolioCard.astro';
 import TeamCard from '../components/TeamCard.astro';
+import TeamShowcaseHome from '../components/TeamShowcaseHome.astro';
 import AccessModal from '../components/AccessModal.astro';
 import '../styles/homepage.css';
 
@@ -20,9 +21,6 @@ const allServices = await getCollection('services', ({ data }) => !data.draft);
 const featuredServices = allServices
   .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
   .slice(0, 3);
-
-const allPortfolio = await getCollection('portfolio', ({ data }) => !data.draft);
-const featuredPortfolio = allPortfolio.slice(0, 2);
 
 const allTeam = (await getCollection('team'))
   .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
@@ -42,10 +40,11 @@ const telemetryStats = [
   themeVariation="convert"
   bodyClass="home"
 >
+<main id="site-content">
   <!-- ═══════════════════════════════════════════════════════
        HERO SECTION
   ════════════════════════════════════════════════════════ -->
-  <section class="hero-edge" aria-label="Hero">
+  <section id="hero" class="hero-edge" aria-label="Hero">
     <!-- Cyber Grid Canvas with Horizontal & Vertical Red Light Trails -->
     <CyberGridBg gridSize={60} speed={1.2} />
 
@@ -67,7 +66,7 @@ const telemetryStats = [
 
         <!-- Main headline -->
         <h1 class="hero-headline">
-          THE <span class="accent">EDGE</span> OF INNOVATION
+          THE <span id="hero-edge-word" class="edge-pulsing-word accent" data-text="EDGE">EDGE</span> OF INNOVATION
         </h1>
 
         <!-- Subheading -->
@@ -92,7 +91,7 @@ const telemetryStats = [
   <!-- ═══════════════════════════════════════════════════════
        TRUSTED BY SECTION
   ════════════════════════════════════════════════════════ -->
-  <section class="trusted-by" aria-label="Trusted by">
+  <section id="trusted-by" class="trusted-by" aria-label="Trusted by">
     <div class="container">
       <p class="trusted-by-label">TRUSTED BY CORE OPERATIONS GLOBALLY</p>
       <div class="trusted-logos" role="list">
@@ -108,7 +107,7 @@ const telemetryStats = [
   <!-- ═══════════════════════════════════════════════════════
        CORE SERVICES MATRIX SECTION (OOUX Service Objects)
   ════════════════════════════════════════════════════════ -->
-  <section class="command-control" aria-label="Services">
+  <section id="services" class="command-control" aria-label="Services">
     <div class="container">
       <div class="section-header section-header-split">
         <div>
@@ -118,24 +117,14 @@ const telemetryStats = [
         <a href="/services" class="link-arrow">Inspect All Services & Specs <span aria-hidden="true">→</span></a>
       </div>
 
-      <div class="feature-cards">
-        {featuredServices.map(service => (
-          <ServiceCard
-            title={service.data.title}
-            slug={service.id || service.slug}
-            excerpt={service.data.excerpt}
-            icon={service.data.icon}
-            featuredImage={service.data.featuredImage}
-          />
-        ))}
-      </div>
+      <ServiceShowcaseHome />
     </div>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════
        UPCOMING STRATEGY SESSIONS & SUMMITS (OOUX Event Objects)
   ════════════════════════════════════════════════════════ -->
-  <section class="events-section" aria-label="Upcoming Events">
+  <section id="events" class="events-section" aria-label="Upcoming Events">
     <div class="container">
       <div class="section-header section-header-split">
         <div>
@@ -166,37 +155,9 @@ const telemetryStats = [
   </section>
 
   <!-- ═══════════════════════════════════════════════════════
-       ENGINEERING MISSIONS & CASE STUDIES (OOUX Portfolio Objects)
-  ════════════════════════════════════════════════════════ -->
-  <section class="portfolio-showcase" aria-label="Engineering Missions and Case Studies">
-    <div class="container">
-      <div class="section-header section-header-split">
-        <div>
-          <h2>Engineering Missions & Case Studies</h2>
-          <p>Proven high-stakes architectural overhauls and strategic performance metrics.</p>
-        </div>
-        <a href="/portfolio" class="link-arrow">Explore All Case Studies <span aria-hidden="true">→</span></a>
-      </div>
-
-      <div class="portfolio-grid">
-        {featuredPortfolio.map(item => (
-          <PortfolioCard
-            title={item.data.title}
-            slug={item.id || item.slug}
-            excerpt={item.data.excerpt}
-            category={item.data.category}
-            featuredImage={item.data.featuredImage}
-            client={item.data.client}
-          />
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════
        FORGED FOR THE EXTREMES
   ════════════════════════════════════════════════════════ -->
-  <section class="forged-section" aria-label="About EDGE">
+  <section id="about" class="forged-section" aria-label="About EDGE">
     <div class="container">
       <div class="forged-inner">
 
@@ -254,31 +215,22 @@ const telemetryStats = [
   </section>
 
   <!-- ═══════════════════════════════════════════════════════
-       INTERACTIVE TEAM DIRECTORY (OOUX Team Objects)
+       INTERACTIVE TEAM SHOWCASE (Focus-Card Grid)
   ════════════════════════════════════════════════════════ -->
-  <section class="team-section" aria-label="Our team">
+  <section id="team-showcase" class="team-section" aria-label="Our team showcase">
     <div class="container">
-      <div class="section-header section-header-dark section-header-split">
+      <div class="section-header section-header-split">
         <div>
           <h2>The Team Behind Edge</h2>
           <p>Every service that blooms, has the right people that make it happen.</p>
         </div>
-        <a href="/team" class="link-arrow link-arrow-dark">Meet The Full Team <span aria-hidden="true">→</span></a>
+        <a href="/team" class="link-arrow">VIEW ALL MEMBERS <span aria-hidden="true">→</span></a>
       </div>
 
-      <div class="team-grid">
-        {allTeam.map(member => (
-          <TeamCard
-            name={member.data.name}
-            slug={member.id || member.slug}
-            role={member.data.role}
-            photo={member.data.photo}
-            social={member.data.social}
-          />
-        ))}
-      </div>
+      <TeamShowcaseHome />
     </div>
   </section>
+  </main>
 
   <!-- TERMINAL ACCESS DRAWER MODAL -->
   <AccessModal />
@@ -300,4 +252,210 @@ const telemetryStats = [
       card.style.setProperty('--mouse-y', `${y}px`);
     });
   });
+
+  // Interactive Light Pulsing & Mesh Glow for "EDGE" in Hero Headline
+  function initEdgeWordInteraction() {
+    const $card = document.getElementById('hero-edge-word') as HTMLElement | null;
+    if (!$card) return;
+
+    const round = (value: number, precision = 3) => parseFloat(value.toFixed(precision));
+    const clamp = (value: number, min = 0, max = 100) => Math.min(Math.max(value, min), max);
+
+    const centerOfElement = ($el: HTMLElement): [number, number] => {
+      const { left, top, width, height } = $el.getBoundingClientRect();
+      return [width / 2, height / 2];
+    };
+
+    const pointerPositionRelativeToElement = ($el: HTMLElement, e: MouseEvent) => {
+      const { left, top, width, height } = $el.getBoundingClientRect();
+      const x = e.clientX - left;
+      const y = e.clientY - top;
+      const px = clamp((100 / Math.max(1, width)) * x);
+      const py = clamp((100 / Math.max(1, height)) * y);
+      return { pixels: [x, y], percent: [px, py] };
+    };
+
+    const distanceFromCenter = ($el: HTMLElement, x: number, y: number): [number, number] => {
+      const [cx, cy] = centerOfElement($el);
+      return [x - cx, y - cy];
+    };
+
+    const angleFromPointerEvent = ($el: HTMLElement, dx: number, dy: number): number => {
+      let angleRadians = 0;
+      let angleDegrees = 0;
+      if (dx !== 0 || dy !== 0) {
+        angleRadians = Math.atan2(dy, dx);
+        angleDegrees = angleRadians * (180 / Math.PI) + 90;
+        if (angleDegrees < 0) {
+          angleDegrees += 360;
+        }
+      }
+      return angleDegrees;
+    };
+
+    const closenessToEdge = ($el: HTMLElement, x: number, y: number): number => {
+      const [cx, cy] = centerOfElement($el);
+      const [dx, dy] = distanceFromCenter($el, x, y);
+      let k_x = Infinity;
+      let k_y = Infinity;
+      if (dx !== 0) {
+        k_x = cx / Math.abs(dx);
+      }
+      if (dy !== 0) {
+        k_y = cy / Math.abs(dy);
+      }
+      return clamp(1 / Math.min(k_x, k_y), 0, 1);
+    };
+
+    const cardUpdate = (e: MouseEvent) => {
+      const position = pointerPositionRelativeToElement($card, e);
+      const [px, py] = position.pixels;
+      const [perx, pery] = position.percent;
+      const [dx, dy] = distanceFromCenter($card, px, py);
+      const edge = closenessToEdge($card, px, py);
+      const angle = angleFromPointerEvent($card, dx, dy);
+
+      $card.style.setProperty('--pointer-x', `${round(perx)}%`);
+      $card.style.setProperty('--pointer-y', `${round(pery)}%`);
+      $card.style.setProperty('--pointer-°', `${round(angle)}deg`);
+      $card.style.setProperty('--pointer-d', `${round(edge * 100)}`);
+
+      $card.classList.remove('animating');
+      $card.classList.remove('ambient-pulsing');
+    };
+
+    window.addEventListener('pointermove', (e: PointerEvent) => {
+      const rect = $card.getBoundingClientRect();
+      const isNear = (
+        e.clientX >= rect.left - 250 &&
+        e.clientX <= rect.right + 250 &&
+        e.clientY >= rect.top - 250 &&
+        e.clientY <= rect.bottom + 250
+      );
+      if (isNear) {
+        cardUpdate(e);
+      } else {
+        $card.classList.add('ambient-pulsing');
+      }
+    }, { passive: true });
+
+    function easeOutCubic(x: number): number {
+      return 1 - Math.pow(1 - x, 3);
+    }
+    function easeInCubic(x: number): number {
+      return x * x * x;
+    }
+
+    interface AnimateOptions {
+      startValue?: number;
+      endValue?: number;
+      duration?: number;
+      delay?: number;
+      onUpdate?: (v: number) => void;
+      ease?: (t: number) => number;
+      onStart?: () => void;
+      onEnd?: () => void;
+    }
+
+    function animateNumber(options: AnimateOptions) {
+      const {
+        startValue = 0,
+        endValue = 100,
+        duration = 1000,
+        delay = 0,
+        onUpdate = () => {},
+        ease = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+        onStart = () => {},
+        onEnd = () => {},
+      } = options;
+
+      const startTime = performance.now() + delay;
+
+      function update() {
+        const currentTime = performance.now();
+        const elapsed = currentTime - startTime;
+        const t = Math.min(elapsed / Math.max(1, duration), 1);
+        const easedValue = startValue + (endValue - startValue) * ease(t);
+
+        onUpdate(easedValue);
+
+        if (t < 1) {
+          requestAnimationFrame(update);
+        } else {
+          onEnd();
+        }
+      }
+
+      setTimeout(() => {
+        onStart();
+        requestAnimationFrame(update);
+      }, delay);
+    }
+
+    // Intro Animation Sweep
+    const playAnimation = () => {
+      const angleStart = 110;
+      const angleEnd = 465;
+
+      $card.style.setProperty('--pointer-°', `${angleStart}deg`);
+      $card.classList.add('animating');
+
+      animateNumber({
+        ease: easeOutCubic,
+        duration: 500,
+        onUpdate: (v) => {
+          $card.style.setProperty('--pointer-d', v.toFixed(2));
+        }
+      });
+
+      animateNumber({
+        ease: easeInCubic,
+        delay: 0,
+        duration: 1500,
+        endValue: 50,
+        onUpdate: (v) => {
+          const d = (angleEnd - angleStart) * (v / 100) + angleStart;
+          $card.style.setProperty('--pointer-°', `${d.toFixed(2)}deg`);
+        }
+      });
+
+      animateNumber({
+        ease: easeOutCubic,
+        delay: 1500,
+        duration: 2250,
+        startValue: 50,
+        endValue: 100,
+        onUpdate: (v) => {
+          const d = (angleEnd - angleStart) * (v / 100) + angleStart;
+          $card.style.setProperty('--pointer-°', `${d.toFixed(2)}deg`);
+        }
+      });
+
+      animateNumber({
+        ease: easeInCubic,
+        duration: 1500,
+        delay: 2500,
+        startValue: 100,
+        endValue: 0,
+        onUpdate: (v) => {
+          $card.style.setProperty('--pointer-d', v.toFixed(2));
+        },
+        onEnd: () => {
+          $card.classList.remove('animating');
+          $card.classList.add('ambient-pulsing');
+        }
+      });
+    };
+
+    setTimeout(() => {
+      playAnimation();
+    }, 400);
+  }
+
+  document.addEventListener('astro:page-load', initEdgeWordInteraction);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initEdgeWordInteraction);
+  } else {
+    initEdgeWordInteraction();
+  }
 </script>

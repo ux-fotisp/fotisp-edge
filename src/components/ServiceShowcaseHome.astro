@@ -1,0 +1,61 @@
+---
+// ServiceShowcaseHome.astro — Homepage Services Section Container
+import { getCollection } from 'astro:content';
+import ServiceCard from './ServiceCard.astro';
+import ServiceLifecycle from './ServiceLifecycle.astro';
+
+const allServices = (await getCollection('services', ({ data }) => !data.draft))
+  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+// Map default categories if not in MDX frontmatter
+const categories = ['INFRASTRUCTURE', 'SECURITY', 'TELEMETRY', 'INFRASTRUCTURE', 'SECURITY', 'TELEMETRY'];
+---
+
+<div class="service-showcase-home">
+  <!-- SaaS Service Card Grid -->
+  <div class="services-home-grid">
+    {allServices.map((service, index) => {
+      const slug = (service as any).slug || service.id.replace(/\.mdx?$/, '');
+      const cat = service.data.category || categories[index % categories.length];
+      return (
+        <ServiceCard
+          title={service.data.title}
+          slug={slug}
+          tagline={service.data.tagline}
+          excerpt={service.data.excerpt}
+          category={cat}
+          icon={service.data.icon}
+          deliverables={service.data.deliverables}
+        />
+      );
+    })}
+  </div>
+
+  <!-- 4-Step Interactive Methodology Pipeline -->
+  <ServiceLifecycle />
+</div>
+
+<style>
+  .service-showcase-home {
+    width: 100%;
+    margin-top: 40px;
+  }
+
+  .services-home-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  @media (max-width: 992px) {
+    .services-home-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .services-home-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

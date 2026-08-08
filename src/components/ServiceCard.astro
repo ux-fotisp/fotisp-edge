@@ -1,26 +1,229 @@
 ---
-// ServiceCard.astro — fotisp-service CPT card
+// ServiceCard.astro — SaaS-Style Visual Service Card
 interface Props {
   title: string;
   slug: string;
+  tagline?: string;
   excerpt?: string;
+  category?: 'INFRASTRUCTURE' | 'SECURITY' | 'TELEMETRY' | string;
   icon?: string;
-  featuredImage?: string;
+  deliverables?: string[];
 }
-const { title, slug, excerpt, icon, featuredImage } = Astro.props;
+
+const { title, slug, tagline, excerpt, category = 'INFRASTRUCTURE', icon = '⚡', deliverables } = Astro.props;
+const fallbackSlug = title ? title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : 'service';
+const cleanSlug = (slug || fallbackSlug).replace(/\.mdx?$/, '');
+
+// Default deliverables if not specified
+const defaultDeliverables = [
+  'Zero-Trust System Audits',
+  'Automated Telemetry Pipeline',
+  '24/7 Enterprise Monitoring & Escalation',
+  'Sub-Millisecond Edge Routing'
+];
+
+const activeDeliverables = deliverables && deliverables.length > 0 ? deliverables.slice(0, 4) : defaultDeliverables;
 ---
 
-<article class="service-card">
-  {featuredImage ? (
-    <div class="entry-item-thumb" style="margin-bottom:20px;">
-      <img src={featuredImage} alt={title} width="615" height="410" loading="lazy" />
+<article class="service-saas-card" data-category={category}>
+  {/* Top Badge Bar */}
+  <div class="service-card-top">
+    <div class="service-icon-box">
+      <span class="icon-glyph" aria-hidden="true">{icon}</span>
     </div>
-  ) : icon && (
-    <div class="service-card-icon" aria-hidden="true">{icon}</div>
-  )}
-  <h3 class="service-card-title">
-    <a href={`/services/${slug}`}>{title}</a>
-  </h3>
-  {excerpt && <p style="font-size:14px;color:var(--color-text-light);line-height:1.6;margin-bottom:16px;">{excerpt}</p>}
-  <a href={`/services/${slug}`} class="btn btn-outline">Learn More</a>
+    <span class="category-pill">{category}</span>
+  </div>
+
+  {/* Header Info */}
+  <div class="service-card-header">
+    <h3 class="service-card-title">
+      <a href={`/services/${cleanSlug}`}>{title}</a>
+    </h3>
+    <p class="service-card-tagline">{tagline || excerpt}</p>
+  </div>
+
+  {/* Deliverables List */}
+  <div class="service-deliverables">
+    <span class="deliverables-heading">CORE CAPABILITIES</span>
+    <ul class="deliverables-list">
+      {activeDeliverables.map(point => (
+        <li class="deliverable-item">
+          <span class="checkmark" aria-hidden="true">✓</span>
+          <span class="deliverable-text">{point}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  {/* Footer CTA */}
+  <div class="service-card-footer">
+    <a href={`/services/${cleanSlug}`} class="inspect-scope-btn">
+      INSPECT SERVICE SCOPE <span class="arrow" aria-hidden="true">→</span>
+    </a>
+  </div>
 </article>
+
+<style>
+  .service-saas-card {
+    position: relative;
+    background: var(--color-burgundy, #1A080B);
+    border: 1px solid var(--color-border-deep, #380F15);
+    border-radius: var(--radius-md, 8px);
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.3s ease,
+                box-shadow 0.3s ease,
+                filter 0.3s ease;
+  }
+
+  .service-saas-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-scarlet-red, #ee2626) !important;
+    box-shadow: 0 0 24px rgba(238, 38, 38, 0.35), 0 12px 30px rgba(0, 0, 0, 0.5) !important;
+    filter: drop-shadow(0 0 12px rgba(238, 38, 38, 0.3));
+  }
+
+  /* Top Badge Bar */
+  .service-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .service-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md, 8px);
+    background: rgba(238, 38, 38, 0.12);
+    border: 1px solid rgba(238, 38, 38, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 12px rgba(238, 38, 38, 0.25);
+    font-size: 1.3rem;
+  }
+
+  .category-pill {
+    font-family: monospace;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-scarlet-red, #ee2626);
+    background: rgba(8, 3, 3, 0.8);
+    border: 1px solid rgba(238, 38, 38, 0.3);
+    padding: 4px 10px;
+    border-radius: 9999px;
+  }
+
+  /* Header Info */
+  .service-card-header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .service-card-title {
+    font-size: 1.2rem;
+    font-weight: 900;
+    line-height: 1.3;
+    margin: 0;
+    letter-spacing: var(--tracking-tight, -0.02em);
+  }
+
+  .service-card-title a {
+    color: #FFFFFF;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .service-card-title a:hover {
+    color: var(--color-scarlet-red, #ee2626);
+  }
+
+  .service-card-tagline {
+    font-size: 13px;
+    color: #D1D5DB;
+    line-height: 1.6;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Deliverables List */
+  .service-deliverables {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    flex: 1;
+  }
+
+  .deliverables-heading {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: var(--color-text-light, #9CA3AF);
+    text-transform: uppercase;
+  }
+
+  .deliverables-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .deliverable-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #D1D5DB;
+  }
+
+  .checkmark {
+    color: var(--color-scarlet-red, #ee2626);
+    font-weight: 900;
+    font-size: 14px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 4px rgba(238, 38, 38, 0.6));
+  }
+
+  .deliverable-text {
+    line-height: 1.4;
+  }
+
+  /* Footer CTA */
+  .service-card-footer {
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    margin-top: auto;
+  }
+
+  .inspect-scope-btn {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-scarlet-red, #ee2626);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.2s ease, color 0.2s ease;
+  }
+
+  .inspect-scope-btn:hover {
+    gap: 10px;
+    color: #FFFFFF;
+  }
+</style>

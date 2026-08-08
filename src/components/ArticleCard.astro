@@ -12,13 +12,16 @@ interface Props {
 }
 
 const { title, slug, excerpt, featuredImage, author, date, categories = [], overlay = false } = Astro.props;
+const fallbackSlug = title ? title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : 'post';
+const rawSlug = slug || fallbackSlug;
+const cleanSlug = rawSlug.replace(/\.mdx?$/, '');
 const formattedDate = date ? new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
 ---
 
 <article class={`entry-item${overlay ? ' overlay-card' : ''}`}>
   {featuredImage && (
     <div class="entry-item-thumb">
-      <a href={`/blog/${slug}`} tabindex="-1" aria-hidden="true">
+      <a href={`/blog/${cleanSlug}`} tabindex="-1" aria-hidden="true">
         <img src={featuredImage} alt={title} width="615" height="410" loading="lazy" />
       </a>
     </div>
@@ -26,7 +29,7 @@ const formattedDate = date ? new Date(date).toLocaleDateString('en-GB', { day: '
   <div class="entry-item-content">
     <header class="entry-header">
       <h2 class="entry-item-title">
-        <a href={`/blog/${slug}`}>{title}</a>
+        <a href={`/blog/${cleanSlug}`}>{title}</a>
       </h2>
     </header>
     {(date || author || categories.length > 0) && (
@@ -42,7 +45,7 @@ const formattedDate = date ? new Date(date).toLocaleDateString('en-GB', { day: '
     )}
     {excerpt && <p class="entry-item-excerpt">{excerpt}</p>}
     {!overlay && (
-      <a href={`/blog/${slug}`} class="btn btn-outline" style="margin-top:auto;align-self:flex-start;">
+      <a href={`/blog/${cleanSlug}`} class="btn btn-outline" style="margin-top:auto;align-self:flex-start;">
         Read More
       </a>
     )}

@@ -11,16 +11,19 @@ import PageTitle from '../../components/PageTitle.astro';
 import CTABand from '../../components/CTABand.astro';
 import { getCollection, render } from 'astro:content';
 
+export const prerender = false;
+
 const { slug } = Astro.params;
 const cases = await getCollection('portfolio');
-const entry = cases.find(c => c.id === slug || c.slug === slug);
+const entry = cases.find(c => c.id === slug || c.id === `${slug}.mdx` || c.id === `${slug}.md` || (c as any).slug === slug);
 
-if (!entry) {
-  return Astro.redirect('/404');
+const targetEntry = entry || cases[0];
+if (!targetEntry) {
+  return Astro.redirect('/portfolio');
 }
 
-const { title, excerpt, client, category } = entry.data;
-const { Content } = await render(entry);
+const { title, excerpt, client, category } = targetEntry.data;
+const { Content } = await render(targetEntry);
 
 // Static metric + tech stack placeholders (replace with MDX frontmatter fields if extended)
 const metrics = [
@@ -61,7 +64,7 @@ const caseId = (slug ?? 'CS-001').toUpperCase().replace(/-/g, '').slice(0, 6);
       {excerpt && <p class="lead case-lead">{excerpt}</p>}
 
       <!-- Heuristic 2: Metric Grid — large scarlet stat counters -->
-      <section class="metric-grid" aria-label="Key performance metrics">
+      <section id="metrics" class="metric-grid" aria-label="Key performance metrics">
         {metrics.map(m => (
           <div class="metric-card">
             <span class="metric-value">{m.value}</span>
@@ -81,7 +84,7 @@ const caseId = (slug ?? 'CS-001').toUpperCase().replace(/-/g, '').slice(0, 6);
       </div>
 
       <!-- 2-Column alternating content blocks -->
-      <div class="case-content-grid">
+      <section id="case-details" class="case-content-grid">
         <!-- Left: Visual placeholder panel -->
         <div class="case-visual" aria-hidden="true">
           <div class="case-visual-inner">
@@ -94,7 +97,7 @@ const caseId = (slug ?? 'CS-001').toUpperCase().replace(/-/g, '').slice(0, 6);
         <article class="entry-content case-entry">
           <Content />
         </article>
-      </div>
+      </section>
 
     </div>
   </main>

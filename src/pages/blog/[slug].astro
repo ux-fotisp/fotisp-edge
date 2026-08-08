@@ -1,112 +1,183 @@
 ---
-// Archetype A: Blog & Editorial — Don Norman UX Heuristics
-// - Reader column (max-width: 720px)
-// - Scroll progress bar (#read-progress)
-// - Reading time calculation
-// - Category badge, author meta row
-// - Inline blur validation on contact/form elements
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageTitle from '../../components/PageTitle.astro';
-import ArticleCard from '../../components/ArticleCard.astro';
+import NewsCard from '../../components/NewsCard.astro';
 import CTABand from '../../components/CTABand.astro';
+import { getCollection, render } from 'astro:content';
 
-export const prerender = false;
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  let news = [];
+  try {
+    news = await getCollection('news');
+  } catch (e) {
+    news = [];
+  }
 
-const slug = Astro.params.slug ?? 'sample-post';
+  const postPaths = posts.map(entry => ({
+    params: { slug: entry.id.replace(/\.mdx?$/, '') },
+    props: { entry, isNews: false },
+  }));
 
-const post = {
-  title: '6 Steps to Getting Your First Consulting Contract',
-  slug,
-  date: '2020-10-14',
-  author: 'Admin',
-  authorInitials: 'AD',
-  categories: ['Business', 'Consulting'],
-  featuredImage: '',
-  readingTime: 4,
-  content: `<p>Breaking into consulting is one of the most rewarding career moves you can make, but landing that first contract can feel overwhelming. Here are six proven steps to help you close your first deal.</p>
-<h2>1. Define Your Niche</h2>
-<p>The most successful consultants specialize. Identify the specific problems you solve and the industries you understand best.</p>
-<h2>2. Build a Portfolio</h2>
-<p>Even without paid clients, you can demonstrate expertise through case studies, writing, or pro-bono work.</p>
-<h2>3. Leverage Your Network</h2>
-<p>Your first clients will almost always come from people who already know, like, and trust you.</p>
-<h2>4. Price Correctly</h2>
-<p>Avoid underpricing — it signals low value. Research market rates and price confidently.</p>
-<h2>5. Create a Simple Proposal Template</h2>
-<p>A clear, professional proposal shows prospects you are organized and serious.</p>
-<h2>6. Follow Up Consistently</h2>
-<p>Most deals require multiple touchpoints. Persistence, not pushiness, wins contracts.</p>`,
-};
+  const newsPaths = news.map(entry => ({
+    params: { slug: entry.id.replace(/\.mdx?$/, '') },
+    props: { entry, isNews: true },
+  }));
 
-const related = [
-  { title: 'Can You Enforce a Non-Compete?', slug: 'enforce-non-compete', date: '2020-10-14', author: 'Admin' },
-  { title: 'The Rules of Venture Capital 2020', slug: 'venture-capital-rules', date: '2020-10-14', author: 'Admin' },
-  { title: 'Growth Hacking With Customer Feedback', slug: 'growth-hacking-customer-feedback', date: '2020-10-14', author: 'Admin' },
-];
+  return [...postPaths, ...newsPaths];
+}
 
-const formattedDate = new Date(post.date).toLocaleDateString('en-GB', {
-  day: 'numeric', month: 'long', year: 'numeric'
+const { slug } = Astro.params;
+const allPosts = await getCollection('posts');
+let allNews = [];
+try {
+  allNews = await getCollection('news');
+} catch (e) {
+  allNews = [];
+}
+
+const entry = Astro.props.entry || 
+  allPosts.find(p => p.id.replace(/\.mdx?$/, '') === slug) || 
+  allNews.find(n => n.id.replace(/\.mdx?$/, '') === slug);
+
+if (!entry) {
+  return Astro.redirect('/blog');
+}
+
+const { Content } = await render(entry);
+const data = entry.data;
+
+const title = data.title;
+const tagline = data.tagline || data.excerpt || 'Technical analysis & infrastructure insights.';
+const pubDate = data.pubDate || data.publishedAt || '2026-08-01';
+const category = data.category || (data.categories && data.categories[0]) || 'THOUGHT LEADERSHIP';
+const author = data.author || 'EDGE Intelligence Team';
+const readingTime = data.readingTime || '4 min read';
+const featuredImage = data.featuredImage;
+const tags = data.tags || data.categories || ['EDGE', 'INFRASTRUCTURE'];
+
+const formattedDate = new Date(pubDate).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
 });
 
-const primaryCategory = post.categories[0] ?? 'ENGINEERING BRIEFING';
+// Related articles (excluding current)
+const relatedArticles = [...allNews, ...allPosts]
+  .filter(item => item.id !== entry.id)
+  .slice(0, 3);
 ---
 
-<BaseLayout title={`${post.title} — EDGE`} description="Consulting career tips and insights.">
-  <!-- Heuristic 1: Top fixed scroll-progress bar -->
-  <div id="read-progress" aria-hidden="true" role="progressbar" aria-label="Reading progress"></div>
+<BaseLayout 
+  title={`${title} | EDGE News & Intelligence`} 
+  description={tagline}
+>
+  {/* System Status Indicator: Fixed top scroll progress bar */}
+  <div id="read-progress" class="read-progress-bar" aria-hidden="true"></div>
 
-  <PageTitle
-    title={post.title}
-    breadcrumbs={[{ label: 'News', href: '/blog' }, { label: post.title }]}
+  <PageTitle 
+    title={title} 
+    breadcrumbs={[
+      { label: 'HOME', href: '/' },
+      { label: 'NEWS', href: '/blog' },
+      { label: String(category).toUpperCase() }
+    ]} 
   />
 
-  <main class="main blog-single" id="site-content">
-    <div class="reader-column">
-
-      <!-- Category badge + reading time -->
-      <div class="post-meta-bar">
-        <span class="badge badge-category">{primaryCategory.toUpperCase()}</span>
-        <span class="reading-time-badge">{post.readingTime} min read</span>
-      </div>
-
-      <!-- Author + date meta row -->
-      <div class="post-author-row">
-        <div class="author-avatar" aria-label={`Author: ${post.author}`}>
-          {post.authorInitials}
+  <main class="main news-detail-main" id="site-content">
+    <div class="container">
+      
+      {/* Article Header (Centered ~70% max-width) */}
+      <header class="article-header-container">
+        <div class="article-meta-badge-bar">
+          <span class="category-badge">{category}</span>
+          <span class="meta-dot">•</span>
+          <time datetime={new Date(pubDate).toISOString()}>{formattedDate}</time>
+          <span class="meta-dot">•</span>
+          <span>{readingTime}</span>
         </div>
-        <div class="author-info">
-          <span class="author-name">{post.author}</span>
-          <time datetime={post.date} class="post-date">{formattedDate}</time>
-        </div>
-        <div class="post-categories">
-          {post.categories.map(c => (
-            <a href={`/blog/category/${c.toLowerCase()}`} class="badge" style="margin:0;">{c}</a>
-          ))}
-        </div>
-      </div>
 
-      {post.featuredImage && (
-        <div class="post-featured-image">
-          <img src={post.featuredImage} alt={post.title} />
+        <h1 class="article-main-title">{title}</h1>
+        <p class="article-main-tagline">{tagline}</p>
+
+        <div class="article-author-row">
+          <div class="author-avatar-placeholder">
+            <span class="author-initials">{author.charAt(0)}</span>
+          </div>
+          <div class="author-details">
+            <span class="author-title">{author}</span>
+            <span class="author-sub">EDGE Intelligence Operations</span>
+          </div>
+        </div>
+      </header>
+
+      {/* Featured Banner Image if available */}
+      {featuredImage && (
+        <div class="article-featured-banner">
+          <img src={featuredImage} alt={title} class="article-banner-img" />
         </div>
       )}
 
-      <article class="entry-content" set:html={post.content} />
+      {/* Prose Reading Container (Constrained max-width: 720px centered) */}
+      <article class="article-prose-container">
+        <div class="entry-content news-mdx-prose">
+          <Content />
+        </div>
 
-      <!-- Share bar -->
-      <div class="share-bar">
-        <span class="share-bar-label">Share:</span>
-        <a href={`https://twitter.com/intent/tweet?url=${Astro.url}&text=${encodeURIComponent(post.title)}`} target="_blank" rel="noopener" class="share-link">Twitter</a>
-        <a href={`https://www.facebook.com/sharer/sharer.php?u=${Astro.url}`} target="_blank" rel="noopener" class="share-link">Facebook</a>
-        <a href={`https://www.linkedin.com/shareArticle?url=${Astro.url}&title=${encodeURIComponent(post.title)}`} target="_blank" rel="noopener" class="share-link">LinkedIn</a>
-      </div>
+        {/* Article Footer: Tag pills, Copy URL, Social Shares */}
+        <footer class="article-footer">
+          <div class="article-tags-row">
+            <span class="tags-label">TAGS:</span>
+            {tags.map(tag => (
+              <span class="news-tag-pill">#{String(tag).toLowerCase()}</span>
+            ))}
+          </div>
 
-      <!-- Related posts -->
-      {related.length > 0 && (
-        <section class="related-section">
-          <h3>Related Articles</h3>
-          <div class="row row-columns-3">
-            {related.map(r => <ArticleCard {...r} />)}
+          <div class="article-actions-row">
+            <button type="button" id="copy-url-btn" class="article-action-btn">
+              <span class="btn-icon">🔗</span> COPY LINK
+            </button>
+            <a 
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(`https://fotisp.gr/blog/${slug}`)}`}
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="article-action-btn"
+            >
+              SHARE ON X
+            </a>
+            <a 
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://fotisp.gr/blog/${slug}`)}`}
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="article-action-btn"
+            >
+              SHARE ON LINKEDIN
+            </a>
+          </div>
+          <p id="copy-status" class="copy-status-msg" aria-live="polite"></p>
+        </footer>
+      </article>
+
+      {/* Related Articles Section (Bottom 3-column grid) */}
+      {relatedArticles.length > 0 && (
+        <section class="related-news-section" aria-label="Related Intelligence Articles">
+          <h2 class="related-section-title">RELATED INTELLIGENCE</h2>
+          <div class="related-news-grid">
+            {relatedArticles.map(art => {
+              const artData = art.data as any;
+              return (
+                <NewsCard
+                  title={artData.title}
+                  slug={`/blog/${art.id.replace(/\.mdx?$/, '')}`}
+                  tagline={artData.tagline || artData.excerpt || 'Technical analysis'}
+                  pubDate={artData.pubDate || artData.publishedAt || '2026-08-01'}
+                  category={artData.category || (artData.categories && artData.categories[0]) || 'THOUGHT LEADERSHIP'}
+                  author={artData.author || 'EDGE Intelligence Team'}
+                  readingTime={artData.readingTime || '4 min read'}
+                  featuredImage={artData.featuredImage}
+                />
+              );
+            })}
           </div>
         </section>
       )}
@@ -114,137 +185,305 @@ const primaryCategory = post.categories[0] ?? 'ENGINEERING BRIEFING';
     </div>
   </main>
 
-  <CTABand
-    title="Want expert consulting insights?"
-    subtitle="Get in touch with our team and explore what's possible."
-    buttonLabel="Contact Us"
-    buttonUrl="/contact"
-    variant="dark"
+  <CTABand 
+    title="Questions regarding this release?" 
+    description="Contact our press office or infrastructure engineering team directly." 
+    primaryCtaText="CONTACT INTELLIGENCE TEAM" 
+    primaryCtaHref="/contact" 
   />
 </BaseLayout>
 
 <style>
-  /* Heuristic 1: Top progress bar */
-  #read-progress {
+  /* Fixed top reading progress bar */
+  .read-progress-bar {
     position: fixed;
     top: 0;
     left: 0;
-    width: 0%;
     height: 3px;
-    background: linear-gradient(90deg, #DC2626, #EF4444);
-    box-shadow: 0 0 10px rgba(220, 38, 38, 0.6);
-    z-index: 10000;
-    transition: width 0.1s linear;
+    background: var(--color-scarlet-red, #ee2626);
+    box-shadow: 0 0 10px var(--color-scarlet-red, #ee2626);
+    width: 0%;
+    z-index: 1000;
+    transition: width 0.1s ease-out;
   }
 
-  /* Archetype A: Constrained reader column */
-  .blog-single { background: var(--color-obsidian); }
-
-  .reader-column {
-    max-width: var(--reader-width);
-    margin-inline: auto;
-    padding-inline: 24px;
+  .news-detail-main {
+    background: var(--color-obsidian, #080303);
+    padding-bottom: 80px;
   }
 
-  .post-meta-bar {
+  /* Centered Article Header (~70% max-width) */
+  .article-header-container {
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .article-meta-badge-bar {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12px;
+    color: #9CA3AF;
   }
 
-  .badge-category {
-    background: rgba(220, 38, 38, 0.15);
-    border: 1px solid rgba(220, 38, 38, 0.35);
-    color: #DC2626;
+  .category-badge {
+    font-family: monospace;
     font-size: 10px;
     font-weight: 800;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    padding: 5px 14px;
+    color: var(--color-scarlet-red, #ee2626);
+    background: rgba(238, 38, 38, 0.1);
+    border: 1px solid rgba(238, 38, 38, 0.3);
+    padding: 4px 12px;
     border-radius: 9999px;
   }
 
-  .reading-time-badge {
-    font-size: 11px;
-    font-weight: 700;
-    color: #6B7280;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+  .meta-dot {
+    color: var(--color-border-deep, #380F15);
   }
 
-  .post-author-row {
+  .article-main-title {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #FFFFFF;
+    line-height: 1.25;
+    letter-spacing: var(--tracking-tight, -0.02em);
+    margin: 0;
+  }
+
+  .article-main-tagline {
+    font-size: 1.15rem;
+    color: #D1D5DB;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .article-author-row {
     display: flex;
     align-items: center;
-    gap: 14px;
-    margin-bottom: 36px;
-    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
   }
 
-  .author-avatar {
-    width: 42px;
-    height: 42px;
+  .author-avatar-placeholder {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background: rgba(220, 38, 38, 0.15);
-    border: 1px solid rgba(220, 38, 38, 0.35);
+    background: rgba(238, 38, 38, 0.15);
+    border: 1px solid var(--color-scarlet-red, #ee2626);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    color: #FFFFFF;
     font-weight: 800;
-    color: #DC2626;
-    flex-shrink: 0;
-    box-shadow: 0 0 10px rgba(220, 38, 38, 0.2);
+    font-size: 14px;
   }
 
-  .author-info {
+  .author-details {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    flex: 1;
+    text-align: left;
   }
-  .author-name {
-    font-size: 14px;
+
+  .author-title {
+    font-size: 13px;
     font-weight: 700;
     color: #FFFFFF;
   }
-  .post-date {
-    font-size: 12px;
-    color: #6B7280;
+
+  .author-sub {
+    font-size: 11px;
+    color: #9CA3AF;
   }
 
-  .post-categories {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-left: auto;
-  }
-
-  .post-featured-image {
-    margin-bottom: 40px;
-    border-radius: var(--radius-md);
+  /* Featured Banner Image */
+  .article-featured-banner {
+    max-width: 960px;
+    margin: 0 auto 48px auto;
+    border-radius: var(--radius-md, 8px);
     overflow: hidden;
-    border: 1px solid var(--color-border-deep);
+    border: 1px solid var(--color-border-deep, #380F15);
   }
-  .post-featured-image img { width: 100%; display: block; }
 
-  @media (max-width: 768px) {
-    .reader-column { padding-inline: 16px; }
-    .post-author-row { gap: 10px; }
-    .post-categories { margin-left: 0; }
+  .article-banner-img {
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+  }
+
+  /* Constrained 720px Reader Column */
+  .article-prose-container {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .news-mdx-prose {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: #D1D5DB;
+  }
+
+  .news-mdx-prose h2,
+  .news-mdx-prose h3 {
+    color: #FFFFFF;
+    margin-top: 36px;
+    margin-bottom: 16px;
+    font-weight: 800;
+  }
+
+  /* Blockquote styling with 4px left border in #ee2626 & background in #1A080B */
+  .news-mdx-prose blockquote {
+    background: var(--color-burgundy, #1A080B);
+    border-left: 4px solid var(--color-scarlet-red, #ee2626);
+    border-top: 1px solid var(--color-border-deep, #380F15);
+    border-right: 1px solid var(--color-border-deep, #380F15);
+    border-bottom: 1px solid var(--color-border-deep, #380F15);
+    border-radius: 0 var(--radius-md, 8px) var(--radius-md, 8px) 0;
+    padding: 24px 28px;
+    margin: 32px 0;
+    color: #FFFFFF;
+    font-size: 1.1rem;
+    font-style: italic;
+    line-height: 1.7;
+  }
+
+  /* Article Footer */
+  .article-footer {
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 1px solid var(--color-border-deep, #380F15);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .article-tags-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .tags-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #9CA3AF;
+  }
+
+  .news-tag-pill {
+    font-family: monospace;
+    font-size: 11px;
+    color: var(--color-scarlet-red, #ee2626);
+    background: rgba(238, 38, 38, 0.08);
+    border: 1px solid rgba(238, 38, 38, 0.25);
+    padding: 3px 10px;
+    border-radius: 9999px;
+  }
+
+  .article-actions-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .article-action-btn {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #FFFFFF;
+    background: var(--color-surface, #0F0909);
+    border: 1px solid var(--color-border-deep, #380F15);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .article-action-btn:hover {
+    border-color: var(--color-scarlet-red, #ee2626);
+    color: var(--color-scarlet-red, #ee2626);
+    box-shadow: 0 0 12px rgba(238, 38, 38, 0.2);
+  }
+
+  .copy-status-msg {
+    font-size: 11px;
+    color: #10B981;
+    margin: 0;
+    min-height: 16px;
+  }
+
+  /* Related Articles Section */
+  .related-news-section {
+    margin-top: 80px;
+    padding-top: 48px;
+    border-top: 1px solid var(--color-border-deep, #380F15);
+  }
+
+  .related-section-title {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #FFFFFF;
+    margin-bottom: 28px;
+    letter-spacing: var(--tracking-tight, -0.02em);
+  }
+
+  .related-news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  @media (max-width: 992px) {
+    .related-news-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .related-news-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 
 <script>
-  // Heuristic 1: Scroll progress bar
+  // Scroll progress bar calculation
   const bar = document.getElementById('read-progress');
-  function updateProgress() {
-    const scrollTop = window.scrollY;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    if (bar) bar.style.width = `${pct}%`;
+  if (bar) {
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      bar.style.width = Math.min(100, Math.max(0, scrolled)) + '%';
+    }, { passive: true });
   }
-  window.addEventListener('scroll', updateProgress, { passive: true });
-  updateProgress();
+
+  // Copy URL button
+  const copyBtn = document.getElementById('copy-url-btn');
+  const copyStatus = document.getElementById('copy-status');
+
+  copyBtn?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      if (copyStatus) {
+        copyStatus.textContent = '✓ Article link copied to clipboard!';
+        setTimeout(() => {
+          copyStatus.textContent = '';
+        }, 3000);
+      }
+    } catch (err) {
+      if (copyStatus) {
+        copyStatus.textContent = 'Copied: ' + window.location.href;
+      }
+    }
+  });
 </script>

@@ -15,6 +15,9 @@ interface Props {
 }
 
 const { title, slug, tagline, excerpt, eventDate, timeSlot, status, eventType, location, capacity, speakers } = Astro.props;
+const fallbackSlug = title ? title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : 'event';
+const rawSlug = slug || fallbackSlug;
+const cleanSlug = rawSlug.replace(/\.mdx?$/, '');
 
 const d = new Date(eventDate);
 const dayStr  = d.getDate().toString().padStart(2, '0');
@@ -69,7 +72,7 @@ const spotsLeft = capacity?.totalSeats && capacity?.registeredCount
 
     {/* Title */}
     <h3 style="font-size:1.05rem;font-weight:800;line-height:1.3;letter-spacing:var(--tracking-tight);margin:0;">
-      <a href={`/events/${slug}`} style="color:#FFFFFF;text-decoration:none;transition:color 0.2s ease;" onmouseover="this.style.color='#DC2626'" onmouseout="this.style.color='#FFFFFF'">
+      <a href={`/events/${cleanSlug}`} style="color:#FFFFFF;text-decoration:none;transition:color 0.2s ease;" onmouseover="this.style.color='#DC2626'" onmouseout="this.style.color='#FFFFFF'">
         {title}
       </a>
     </h3>
@@ -129,7 +132,7 @@ const spotsLeft = capacity?.totalSeats && capacity?.registeredCount
         </div>
       )}
       <a
-        href={`/events/${slug}`}
+        href={`/events/${cleanSlug}`}
         style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:var(--color-primary);text-decoration:none;display:flex;align-items:center;gap:5px;transition:gap 0.2s ease;"
         onmouseover="this.style.gap='9px'"
         onmouseout="this.style.gap='5px'"

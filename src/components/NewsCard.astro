@@ -1,0 +1,205 @@
+---
+// NewsCard.astro — Reusable Big-Tech Style News Listing Card
+interface Props {
+  title: string;
+  slug: string;
+  tagline: string;
+  pubDate: Date | string;
+  category: 'PRESS RELEASES' | 'PRODUCT' | 'OPERATIONS' | 'THOUGHT LEADERSHIP' | string;
+  author?: string;
+  readingTime?: string;
+  featuredImage?: string;
+}
+
+const {
+  title,
+  slug,
+  tagline,
+  pubDate,
+  category = 'PRESS RELEASES',
+  readingTime = '4 min read',
+  featuredImage,
+} = Astro.props;
+
+const cleanSlug = slug.replace(/\.mdx?$/, '');
+const formattedDate = new Date(pubDate).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+---
+
+<article class="news-card" data-category={category}>
+  {featuredImage && (
+    <div class="news-card-image-wrap">
+      <img src={featuredImage} alt={title} loading="lazy" width="600" height="340" class="news-card-img" />
+      <div class="news-card-overlay"></div>
+    </div>
+  )}
+
+  <div class="news-card-body">
+    {/* Meta Bar */}
+    <div class="news-card-meta">
+      <span class="news-category-badge">{category}</span>
+      <span class="meta-dot" aria-hidden="true">•</span>
+      <time datetime={new Date(pubDate).toISOString()} class="news-date">{formattedDate}</time>
+      <span class="meta-dot" aria-hidden="true">•</span>
+      <span class="news-read-time">{readingTime}</span>
+    </div>
+
+    {/* Headline & Tagline */}
+    <h3 class="news-card-title">
+      <a href={`/news/${cleanSlug}`}>{title}</a>
+    </h3>
+    <p class="news-card-tagline">{tagline}</p>
+
+    {/* CTA Link */}
+    <div class="news-card-footer">
+      <a href={`/news/${cleanSlug}`} class="read-release-btn">
+        READ FULL RELEASE <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .news-card {
+    position: relative;
+    background: var(--color-burgundy, #1A080B);
+    border: 1px solid var(--color-border-deep, #380F15);
+    border-radius: var(--radius-md, 8px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.3s ease,
+                box-shadow 0.3s ease,
+                filter 0.3s ease;
+  }
+
+  .news-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-scarlet-red, #ee2626) !important;
+    box-shadow: 0 0 20px rgba(238, 38, 38, 0.35), 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+    filter: drop-shadow(0 0 10px rgba(238, 38, 38, 0.3));
+  }
+
+  .news-card-image-wrap {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    background: #080303;
+  }
+
+  .news-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.5s ease;
+  }
+
+  .news-card:hover .news-card-img {
+    transform: scale(1.06);
+  }
+
+  .news-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(26, 8, 11, 0.9) 100%);
+  }
+
+  .news-card-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .news-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    flex-wrap: wrap;
+  }
+
+  .news-category-badge {
+    font-family: monospace;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-scarlet-red, #ee2626);
+    background: rgba(238, 38, 38, 0.1);
+    border: 1px solid rgba(238, 38, 38, 0.3);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .meta-dot {
+    color: var(--color-border-deep, #380F15);
+  }
+
+  .news-date,
+  .news-read-time {
+    color: #9CA3AF;
+    font-weight: 600;
+  }
+
+  .news-card-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    line-height: 1.35;
+    margin: 0;
+    letter-spacing: var(--tracking-tight, -0.02em);
+  }
+
+  .news-card-title a {
+    color: #FFFFFF;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .news-card-title a:hover {
+    color: var(--color-scarlet-red, #ee2626);
+  }
+
+  .news-card-tagline {
+    font-size: 13px;
+    color: #D1D5DB;
+    line-height: 1.6;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .news-card-footer {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .read-release-btn {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-scarlet-red, #ee2626);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.2s ease, color 0.2s ease;
+  }
+
+  .read-release-btn:hover {
+    gap: 10px;
+    color: #FFFFFF;
+  }
+</style>

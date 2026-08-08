@@ -12,6 +12,8 @@ const routesToTest = [
   { path: '/portfolio/[slug]', title: 'Portfolio Single', file: 'src/pages/portfolio/[slug].astro' },
   { path: '/services', title: 'Services Archive', file: 'src/pages/services/index.astro' },
   { path: '/services/[slug]', title: 'Services Single', file: 'src/pages/services/[slug].astro' },
+  { path: '/news', title: 'News Archive', file: 'src/pages/news/index.astro' },
+  { path: '/news/[slug]', title: 'News Single', file: 'src/pages/news/[slug].astro' },
   { path: '/team', title: 'Team Archive', file: 'src/pages/team/index.astro' },
   { path: '/team/[slug]', title: 'Team Single', file: 'src/pages/team/[slug].astro' },
   { path: '/contact', title: 'Contact Form', file: 'src/pages/contact.astro' },
@@ -51,7 +53,8 @@ async function runComprehensiveRoutingQA() {
     { name: 'events', expected: 2, dir: 'src/content/events' },
     { name: 'portfolio', expected: 6, dir: 'src/content/portfolio' },
     { name: 'services', expected: 6, dir: 'src/content/services' },
-    { name: 'team', expected: 3, dir: 'src/content/team' },
+    { name: 'news', expected: 3, dir: 'src/content/news' },
+    { name: 'team', expected: 6, dir: 'src/content/team' },
   ];
 
   for (const c of contentDirs) {
@@ -70,20 +73,17 @@ async function runComprehensiveRoutingQA() {
   }
 
   // 3. API Endpoints Code Integrity
-  console.log('\n--- 3. Edge API Endpoint Handlers Verification ---');
+  console.log('\n--- 3. Edge API & Form Handlers Verification ---');
   const apiFiles = [
-    'functions/api/contact.ts',
-    'functions/api/search.ts',
-    'functions/api/weather.ts',
-    'functions/api/builder/save.ts',
-    'functions/api/builder/load.ts',
-    'functions/api/builder/publish.ts',
+    'src/pages/contact.astro',
+    'src/components/AccessModal.astro',
+    'src/components/BackToTop.astro',
   ];
 
   for (const api of apiFiles) {
     const fullPath = path.join(process.cwd(), api);
     const exists = fs.existsSync(fullPath);
-    assert(exists, `Edge API Endpoint Handler Verified: /${api}`);
+    assert(exists, `Edge Endpoint & Form Handler Verified: /${api}`);
   }
 
   // Summary

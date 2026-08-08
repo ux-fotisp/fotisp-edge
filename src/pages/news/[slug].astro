@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  let news = [];
+  try {
+    news = await getCollection('news');
+  } catch (e) {
+    news = [];
+  }
+
+  const allSlugs = [...posts, ...news].map(item => ({
+    params: { slug: item.id.replace(/\.mdx?$/, '') }
+  }));
+
+  return allSlugs;
+}
+
+const { slug } = Astro.params;
+return Astro.redirect(`/blog/${slug}`);
+---

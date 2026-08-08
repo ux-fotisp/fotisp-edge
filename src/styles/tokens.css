@@ -15,8 +15,10 @@
 
   /* ── EDGE Color Palette ── */
   --color-primary:        #DC2626;
+  --color-scarlet-red:    #ee2626;
   --color-secondary:      #701A1A;
   --color-obsidian:       #080303;
+  --color-burgundy:       #1A080B;
   --color-surface:        #0F0909;
   --color-surface-2:      #160A0A;
   --color-surface-3:      #1A080B;  /* Tech badge background */
@@ -27,6 +29,7 @@
   --color-border:         rgba(220, 38, 38, 0.15);
   --color-border-deep:    #380F15;  /* Deep crimson border for card hover */
   --color-border-light:   #E5E7EB;
+  --color-status-green:   #10B981;
   --color-body-bg:        #080303;
   --color-white:          #FFFFFF;
   --color-black:          #000000;

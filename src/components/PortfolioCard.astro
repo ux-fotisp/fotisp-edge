@@ -9,10 +9,13 @@ interface Props {
   client?: string;
 }
 const { title, slug, excerpt, featuredImage, category, client } = Astro.props;
+const fallbackSlug = title ? title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : 'case-study';
+const rawSlug = slug || fallbackSlug;
+const cleanSlug = rawSlug.replace(/\.mdx?$/, '');
 ---
 <article class="portfolio-card">
   {featuredImage ? (
-    <a href={`/portfolio/${slug}`} class="portfolio-card-img-link">
+    <a href={`/portfolio/${cleanSlug}`} class="portfolio-card-img-link">
       <img src={featuredImage} alt={title} width="615" height="410" loading="lazy" />
     </a>
   ) : (
@@ -26,14 +29,14 @@ const { title, slug, excerpt, featuredImage, category, client } = Astro.props;
       {client && <span style="font-size:11px;color:var(--color-muted);font-weight:600;">{client}</span>}
     </div>
     <h3 style="font-size:1.15rem;font-weight:800;line-height:1.3;margin:0 0 10px 0;">
-      <a href={`/portfolio/${slug}`} style="color:#FFFFFF;text-decoration:none;transition:color 0.2s ease;">{title}</a>
+      <a href={`/portfolio/${cleanSlug}`} style="color:#FFFFFF;text-decoration:none;transition:color 0.2s ease;">{title}</a>
     </h3>
     {excerpt && (
       <p style="font-size:13.5px;color:var(--color-text-light);line-height:1.6;margin:0 0 18px 0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
         {excerpt}
       </p>
     )}
-    <a href={`/portfolio/${slug}`} class="link-arrow" style="margin-top:auto;">
+    <a href={`/portfolio/${cleanSlug}`} class="link-arrow" style="margin-top:auto;">
       Inspect Mission Brief <span aria-hidden="true">→</span>
     </a>
   </div>

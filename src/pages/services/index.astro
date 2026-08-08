@@ -2,26 +2,157 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageTitle from '../../components/PageTitle.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
+import CTABand from '../../components/CTABand.astro';
 import { getCollection } from 'astro:content';
 
 const services = (await getCollection('services', ({ data }) => !data.draft))
-  .sort((a, b) => a.data.order - b.data.order);
+  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+const categories = ['ALL', 'INFRASTRUCTURE', 'SECURITY', 'TELEMETRY'];
+const categoryMapping = ['INFRASTRUCTURE', 'SECURITY', 'TELEMETRY', 'INFRASTRUCTURE', 'SECURITY', 'TELEMETRY'];
 ---
 
-<BaseLayout title="Services — fotisp" description="Our consulting services tailored to your business needs.">
-  <PageTitle title="Our Services" breadcrumbs={[{ label: 'Services' }]} />
+<BaseLayout 
+  title="Core Engineering Services | EDGE" 
+  description="High-throughput infrastructure, zero-trust security audits, and real-time telemetry systems."
+>
+  <PageTitle 
+    title="Core Engineering Services" 
+    breadcrumbs={[{ label: 'HOME', href: '/' }, { label: 'SERVICES' }]} 
+  />
+
   <main class="main" id="site-content">
     <div class="container">
-      <div class="row row-columns-3">
-        {services.map(s => (
-          <ServiceCard
-            title={s.data.title}
-            slug={s.slug}
-            excerpt={s.data.excerpt}
-            icon={s.data.icon}
-          />
+      
+      <!-- Interactive Filter Bar -->
+      <div class="services-filter-bar" role="tablist" aria-label="Services category filter">
+        {categories.map((cat, index) => (
+          <button
+            type="button"
+            class={`service-filter-tab ${index === 0 ? 'active' : ''}`}
+            data-category={cat}
+            role="tab"
+            aria-selected={index === 0 ? 'true' : 'false'}
+          >
+            {cat}
+          </button>
         ))}
       </div>
+
+      <!-- 3-Column Service Cards Grid -->
+      <div class="services-grid" id="services-cards-grid">
+        {services.map((s, idx) => {
+          const slug = (s as any).slug || s.id.replace(/\.mdx?$/, '');
+          const cat = s.data.category || categoryMapping[idx % categoryMapping.length];
+          return (
+            <div class="service-card-wrapper" data-category={cat}>
+              <ServiceCard
+                title={s.data.title}
+                slug={slug}
+                tagline={s.data.tagline}
+                excerpt={s.data.excerpt}
+                category={cat}
+                icon={s.data.icon}
+                deliverables={s.data.deliverables}
+              />
+            </div>
+          );
+        })}
+      </div>
+
     </div>
   </main>
+
+  <CTABand 
+    title="Need custom infrastructure architectural design?" 
+    description="Speak directly with our principal architects to scope your platform requirements." 
+    primaryCtaText="REQUEST TECHNICAL AUDIT" 
+    primaryCtaHref="/contact" 
+  />
 </BaseLayout>
+
+<style>
+  .services-filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+
+  .service-filter-tab {
+    background: rgba(15, 9, 9, 0.85);
+    border: 1px solid var(--color-border-deep, #380F15);
+    color: var(--color-text-light, #9CA3AF);
+    padding: 8px 20px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .service-filter-tab:hover {
+    color: #FFFFFF;
+    border-color: rgba(238, 38, 38, 0.4);
+    background: rgba(238, 38, 38, 0.1);
+  }
+
+  .service-filter-tab.active {
+    color: #FFFFFF;
+    background: var(--color-scarlet-red, #ee2626);
+    border-color: var(--color-scarlet-red, #ee2626);
+    box-shadow: 0 0 18px rgba(238, 38, 38, 0.45);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-bottom: 80px;
+  }
+
+  @media (max-width: 992px) {
+    .services-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Client-side interactive filter tab script
+  const tabs = document.querySelectorAll<HTMLButtonElement>('.service-filter-tab');
+  const wrappers = document.querySelectorAll<HTMLElement>('.service-card-wrapper');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const selectedCat = tab.getAttribute('data-category');
+
+      tabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+
+      wrappers.forEach(wrapper => {
+        const itemCat = wrapper.getAttribute('data-category');
+        if (selectedCat === 'ALL' || itemCat === selectedCat) {
+          wrapper.style.display = 'block';
+        } else {
+          wrapper.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
