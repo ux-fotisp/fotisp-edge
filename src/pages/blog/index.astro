@@ -36,8 +36,13 @@ const categories = ['ALL', 'PRESS RELEASES', 'PRODUCT', 'OPERATIONS', 'THOUGHT L
 ---
 
 <BaseLayout 
-  title="News & Intelligence | EDGE Core Technical Updates" 
-  description="Official press releases, engineering updates, telemetry benchmarks, and architecture briefings."
+  title="Field Notes & UX Essays" 
+  description="Articles on rapid UX prototyping, Object-Oriented UX, and edge content operations."
+  schemaType="breadcrumbs"
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Blog', item: '/blog' }
+  ]}
 >
   <PageTitle 
     title="LATEST INTELLIGENCE" 

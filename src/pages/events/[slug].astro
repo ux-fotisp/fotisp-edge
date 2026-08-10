@@ -53,8 +53,16 @@ const spotsLeft = event.capacity?.totalSeats && event.capacity?.registeredCount
 ---
 
 <BaseLayout
-  title={`${event.title} — Events — EDGE`}
-  description={event.excerpt ?? `Join us for ${event.title}.`}
+  title={event.seo?.seoTitle || event.title}
+  description={event.seo?.metaDescription || event.tagline || event.excerpt || `Join us for ${event.title}.`}
+  ogImage={event.seo?.ogImage || event.featuredImage}
+  noindex={event.seo?.noindex}
+  schemaType="breadcrumbs"
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Events', item: '/events' },
+    { name: event.title, item: Astro.url.pathname }
+  ]}
 >
   {/* Scroll Progress Bar */}
   <div id="read-progress" style="position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,#DC2626,#701A1A);z-index:9999;transition:width 0.1s linear;" role="progressbar" aria-label="Reading progress"></div>

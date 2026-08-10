@@ -69,8 +69,20 @@ const relatedArticles = [...allNews, ...allPosts]
 ---
 
 <BaseLayout 
-  title={`${title} | EDGE News & Intelligence`} 
-  description={tagline}
+  title={data.seo?.seoTitle || title} 
+  description={data.seo?.metaDescription || tagline}
+  ogImage={data.seo?.ogImage || featuredImage}
+  noindex={data.seo?.noindex}
+  type="article"
+  publishedDate={pubDate}
+  author={author}
+  schemaType="article"
+  schemaData={data}
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Blog', item: '/blog' },
+    { name: title, item: Astro.url.pathname }
+  ]}
 >
   {/* System Status Indicator: Fixed top scroll progress bar */}
   <div id="read-progress" class="read-progress-bar" aria-hidden="true"></div>

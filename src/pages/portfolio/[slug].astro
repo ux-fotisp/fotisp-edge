@@ -39,8 +39,16 @@ const caseId = (slug ?? 'CS-001').toUpperCase().replace(/-/g, '').slice(0, 6);
 ---
 
 <BaseLayout
-  title={`${title} — Case Study — EDGE`}
-  description={excerpt ?? `Case study: ${title}`}
+  title={targetEntry.data.seo?.seoTitle || title}
+  description={targetEntry.data.seo?.metaDescription || excerpt || `Case study: ${title}`}
+  ogImage={targetEntry.data.seo?.ogImage || targetEntry.data.featuredImage}
+  noindex={targetEntry.data.seo?.noindex}
+  schemaType="breadcrumbs"
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Portfolio', item: '/portfolio' },
+    { name: title, item: Astro.url.pathname }
+  ]}
 >
   <PageTitle
     title={title}

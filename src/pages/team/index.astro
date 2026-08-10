@@ -12,8 +12,13 @@ const departments = ['ALL', 'LEADERSHIP', 'ENGINEERING', 'RESEARCH', 'SECURITY']
 ---
 
 <BaseLayout 
-  title="Leadership & Team | EDGE" 
-  description="Meet the leaders, architects, and researchers engineering the EDGE platform."
+  title="Leadership & Engineering Core" 
+  description="Meet the team driving evidence-based UX research and edge web systems."
+  schemaType="breadcrumbs"
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Team', item: '/team' }
+  ]}
 >
   <PageTitle 
     title="Leadership & Engineering Team" 

@@ -44,8 +44,17 @@ const activeMetrics = slaMetrics && slaMetrics.length > 0 ? slaMetrics : default
 ---
 
 <BaseLayout 
-  title={`${title} — Services | EDGE`} 
-  description={summaryText}
+  title={entry.data.seo?.seoTitle || title} 
+  description={entry.data.seo?.metaDescription || summaryText}
+  ogImage={entry.data.seo?.ogImage || entry.data.featuredImage}
+  noindex={entry.data.seo?.noindex}
+  schemaType="service"
+  schemaData={entry.data}
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Services', item: '/services' },
+    { name: title, item: Astro.url.pathname }
+  ]}
 >
   {/* Fixed top reading progress bar */}
   <div id="read-progress" class="read-progress-bar" aria-hidden="true"></div>

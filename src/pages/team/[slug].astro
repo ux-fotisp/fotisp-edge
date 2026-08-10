@@ -37,7 +37,18 @@ const memberEvents = allEvents.filter(e =>
 );
 ---
 
-<BaseLayout title={`${name} - ${role} | EDGE`} description={`Profile, research, and publications by ${name}, ${role} at EDGE.`}>
+<BaseLayout 
+  title={entry.data.seo?.seoTitle || name} 
+  description={entry.data.seo?.metaDescription || `Profile, research, and publications by ${name}, ${role} at EDGE.`}
+  ogImage={entry.data.seo?.ogImage || imageSrc}
+  noindex={entry.data.seo?.noindex}
+  schemaType="person"
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Team', item: '/team' },
+    { name: name, item: Astro.url.pathname }
+  ]}
+>
 
   {/* Scroll Progress Bar */}
   <div id="read-progress" class="read-progress-bar" aria-hidden="true"></div>

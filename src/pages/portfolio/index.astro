@@ -10,7 +10,15 @@ const cases = (await getCollection('portfolio', ({ data }) => !data.draft))
 const categories = [...new Set(cases.map(c => c.data.category).filter(Boolean))];
 ---
 
-<BaseLayout title="Case Studies — fotisp" description="Our latest case studies and portfolio projects.">
+<BaseLayout 
+  title="Selected Case Studies & Product Research" 
+  description="Evidence-based UX case studies including MediPulse, HealthPulse, and Scientific Discovery Project."
+  schemaType="breadcrumbs"
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Portfolio', item: '/portfolio' }
+  ]}
+>
   <PageTitle title="Case Studies" breadcrumbs={[{ label: 'Case Studies' }]} />
   <main class="main" id="site-content">
     <div class="container">

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fotisp-edge.fotispastrakis.workers.dev/sitemap-index.xml

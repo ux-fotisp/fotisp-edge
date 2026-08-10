@@ -21,8 +21,13 @@ const categoryCounts = {
 ---
 
 <BaseLayout
-  title="Events — EDGE Platform"
-  description="Summits, strategy sessions, and workshops hosted by EDGE. Filter by upcoming, recurring, or past events."
+  title="Events & Executive Briefings"
+  description="Keynotes, webinars, and live briefings on UX strategy and edge web architecture."
+  schemaType="breadcrumbs"
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Events', item: '/events' }
+  ]}
 >
   <PageTitle
     title="Events"

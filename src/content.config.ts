@@ -1,6 +1,13 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
+const seoSchema = z.object({
+  seoTitle: z.string().optional(),
+  metaDescription: z.string().optional(),
+  ogImage: z.string().optional(),
+  noindex: z.boolean().default(false),
+});
+
 const posts = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/posts' }),
   schema: z.object({
@@ -11,6 +18,7 @@ const posts = defineCollection({
     categories: z.array(z.string()).default([]),
     featuredImage: z.string().optional(),
     draft: z.boolean().default(false),
+    seo: seoSchema.optional(),
   }),
 });
 
@@ -52,6 +60,7 @@ const events = defineCollection({
       description: z.string().optional(),
     })).optional(),
     draft: z.boolean().default(false),
+    seo: seoSchema.optional(),
   }),
 });
 
@@ -65,6 +74,7 @@ const portfolio = defineCollection({
     featuredImage: z.string().optional(),
     publishedAt: z.string().optional(),
     draft: z.boolean().default(false),
+    seo: seoSchema.optional(),
   }),
 });
 
@@ -85,6 +95,7 @@ const services = defineCollection({
     })).optional(),
     pricingTier: z.string().default('ENTERPRISE // CUSTOM SCOPE'),
     draft: z.boolean().default(false),
+    seo: seoSchema.optional(),
   }),
 });
 
@@ -117,6 +128,7 @@ const team = defineCollection({
       scholar: z.string().url().or(z.string()).optional(),
     }).optional(),
     officeHoursUrl: z.string().optional(),
+    seo: seoSchema.optional(),
   }),
 });
 
@@ -132,6 +144,7 @@ const news = defineCollection({
     featuredImage: z.string().optional(),
     featured: z.boolean().default(false),
     tags: z.array(z.string()).default(['EDGE', 'INFRASTRUCTURE']),
+    seo: seoSchema.optional(),
   }),
 });
 

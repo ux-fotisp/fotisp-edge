@@ -5,8 +5,13 @@ import CTABand from '../components/CTABand.astro';
 ---
 
 <BaseLayout
-  title="Contact Us — EDGE"
-  description="Get in touch with the EDGE team. Deploy infrastructure, request access, or start a mission-critical project."
+  title="Initiate Briefing — Contact Fotis Pastrakis"
+  description="Book a strategic briefing or initiate an evidence-based UX project."
+  schemaType="breadcrumbs"
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Contact', item: '/contact' }
+  ]}
 >
   <PageTitle
     title="Contact Us"

@@ -9,41 +9,66 @@ import AccessModal from '../components/AccessModal.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import BackToTop from '../components/BackToTop.astro';
+import SEO from '../components/SEO.astro';
+import SchemaJsonLd from '../components/SchemaJsonLd.astro';
 
 interface Props {
-  title: string;
+  title?: string;
   description?: string;
   image?: string;
+  ogImage?: string;
+  canonicalUrl?: string;
+  noindex?: boolean;
+  type?: 'website' | 'article' | 'profile';
+  publishedDate?: Date | string;
+  updatedDate?: Date | string;
+  author?: string;
   themeVariation?: 'convert' | 'logico';
   bodyClass?: string;
+  schemaType?: 'home' | 'about' | 'article' | 'service' | 'person' | 'breadcrumbs';
+  schemaData?: any;
+  breadcrumbs?: Array<{ name: string; item: string }>;
 }
 
 const {
   title,
-  description = 'Precision engineering for the high-stakes digital frontier — EDGE.',
-  image = '/images/og-default.jpg',
+  description,
+  image,
+  ogImage = image,
+  canonicalUrl,
+  noindex,
+  type = 'website',
+  publishedDate,
+  updatedDate,
+  author,
   themeVariation = 'convert',
   bodyClass = '',
+  schemaType,
+  schemaData,
+  breadcrumbs,
 } = Astro.props;
-
-const siteUrl = import.meta.env.SITE || 'https://example.com';
 ---
 <!doctype html>
 <html lang="en" data-theme={themeVariation}>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{title}</title>
-  <meta name="description" content={description} />
-  <!-- Open Graph -->
-  <meta property="og:title" content={title} />
-  <meta property="og:description" content={description} />
-  <meta property="og:image" content={`${siteUrl}${image}`} />
-  <meta property="og:type" content="website" />
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={title} />
-  <meta name="twitter:description" content={description} />
+  <SEO
+    title={title}
+    description={description}
+    ogImage={ogImage}
+    canonicalUrl={canonicalUrl}
+    noindex={noindex}
+    type={type}
+    publishedDate={publishedDate}
+    updatedDate={updatedDate}
+    author={author}
+  />
+  <SchemaJsonLd
+    type={schemaType || (type === 'article' ? 'article' : (title ? 'breadcrumbs' : 'home'))}
+    data={schemaData}
+    breadcrumbs={breadcrumbs}
+  />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="sitemap" href="/sitemap-index.xml" />
 </head>

@@ -1,0 +1,100 @@
+---
+// src/components/SchemaJsonLd.astro
+export interface Props {
+  type: 'home' | 'about' | 'article' | 'service' | 'person' | 'breadcrumbs';
+  data?: any;
+  breadcrumbs?: Array<{ name: string; item: string }>;
+}
+
+const { type, data, breadcrumbs } = Astro.props;
+const siteOrigin = Astro.site?.origin || Astro.url.origin;
+
+// Ground-Truth Person Schema for Fotis Pastrakis
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": `${siteOrigin}/#person`,
+  "name": "Fotis Pastrakis",
+  "url": "https://fotisp.gr",
+  "image": `${siteOrigin}/images/team/fotis-pastrakis.jpg`,
+  "jobTitle": "UX Strategist & Researcher",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "EDGE",
+    "url": siteOrigin
+  },
+  "alumniOf": ["Deloitte", "Pfizer"],
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Thessaloniki",
+    "addressCountry": "GR"
+  },
+  "sameAs": [
+    "https://fotisp.gr",
+    "https://github.com/ux-fotisp",
+    "https://linkedin.com/in/fotispastrakis",
+    "https://twitter.com/ux_fotisp"
+  ],
+  "knowsAbout": [
+    "User Experience Strategy",
+    "Object-Oriented UX (OOUX)",
+    "HCI Research",
+    "Cultural Heritage Personalization",
+    "Generative AI in UX"
+  ]
+};
+
+// BreadcrumbList Schema
+const breadcrumbSchema = breadcrumbs && breadcrumbs.length > 0 ? {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": breadcrumbs.map((crumb, idx) => ({
+    "@type": "ListItem",
+    "position": idx + 1,
+    "name": crumb.name,
+    "item": crumb.item.startsWith('http') ? crumb.item : `${siteOrigin}${crumb.item}`
+  }))
+} : null;
+
+// Route-Specific Schemas
+let routeSchema: any = null;
+
+if (type === 'home') {
+  routeSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteOrigin}/#website`,
+    "url": siteOrigin,
+    "name": "EDGE | Fotis Pastrakis",
+    "description": "Evidence-based UX strategy, Object-Oriented UX architectures, and high-density web systems.",
+    "publisher": { "@id": `${siteOrigin}/#person` }
+  };
+} else if (type === 'article' && data) {
+  const pubDateStr = data.pubDate || data.publishedAt;
+  const parsedDate = pubDateStr ? new Date(pubDateStr) : undefined;
+  routeSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": data.title,
+    "description": data.tagline || data.description || data.excerpt,
+    "image": data.featuredImage ? (data.featuredImage.startsWith('http') ? data.featuredImage : `${siteOrigin}${data.featuredImage}`) : `${siteOrigin}/images/og-default.jpg`,
+    "datePublished": parsedDate && !isNaN(parsedDate.getTime()) ? parsedDate.toISOString() : undefined,
+    "author": { "@id": `${siteOrigin}/#person` },
+    "publisher": { "@id": `${siteOrigin}/#person` }
+  };
+} else if (type === 'service' && data) {
+  routeSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": data.title,
+    "description": data.tagline || data.description || data.excerpt,
+    "provider": { "@id": `${siteOrigin}/#person` },
+    "areaServed": "Global",
+    "category": data.category
+  };
+}
+---
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify(personSchema)} />
+{breadcrumbSchema && <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema)} />}
+{routeSchema && <script type="application/ld+json" is:inline set:html={JSON.stringify(routeSchema)} />}
