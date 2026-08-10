@@ -5,6 +5,24 @@ All notable changes to the **EDGE Platform** project will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-08-10
+
+### Added
+- **Comprehensive About Page (`src/pages/about.astro`)**:
+  - Engineered 5-section alternating layout structure (70/30 → 100% → 70/30 → 100% → 70/30) honoring the EDGE Design System (`#080303` Obsidian Dark, `#1A080B` Dark Burgundy, `#ee2626` Scarlet Red, `#380F15` Dark Crimson).
+  - **Section 1 (70/30 Split)**: Executive Bio for Fotis Pastrakis, Design Philosophy Quote Box (*"Removing backend friction so UX can move at the speed of an idea"*), primary `VISIT FOTISP.GR →` link button targeting `https://fotisp.gr`, and sticky Profile Card sidebar with location pill (`UTC+2 // THESSALONIKI, GREECE`) and verified socials.
+  - **Section 2 (100% Full-Width)**: Visual Lab & Selected Interfaces 3-column card gallery featuring project showcases from `fotisp.gr` (`emDash CMS Interface`, `Telemetry Dashboard`, `EDGE Design System`).
+  - **Section 3 (70/30 Split)**: Tech Stack & Tooling Architecture breakdown covering Design & UX, Front-End Engineering, Edge & Serverless Infrastructure, interactive stack matrix, and sticky Performance Stats widget (10+ Yrs Exp, 100% Core Web Vitals, 0ms Cold Starts, <1ms Edge Routing).
+  - **Section 4 (100% Full-Width)**: Articles & Field Notes 3-column thought leadership grid.
+  - **Section 5 (70/30 Split)**: 4-Step Execution Pipeline (`AUDIT` → `PROTOTYPE` → `BUILD` → `EDGE DEPLOY`), Engineering Commitment, and sticky Action Briefing CTA sidebar.
+  - Integrated `About` link into main desktop navigation (`Header.astro`) and company links (`Footer.astro`).
+- **Interactive Contact Form Testing Popup (`src/pages/contact.astro`)**:
+  - Added glassmorphic demo testing notice popup modal triggered upon form submission with direct email (`fotispastrakis@gmail.com`), phone (`+30 69 89 69 7150`), and location details.
+
+### Fixed
+- **Breadcrumb Navigation Standardization**:
+  - Fixed breadcrumb tracks across Services, Blog/News, Team, and Events templates to resolve `Home / Home` duplication.
+
 ---
 
 ## [0.3.0] - 2026-08-08
