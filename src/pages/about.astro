@@ -3,149 +3,125 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageTitle from '../components/PageTitle.astro';
 import CTABand from '../components/CTABand.astro';
 
-const visualLabProjects = [
+const verifiedCaseStudies = [
   {
-    title: "emDash CMS Interface",
-    category: "SYSTEMS DESIGN",
-    description: "Component-driven publishing dashboard and edge content management interface engineered for Cloudflare Workers.",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop",
+    title: "MediPulse: Accessible Science Hub",
+    category: "HEALTHCARE & SCIENCE",
+    description: "Translating complex scientific research and clinical data into scannable, accessible medical news for healthcare professionals and patients.",
+    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=800&auto=format&fit=crop",
     link: "https://fotisp.gr",
-    tags: ["Astro 5", "Cloudflare D1", "TypeScript", "Pure CSS"]
+    tags: ["UX Research", "Information Architecture", "Accessibility", "Medical UX"]
   },
   {
-    title: "Telemetry & Performance Dashboard",
-    category: "HIGH-DENSITY UX",
-    description: "Real-time telemetry monitoring suite designed with sub-millisecond user feedback, GPU-promoted light trails, and dark obsidian aesthetic.",
-    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800&auto=format&fit=crop",
+    title: "HealthPulse Platform",
+    category: "DIGITAL HEALTH",
+    description: "Design system architecture and user journeys for personalized patient management and healthcare monitoring workflows.",
+    image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?q=80&w=800&auto=format&fit=crop",
     link: "https://fotisp.gr",
-    tags: ["Systems Design", "Micro-Interactions", "Canvas 2D", "OOUX"]
+    tags: ["UX Strategy", "OOUX", "Design System", "Patient Experience"]
   },
   {
-    title: "EDGE Design System & Token Engine",
-    category: "DESIGN SYSTEM",
-    description: "Zero-dependency CSS custom properties token hierarchy, fluid typography scale, and accessible WCAG AA contrast combinations.",
-    image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=800&auto=format&fit=crop",
+    title: "Scientific Discovery Project",
+    category: "RESEARCH & STRATEGY",
+    description: "Evidence-based UX research and interface design for data-heavy scientific discovery and research platforms.",
+    image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=800&auto=format&fit=crop",
     link: "https://fotisp.gr",
-    tags: ["CSS Tokens", "Design Tokens", "Figma", "Accessibility"]
+    tags: ["Generative AI", "User Research", "Data Visualization", "HCI"]
+  },
+  {
+    title: "Food We Love: Culinary Platform",
+    category: "UX DESIGN & WRITING",
+    description: "Complete UX design, copy strategy, and front-end implementation for a community-driven culinary platform.",
+    image: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=800&auto=format&fit=crop",
+    link: "https://fotisp.gr",
+    tags: ["UX Design", "UX Writing", "Web Dev", "E-Commerce"]
   }
 ];
 
-const articles = [
+const verifiedServices = [
   {
-    title: "24 Hours, One Idea: How Fast UX Can Move",
-    category: "RAPID PROTOTYPING",
-    readTime: "3 MIN READ",
-    excerpt: "Exploring how eliminating backend friction and utilizing token-driven CSS allows designers to move from concept to edge deployment in under 24 hours.",
-    date: "Aug 08, 2026",
-    link: "/blog"
+    title: "UX/UI Design",
+    icon: "🎨",
+    description: "High-density interface design, design system architecture, and rapid interactive prototyping centered on user goals."
   },
   {
-    title: "Building with emDash: A Hybrid Designer's Perspective",
-    category: "ARCHITECTURAL NOTES",
-    readTime: "5 MIN READ",
-    excerpt: "Architectural insights into engineering a decoupled content management system natively integrated with Cloudflare D1 and Astro Content Layer.",
-    date: "Jul 24, 2026",
-    link: "/blog"
+    title: "UX Research & AI",
+    icon: "🔬",
+    description: "Generative user research, usability testing, persona mapping, and agentic AI-assisted research workflows."
   },
   {
-    title: "Architecting fotisp-edge: Performance-First Web Design",
-    category: "ENGINEERING",
-    readTime: "4 MIN READ",
-    excerpt: "Deep dive into zero-dependency CSS tokens, Don Norman heuristic signifiers, and 60fps micro-interaction engineering for global edge CDNs.",
-    date: "Jul 12, 2026",
-    link: "/blog"
-  }
-];
-
-const techStack = [
-  { name: "Astro 5", category: "Front-End Framework" },
-  { name: "Pure CSS Tokens", category: "Styling & Architecture" },
-  { name: "TypeScript", category: "Language" },
-  { name: "Cloudflare Workers", category: "Edge Serverless" },
-  { name: "Cloudflare D1 (SQLite)", category: "Database" },
-  { name: "Cloudflare R2", category: "Object Storage" },
-  { name: "Zod Schemas", category: "Type Validation" },
-  { name: "GSAP & Lottie", category: "Micro-Animations" },
-  { name: "Figma & Systems Design", category: "UX & Systems" },
-  { name: "OOUX Framework", category: "Information Architecture" },
-  { name: "emDash CMS", category: "Content Engine" },
-  { name: "WCAG AA Compliance", category: "Accessibility" }
-];
-
-const methodology = [
-  {
-    step: "01",
-    title: "AUDIT & DISCOVERY",
-    description: "Analyzing product parameters, OOUX object modeling, user mental models, and telemetry specifications."
+    title: "UX Writing & Microcopy",
+    icon: "✍️",
+    description: "Clear content strategy, microcopy engineering, and scannable technical writing to reduce user cognitive friction."
   },
   {
-    step: "02",
-    title: "PROTOTYPE & TOKENS",
-    description: "Building component libraries, pure CSS tokens, and 60fps micro-interactions directly in Figma and code."
+    title: "Web & E-Commerce Dev",
+    icon: "💻",
+    description: "Custom web development, WordPress engineering, e-shops, and production-ready HTML/CSS/JS interfaces."
   },
   {
-    step: "03",
-    title: "BUILD & OPTIMIZE",
-    description: "Engineering cleanly structured Astro & TypeScript front-ends with sub-millisecond execution and zero layout thrashing."
+    title: "Project Management",
+    icon: "🎯",
+    description: "Agile sprint leadership, design operations, and cross-functional alignment between engineering and business teams."
   },
   {
-    step: "04",
-    title: "EDGE DEPLOYMENT",
-    description: "Deploying to Cloudflare Workers, D1 SQLite databases, and global edge CDN nodes with 100% Core Web Vitals."
+    title: "Video & Media Editing",
+    icon: "🎬",
+    description: "Visual storytelling, product demonstration videos, and technical media production for digital platforms."
   }
 ];
 ---
 
 <BaseLayout
-  title="About Fotis Pastrakis | UX Architect & Web Engineer"
-  description="Lead UX Designer & Web Engineer bridging high-density systems design, edge serverless architecture, and micro-interactions."
+  title="About Fotis Pastrakis | UX Strategist & Researcher"
+  description="Lead UX Strategist & Researcher with 10+ years in Pharma & Finance (Pfizer, Deloitte). Grounding digital products in Object-Oriented UX, evidence-based research, and HCI."
 >
   {/* Scroll Progress Bar */}
   <div id="read-progress" class="read-progress-bar" aria-hidden="true"></div>
 
   <PageTitle
-    title="Architecting at the Edge"
-    subtitle="Lead UX Designer & Web Engineer bridging systems design with serverless performance."
+    title="Evidence-Based UX Strategy & Research"
+    subtitle="Grounding complex digital products in human behavior, Object-Oriented UX, and clear architecture."
     breadcrumbs={[{ label: 'ABOUT' }]}
   />
 
   <main class="main about-page-main" id="site-content">
-    <div class="container space-y-24">
+    <div class="container space-y-16">
 
       <!-- ═══════════════════════════════════════════════════════
-           SECTION 1: 70/30 SPLIT (EXECUTIVE BIO & PROFILE)
+           SECTION 1: 70/30 SPLIT (AUTHENTIC BIO & PROFILE)
       ════════════════════════════════════════════════════════ -->
       <section id="bio-intro" class="section-70-30" aria-label="Executive Bio and Profile">
         
         <!-- Main Column (70%) -->
         <article class="bio-main-col">
           <div class="section-badge-bar">
-            <span class="category-badge">UX ARCHITECT & WEB ENGINEER</span>
+            <span class="category-badge">UX STRATEGIST & RESEARCHER</span>
           </div>
 
           <h2 class="bio-headline">
-            Designing for humans. Engineering for the edge.
+            Designing for complex domains. Grounding strategy in human behavior.
           </h2>
 
           <div class="bio-prose">
             <p>
-              I am <strong>Fotis Pastrakis</strong>, a Lead UX Designer and Web Engineer specializing in high-density digital products, component-driven design systems, and serverless web architecture. Operating at the intersection of human-computer interaction (HCI) and edge computing, I build software that feels instantaneous, visually arresting, and effortless to navigate.
-            </p>
-            <p>
-              My personal portfolio and laboratory at <a href="https://fotisp.gr" target="_blank" rel="noopener noreferrer" class="bio-link">fotisp.gr</a> serves as an open workspace for testing the limits of modern web development. It is where I experiment with decoupled CMS engines (like <strong>emDash</strong>), custom CSS token systems, sub-millisecond edge routing, and Don Norman’s UX heuristics.
+              I am <strong>Fotis Pastrakis</strong>, a Senior UX Strategist, Researcher, and Web Developer with over 10 years of experience shaping digital experiences across highly regulated industries—including <strong>Pharmaceuticals</strong> and <strong>Finance</strong>. Over the course of my career, I have collaborated with global enterprise organizations such as <strong>Pfizer</strong> and <strong>Deloitte</strong>, delivering evidence-based product strategy and accessible user interfaces.
             </p>
 
-            <!-- Design Philosophy Quote Box -->
+            <!-- Methodology Callout Box -->
             <blockquote class="philosophy-quote-box">
               <span class="quote-symbol">“</span>
               <p class="quote-text">
-                Removing backend friction so UX can move at the speed of an idea.
+                Grounding user interfaces in Object-Oriented mental models (OOUX) to turn complex domain logic into intuitive, frictionless digital journeys.
               </p>
-              <footer class="quote-author">— Fotis Pastrakis, Design Philosophy</footer>
+              <footer class="quote-author">— Fotis Pastrakis, UX Methodology</footer>
             </blockquote>
 
             <p>
-              Whether architecting enterprise SaaS control planes or prototyping zero-dependency design systems, my commitment remains constant: clean typography, 60fps GPU-accelerated micro-interactions, and 100% Core Web Vitals compliance on global edge networks.
+              My approach merges rigorous user research with hybrid technical execution. I apply <strong>Object-Oriented UX (OOUX)</strong> to map complex systems into clear object structures before code is written, drastically reducing cognitive load. Additionally, I integrate <strong>Generative and Agentic AI</strong> into research synthesis workflows to accelerate discovery without sacrificing human insight.
+            </p>
+            <p>
+              As a hybrid creator, I am UX-first while remaining fluent in modern HTML, CSS, and JavaScript—allowing me to bridge the gap between high-level strategy, design systems, and production engineering.
             </p>
           </div>
 
@@ -168,11 +144,11 @@ const methodology = [
                 width="200"
                 height="200"
               />
-              <span class="status-pulse-dot" title="Available for advisory & engineering"></span>
+              <span class="status-pulse-dot" title="Available for UX advisory & research"></span>
             </div>
 
             <h3 class="profile-name">Fotis Pastrakis</h3>
-            <p class="profile-role">Lead UX Designer & Web Engineer</p>
+            <p class="profile-role">UX Strategist & Lead Researcher</p>
 
             <div class="profile-location-tag">
               <span class="loc-icon">📍</span>
@@ -199,39 +175,39 @@ const methodology = [
       </section>
 
       <!-- ═══════════════════════════════════════════════════════
-           SECTION 2: 100% FULL-WIDTH (VISUAL LAB & WORK SHOWCASE)
+           SECTION 2: 100% FULL-WIDTH (VERIFIED CASE STUDIES SHOWCASE)
       ════════════════════════════════════════════════════════ -->
-      <section id="visual-showcase" class="section-fullwidth" aria-label="Visual Lab Showcase">
+      <section id="case-studies" class="section-fullwidth" aria-label="Verified Case Studies Showcase">
         <div class="section-header-centered">
-          <span class="category-badge">EXPERIMENTAL LAB</span>
-          <h2 class="section-title">Visual Lab & Selected Interfaces</h2>
+          <span class="category-badge">VERIFIED PORTFOLIO</span>
+          <h2 class="section-title">Featured Case Studies & Product Research</h2>
           <p class="section-subtitle">
-            Explorations in component architecture, high-density telemetry dashboards, and micro-interactions from fotisp.gr.
+            Selected work spanning healthcare communication, digital health, research platforms, and user-centered design.
           </p>
         </div>
 
-        <div class="visual-gallery-grid">
-          {visualLabProjects.map((project) => (
-            <article class="visual-card">
-              <div class="visual-card-image-wrap">
-                <img src={project.image} alt={project.title} class="visual-card-img" loading="lazy" />
-                <div class="visual-card-overlay">
-                  <a href={project.link} target="_blank" rel="noopener noreferrer" class="visual-preview-link">
-                    EXPLORE LAB <span aria-hidden="true">→</span>
+        <div class="case-studies-grid">
+          {verifiedCaseStudies.map((project) => (
+            <article class="case-card">
+              <div class="case-card-image-wrap">
+                <img src={project.image} alt={project.title} class="case-card-img" loading="lazy" />
+                <div class="case-card-overlay">
+                  <a href={project.link} target="_blank" rel="noopener noreferrer" class="case-preview-link">
+                    VIEW ON FOTISP.GR <span aria-hidden="true">→</span>
                   </a>
                 </div>
               </div>
 
-              <div class="visual-card-content">
-                <span class="visual-card-category">{project.category}</span>
-                <h3 class="visual-card-title">
+              <div class="case-card-content">
+                <span class="case-card-category">{project.category}</span>
+                <h3 class="case-card-title">
                   <a href={project.link} target="_blank" rel="noopener noreferrer">
                     {project.title}
                   </a>
                 </h3>
-                <p class="visual-card-desc">{project.description}</p>
+                <p class="case-card-desc">{project.description}</p>
                 
-                <div class="visual-card-tags">
+                <div class="case-card-tags">
                   {project.tags.map((tag) => (
                     <span class="tag-pill">{tag}</span>
                   ))}
@@ -243,185 +219,50 @@ const methodology = [
       </section>
 
       <!-- ═══════════════════════════════════════════════════════
-           SECTION 3: 70/30 SPLIT (TECH STACK & TOOLING ARCHITECTURE)
+           SECTION 3: 70/30 SPLIT (SERVICES & ACADEMIC RESEARCH)
       ════════════════════════════════════════════════════════ -->
-      <section id="stack-architecture" class="section-70-30" aria-label="Tech Stack and Tooling Architecture">
+      <section id="services-academia" class="section-70-30" aria-label="Services and Academic Research">
         
         <!-- Main Column (70%) -->
-        <div class="stack-main-col">
+        <div class="services-main-col">
           <div class="section-badge-bar">
-            <span class="category-badge">SYSTEMS ARCHITECTURE</span>
+            <span class="category-badge">SERVICES & RESEARCH</span>
           </div>
 
-          <h2 class="section-title-left">Tech Stack & Tooling Architecture</h2>
+          <h2 class="section-title-left">Services & Core Capabilities</h2>
           <p class="section-desc-left">
-            A curated stack selected for maximum execution speed, zero cold starts, and zero layout shift.
+            Comprehensive UX strategy, user research, and web execution tailored for high-impact platforms.
           </p>
 
-          <div class="stack-categories-grid">
-            <!-- Group 1: Design & UX -->
-            <div class="stack-group-card">
-              <div class="group-header">
-                <span class="group-icon">🎨</span>
-                <h3 class="group-title">Design & UX Systems</h3>
-              </div>
-              <p class="group-desc">Figma, Systems Design, HCI Principles, Component-Driven Prototyping, OOUX, Usability Testing.</p>
-            </div>
-
-            <!-- Group 2: Front-End Engineering -->
-            <div class="stack-group-card">
-              <div class="group-header">
-                <span class="group-icon">⚡</span>
-                <h3 class="group-title">Front-End Engineering</h3>
-              </div>
-              <p class="group-desc">Astro 5, Pure CSS Custom Property Tokens, TypeScript, GSAP, Lottie, Semantic HTML5.</p>
-            </div>
-
-            <!-- Group 3: Edge & Serverless -->
-            <div class="stack-group-card">
-              <div class="group-header">
-                <span class="group-icon">☁️</span>
-                <h3 class="group-title">Edge & Serverless Infrastructure</h3>
-              </div>
-              <p class="group-desc">Cloudflare Workers, D1 SQLite Database, R2 Object Storage, Zod Schemas, emDash CMS.</p>
-            </div>
-          </div>
-
-          <!-- Interactive Stack Matrix -->
-          <div class="stack-matrix-wrap">
-            <h4 class="matrix-title">INTERACTIVE STACK MATRIX</h4>
-            <div class="stack-matrix-grid">
-              {techStack.map((tech) => (
-                <div class="matrix-pill">
-                  <span class="matrix-tech-name">{tech.name}</span>
-                  <span class="matrix-tech-cat">{tech.category}</span>
+          <div class="services-grid">
+            {verifiedServices.map((service) => (
+              <div class="service-card">
+                <div class="service-head">
+                  <span class="service-icon">{service.icon}</span>
+                  <h3 class="service-title">{service.title}</h3>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <!-- Sidebar Column (30% - Sticky top-24) -->
-        <aside class="stack-sidebar sticky-sidebar">
-          <div class="quick-stats-card">
-            <h3 class="stats-card-title">Performance Metrics</h3>
-
-            <div class="stat-item">
-              <span class="stat-value">10+ YRS</span>
-              <span class="stat-label">UX & ENGINEERING EXP</span>
-            </div>
-
-            <div class="stat-divider"></div>
-
-            <div class="stat-item">
-              <span class="stat-value">100%</span>
-              <span class="stat-label">CORE WEB VITALS SCORE</span>
-            </div>
-
-            <div class="stat-divider"></div>
-
-            <div class="stat-item">
-              <span class="stat-value">0ms</span>
-              <span class="stat-label">COLD START OVERHEAD</span>
-            </div>
-
-            <div class="stat-divider"></div>
-
-            <div class="stat-item">
-              <span class="stat-value">&lt; 1ms</span>
-              <span class="stat-label">EDGE ROUTING LATENCY</span>
-            </div>
-
-            <div class="stats-footer-status">
-              <span class="status-dot-green"></span>
-              VERIFIED CORE PERFORMANCE
-            </div>
-          </div>
-        </aside>
-
-      </section>
-
-      <!-- ═══════════════════════════════════════════════════════
-           SECTION 4: 100% FULL-WIDTH (THOUGHT LEADERSHIP & WRITING)
-      ════════════════════════════════════════════════════════ -->
-      <section id="featured-writing" class="section-fullwidth" aria-label="Featured Articles and Writing">
-        <div class="section-header-centered">
-          <span class="category-badge">THOUGHT LEADERSHIP</span>
-          <h2 class="section-title">Articles & Field Notes</h2>
-          <p class="section-subtitle">
-            Essays on rapid product prototyping, serverless architecture, and performance-first design.
-          </p>
-        </div>
-
-        <div class="articles-grid">
-          {articles.map((article) => (
-            <article class="article-card">
-              <div class="article-card-head">
-                <span class="article-category">{article.category}</span>
-                <span class="article-read-time">{article.readTime}</span>
-              </div>
-
-              <h3 class="article-title">
-                <a href={article.link}>
-                  {article.title}
-                </a>
-              </h3>
-
-              <p class="article-excerpt">{article.excerpt}</p>
-
-              <div class="article-footer">
-                <span class="article-date">{article.date}</span>
-                <a href={article.link} class="article-read-btn">
-                  READ ESSAY <span aria-hidden="true">→</span>
-                </a>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <!-- ═══════════════════════════════════════════════════════
-           SECTION 5: 70/30 SPLIT (EXECUTION PIPELINE & BRIEFING)
-      ════════════════════════════════════════════════════════ -->
-      <section id="execution-pipeline" class="section-70-30" aria-label="Execution Pipeline and Methodology">
-        
-        <!-- Main Column (70%) -->
-        <div class="pipeline-main-col">
-          <div class="section-badge-bar">
-            <span class="category-badge">METHODOLOGY</span>
-          </div>
-
-          <h2 class="section-title-left">4-Step Execution Pipeline</h2>
-          <p class="section-desc-left">
-            How ideas transition from raw UX requirements to global edge deployment without compromise.
-          </p>
-
-          <div class="methodology-grid">
-            {methodology.map((m) => (
-              <div class="methodology-card">
-                <span class="methodology-step">{m.step}</span>
-                <h3 class="methodology-title">{m.title}</h3>
-                <p class="methodology-desc">{m.description}</p>
+                <p class="service-desc">{service.description}</p>
               </div>
             ))}
           </div>
 
-          <!-- Engineering Commitment Callout -->
-          <div class="commitment-box">
-            <h4 class="commitment-title">ENGINEERING COMMITMENT</h4>
-            <p class="commitment-text">
-              Every interface shipped adherence strictly to 100% WCAG AA accessibility, zero layout thrashing, pure CSS design tokens, and GPU-promoted CSS transitions for 60fps fluidity across all devices.
+          <!-- Academic Research Focus Box -->
+          <div class="academic-box">
+            <span class="academic-badge">ACADEMIC RESEARCH & HCI FOCUS</span>
+            <h3 class="academic-title">Human-Computer Interaction & Cultural Heritage</h3>
+            <p class="academic-text">
+              Active academic research focus on <strong>Human-Computer Interaction (HCI)</strong>, specifically exploring <strong>personalization and recommendation systems in Cultural Heritage</strong>. Investigating how adaptive algorithms and user-centered mental models can make historical datasets, museum archives, and cultural artifacts more engaging and accessible to diverse global audiences.
             </p>
           </div>
         </div>
 
         <!-- Sidebar Column (30% - Sticky top-24) -->
-        <aside class="pipeline-sidebar sticky-sidebar">
+        <aside class="services-sidebar sticky-sidebar">
           <div class="action-widget-card">
             <div class="action-widget-badge">COLLABORATION</div>
             <h3 class="action-widget-title">Initiate Project Briefing</h3>
             <p class="action-widget-desc">
-              Ready to engineer your next digital platform, scope custom design tokens, or consult on UX architecture?
+              Looking to build evidence-based products, reduce cognitive friction, or scope dedicated UX research?
             </p>
 
             <a href="/contact" class="btn action-widget-btn">
@@ -441,8 +282,8 @@ const methodology = [
   </main>
 
   <CTABand
-    title="Want to build together?"
-    subtitle="Let's engineer your high-throughput platform or prototype your next digital product."
+    title="Want to build evidence-based products?"
+    subtitle="Let's discuss how UX strategy, research, and technical execution can transform your product."
     buttonLabel="INITIATE BRIEFING"
     buttonUrl="/contact"
     variant="scarlet"
@@ -468,8 +309,8 @@ const methodology = [
     padding-bottom: 96px;
   }
 
-  .space-y-24 > * + * {
-    margin-top: 96px;
+  .space-y-16 > * + * {
+    margin-top: 64px;
   }
 
   /* 70/30 Split Layout Grid */
@@ -538,18 +379,6 @@ const methodology = [
 
   .bio-prose strong {
     color: #FFFFFF;
-  }
-
-  .bio-link {
-    color: var(--color-scarlet-red, #ee2626);
-    text-decoration: none;
-    font-weight: 700;
-    transition: color 0.2s ease;
-  }
-
-  .bio-link:hover {
-    color: #EF4444;
-    text-decoration: underline;
   }
 
   /* Philosophy Quote Box */
@@ -733,7 +562,7 @@ const methodology = [
     border-color: rgba(238, 38, 38, 0.3);
   }
 
-  /* 100% Full-Width Layout Section Header */
+  /* Section Header Centered (100% Full-Width) */
   .section-header-centered {
     text-align: center;
     max-width: 720px;
@@ -755,26 +584,20 @@ const methodology = [
     margin: 0;
   }
 
-  /* Visual Gallery Grid (Section 2) */
-  .visual-gallery-grid {
+  /* Case Studies Grid (4 Cards) */
+  .case-studies-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 32px;
   }
 
-  @media (max-width: 992px) {
-    .visual-gallery-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (max-width: 640px) {
-    .visual-gallery-grid {
+  @media (max-width: 768px) {
+    .case-studies-grid {
       grid-template-columns: 1fr;
     }
   }
 
-  .visual-card {
+  .case-card {
     background: var(--color-burgundy, #1A080B);
     border: 1px solid var(--color-border-deep, #380F15);
     border-radius: 12px;
@@ -782,31 +605,31 @@ const methodology = [
     transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   }
 
-  .visual-card:hover {
+  .case-card:hover {
     transform: translateY(-4px);
     border-color: var(--color-scarlet-red, #ee2626);
     box-shadow: 0 0 24px rgba(238, 38, 38, 0.25);
   }
 
-  .visual-card-image-wrap {
+  .case-card-image-wrap {
     position: relative;
-    aspect-ratio: 16/10;
+    aspect-ratio: 16/9;
     overflow: hidden;
     background: #080303;
   }
 
-  .visual-card-img {
+  .case-card-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.4s ease;
   }
 
-  .visual-card:hover .visual-card-img {
+  .case-card:hover .case-card-img {
     transform: scale(1.05);
   }
 
-  .visual-card-overlay {
+  .case-card-overlay {
     position: absolute;
     inset: 0;
     background: rgba(8, 3, 3, 0.75);
@@ -817,11 +640,11 @@ const methodology = [
     transition: opacity 0.3s ease;
   }
 
-  .visual-card:hover .visual-card-overlay {
+  .case-card:hover .case-card-overlay {
     opacity: 1;
   }
 
-  .visual-preview-link {
+  .case-preview-link {
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.12em;
@@ -833,14 +656,14 @@ const methodology = [
     box-shadow: 0 0 16px rgba(238, 38, 38, 0.5);
   }
 
-  .visual-card-content {
+  .case-card-content {
     padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
 
-  .visual-card-category {
+  .case-card-category {
     font-family: monospace;
     font-size: 10px;
     font-weight: 800;
@@ -848,31 +671,31 @@ const methodology = [
     color: var(--color-scarlet-red, #ee2626);
   }
 
-  .visual-card-title {
-    font-size: 1.25rem;
+  .case-card-title {
+    font-size: 1.3rem;
     font-weight: 800;
     margin: 0;
     line-height: 1.3;
   }
 
-  .visual-card-title a {
+  .case-card-title a {
     color: #FFFFFF;
     text-decoration: none;
     transition: color 0.2s ease;
   }
 
-  .visual-card-title a:hover {
+  .case-card-title a:hover {
     color: var(--color-scarlet-red, #ee2626);
   }
 
-  .visual-card-desc {
-    font-size: 13px;
+  .case-card-desc {
+    font-size: 13.5px;
     color: #9CA3AF;
     line-height: 1.6;
     margin: 0;
   }
 
-  .visual-card-tags {
+  .case-card-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
@@ -889,287 +712,8 @@ const methodology = [
     border-radius: 4px;
   }
 
-  /* Section 3: Stack & Architecture */
-  .stack-categories-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-bottom: 36px;
-  }
-
-  .stack-group-card {
-    background: var(--color-surface, #0F0909);
-    border: 1px solid var(--color-border-deep, #380F15);
-    border-radius: 10px;
-    padding: 24px;
-    transition: border-color 0.25s ease;
-  }
-
-  .stack-group-card:hover {
-    border-color: rgba(238, 38, 38, 0.4);
-  }
-
-  .group-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
-  }
-
-  .group-icon {
-    font-size: 1.4rem;
-  }
-
-  .group-title {
-    font-size: 1.15rem;
-    font-weight: 800;
-    color: #FFFFFF;
-    margin: 0;
-  }
-
-  .group-desc {
-    font-size: 14px;
-    color: #D1D5DB;
-    line-height: 1.6;
-    margin: 0;
-  }
-
-  .stack-matrix-wrap {
-    background: var(--color-burgundy, #1A080B);
-    border: 1px solid var(--color-border-deep, #380F15);
-    border-radius: 10px;
-    padding: 28px;
-  }
-
-  .matrix-title {
-    font-size: 11px;
-    font-weight: 900;
-    letter-spacing: 0.14em;
-    color: var(--color-scarlet-red, #ee2626);
-    margin: 0 0 20px 0;
-  }
-
-  .stack-matrix-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 12px;
-  }
-
-  .matrix-pill {
-    background: rgba(15, 9, 9, 0.8);
-    border: 1px solid var(--color-border-deep, #380F15);
-    border-radius: 6px;
-    padding: 10px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    transition: all 0.2s ease;
-  }
-
-  .matrix-pill:hover {
-    border-color: var(--color-scarlet-red, #ee2626);
-    box-shadow: 0 0 12px rgba(238, 38, 38, 0.2);
-    transform: translateY(-2px);
-  }
-
-  .matrix-tech-name {
-    font-size: 13px;
-    font-weight: 800;
-    color: #FFFFFF;
-  }
-
-  .matrix-tech-cat {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: #9CA3AF;
-    text-transform: uppercase;
-  }
-
-  /* Quick Stats Card (Sidebar 3) */
-  .quick-stats-card {
-    background: var(--color-surface, #0F0909);
-    border: 1px solid var(--color-border-deep, #380F15);
-    border-radius: 12px;
-    padding: 28px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-
-  .stats-card-title {
-    font-size: 1.1rem;
-    font-weight: 900;
-    color: #FFFFFF;
-    margin: 0;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .stat-item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .stat-value {
-    font-size: 1.8rem;
-    font-weight: 900;
-    color: var(--color-scarlet-red, #ee2626);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    text-shadow: 0 0 16px rgba(238, 38, 38, 0.4);
-  }
-
-  .stat-label {
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    color: #9CA3AF;
-  }
-
-  .stat-divider {
-    height: 1px;
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  .stats-footer-status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    color: #10B981;
-    padding-top: 8px;
-  }
-
-  .status-dot-green {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #10B981;
-    box-shadow: 0 0 8px #10B981;
-  }
-
-  /* Section 4: Featured Writing Grid */
-  .articles-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 32px;
-  }
-
-  @media (max-width: 992px) {
-    .articles-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (max-width: 640px) {
-    .articles-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .article-card {
-    background: var(--color-surface, #0F0909);
-    border: 1px solid var(--color-border-deep, #380F15);
-    border-radius: 12px;
-    padding: 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .article-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--color-scarlet-red, #ee2626);
-    box-shadow: 0 0 24px rgba(238, 38, 38, 0.25);
-  }
-
-  .article-card-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .article-category {
-    font-family: monospace;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    color: var(--color-scarlet-red, #ee2626);
-  }
-
-  .article-read-time {
-    font-family: monospace;
-    font-size: 10px;
-    font-weight: 700;
-    color: #9CA3AF;
-    background: rgba(255, 255, 255, 0.04);
-    padding: 2px 8px;
-    border-radius: 4px;
-  }
-
-  .article-title {
-    font-size: 1.25rem;
-    font-weight: 800;
-    margin: 0;
-    line-height: 1.3;
-  }
-
-  .article-title a {
-    color: #FFFFFF;
-    text-decoration: none;
-    transition: color 0.2s ease;
-  }
-
-  .article-card:hover .article-title a {
-    color: var(--color-scarlet-red, #ee2626);
-  }
-
-  .article-excerpt {
-    font-size: 13px;
-    color: #9CA3AF;
-    line-height: 1.6;
-    margin: 0;
-    flex-grow: 1;
-  }
-
-  .article-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .article-date {
-    font-size: 11px;
-    color: #6B7280;
-    font-weight: 600;
-  }
-
-  .article-read-btn {
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    color: #FFFFFF;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transition: color 0.2s ease, gap 0.2s ease;
-  }
-
-  .article-card:hover .article-read-btn {
-    color: var(--color-scarlet-red, #ee2626);
-    gap: 8px;
-  }
-
-  /* Section 5: Execution Pipeline */
-  .methodology-grid {
+  /* Section 3: Services Grid */
+  .services-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
@@ -1177,12 +721,12 @@ const methodology = [
   }
 
   @media (max-width: 640px) {
-    .methodology-grid {
+    .services-grid {
       grid-template-columns: 1fr;
     }
   }
 
-  .methodology-card {
+  .service-card {
     background: var(--color-surface, #0F0909);
     border: 1px solid var(--color-border-deep, #380F15);
     border-radius: 10px;
@@ -1190,58 +734,73 @@ const methodology = [
     transition: border-color 0.25s ease;
   }
 
-  .methodology-card:hover {
+  .service-card:hover {
     border-color: rgba(238, 38, 38, 0.4);
   }
 
-  .methodology-step {
-    font-family: monospace;
-    font-size: 1.4rem;
-    font-weight: 900;
-    color: var(--color-scarlet-red, #ee2626);
-    display: block;
+  .service-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin-bottom: 8px;
   }
 
-  .methodology-title {
-    font-size: 1.05rem;
-    font-weight: 800;
-    color: #FFFFFF;
-    margin: 0 0 8px 0;
-    letter-spacing: -0.01em;
+  .service-icon {
+    font-size: 1.3rem;
   }
 
-  .methodology-desc {
+  .service-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin: 0;
+  }
+
+  .service-desc {
     font-size: 13px;
     color: #9CA3AF;
     line-height: 1.6;
     margin: 0;
   }
 
-  .commitment-box {
+  /* Academic Focus Box */
+  .academic-box {
     background: var(--color-burgundy, #1A080B);
     border: 1px solid var(--color-border-deep, #380F15);
     border-left: 4px solid var(--color-scarlet-red, #ee2626);
     border-radius: 8px;
-    padding: 24px;
+    padding: 28px;
   }
 
-  .commitment-title {
+  .academic-badge {
+    font-family: monospace;
     font-size: 10px;
     font-weight: 900;
     letter-spacing: 0.14em;
     color: var(--color-scarlet-red, #ee2626);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .academic-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #FFFFFF;
     margin: 0 0 10px 0;
   }
 
-  .commitment-text {
+  .academic-text {
     font-size: 14px;
     color: #D1D5DB;
-    line-height: 1.6;
+    line-height: 1.7;
     margin: 0;
   }
 
-  /* Action Widget Card (Sidebar 5) */
+  .academic-text strong {
+    color: #FFFFFF;
+  }
+
+  /* Action Widget Card (Sidebar 3) */
   .action-widget-card {
     background: var(--color-surface, #0F0909);
     border: 1px solid var(--color-border-deep, #380F15);
@@ -1307,6 +866,14 @@ const methodology = [
     font-weight: 800;
     letter-spacing: 0.1em;
     color: #9CA3AF;
+  }
+
+  .status-dot-green {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 8px #10B981;
   }
 </style>
 
